@@ -1,0 +1,16 @@
+$pointer-size: 6px;
+$bubble-color: red;
+
+%bubble { 
+    position: relative; 
+    background: $bubble-color; 
+    border-radius: .4em; 
+
+    &:after { 
+        content: ''; 
+        position: absolute; 
+        width: 0; 
+        height: 0; 
+        border: $pointer-size solid transparent; 
+    }
+} 
