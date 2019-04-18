@@ -1,16 +1,9 @@
-$white: #FFFFFF;
-$light-green: #4EB7A8;
-$medium-green: #46ab9d;
-$light-grey: #E6E6E6;
-$medium-grey: #969696;
-$dark-grey: #747474;
-$light-orange: #E75637;
-
 @import 'bubble';
 
-.slider-1 {
+.slider-cont {
+    display: inline-block;
     input {
-        margin-bottom: 3em;
+        margin-bottom: 0.5em;
     }
 
     .slider {
@@ -42,7 +35,7 @@ $light-orange: #E75637;
             @extend %bubble;
             margin-bottom: $pointer-size;
             position: absolute;
-            line-height: 24px;
+            line-height: 175%;
             color: #FFFFFF;
             font-size: 1em;
             font-weight: bold;
@@ -53,6 +46,8 @@ $light-orange: #E75637;
     .slider-hor {
         width: 300px;
         height: 14px;
+        margin-top: 45px;
+        margin-left: 5px;
 
         .slider-done {
             height: 100%;
@@ -65,7 +60,7 @@ $light-orange: #E75637;
         }
 
         .value-bubble {
-            top: -38px;
+            top: -45px;
             left: -5px;
             width: 36px;
             height: 30px;
@@ -106,7 +101,7 @@ $light-orange: #E75637;
 
         .value-bubble {
             top: -5px;
-            left: 30px;
+            left: 28px;
             width: 36px;
             height: 30px;
 

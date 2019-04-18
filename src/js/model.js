@@ -1,15 +1,13 @@
-//defaults
+//defaults, can be changed via 'set' method
 const def = {
     value: 0,
     min: 0,
     max: 100,
-    pos: 0,
-    sliderLength: 1,
     step: 1,
     showBubble: true,
     showSteps: false,
-    preset: 'slider-1',
-    modifier: 'slider-ver'
+    horizontal: true,
+    sliderLength: 0
 }
 
 //helpers
@@ -18,51 +16,99 @@ function isUndefined(val) {
 }
 
 function handleError(e) {
-    console.error(e);
+    console.error(e || e.stack);
 }
 
 const Model = function(selector, opt={}) {
     //model is private
     let model = {};
+    Object.assign(model, def);
 
-    for (let i in def) {
-        model[i] = isUndefined(opt[i]) ? def[i] : opt[i];
+    for (let i in opt) {
+        validate(i, opt[i]);
     }
 
+    //cannot be changed through 'set'
+    model.pos = 0;
     model.selector = selector;
     model.observers = [];
+
+    function validate(key, val) {
+        if(isUndefined(def[key])) return handleError(
+            new Error(`${key} does not exist or isn't configurable.`)
+        );
+        
+        if(val === '') return;
+
+        //check types
+        switch(key) {
+            case 'value':
+            case 'max':
+            case 'min':
+            case 'step':
+                val = parseFloat(val);
+                if(isNaN(val)) {
+                    return handleError(
+                        new Error(`${key} is not a number.`)
+                    );
+                }
+                break;
+            case 'showBubble':
+            case 'showSteps':
+            case 'horizontal':
+                if(typeof val !== "boolean") {
+                    return handleError(
+                        new Error(`${val} is not a boolean.`)
+                    );
+                }
+                break;
+        }
+
+        switch(key) {
+            case 'value':
+                if(val > (model.max - model.min)) {
+                    model.value = model.max;
+                    model.pos = model.sliderLength;
+                } else if(val < 0) {
+                    model.value = model.min;
+                    model.pos = 0;
+                } else {
+                    val = model.step*Math.round(val/model.step);
+                    model.pos = model.sliderLength*val/(model.max - model.min);
+                    model.value = model.min + val;
+                }
+                break;
+            case 'max':
+                if(val > model.min) model.max = val;
+                break;
+            case 'min':
+                if(val < model.max) model.min = val;
+                break;
+            case 'step':
+                if(model.min + val < model.min) return handleError(
+                    new Error(`Invalid step value.`)
+                );
+                model.step = val;
+                break;
+            default:
+                model[key] = val;
+        }
+    }
 
     //public methods
     return {
         set: function(key, val) {
-            switch(key) {
-                case 'value':
-                    if(parseInt(val) > model.max) {
-                        val = model.max;
-                    } else {
-                        model.value = model.step*Math.round(val/model.step);
-                        model.pos = model.sliderLength*model.value/model.max;
-                    }
-                    break;
-                case 'pos':
-                    return handleError(
-                        new Error(
-                        `${key} does not exists or isn't configurable.`
-                        )
-                    );
-                default:
-                    if(isUndefined(model[key])) return handleError(
-                            new Error(
-                            `${key} does not exists or isn't configurable.`
-                            )
-                    );
-                    model[key] = val;
+            if(key instanceof Object) {
+                for(let i in key) {
+                    validate(i, key[i]);
+                }
+            } else {
+                validate(key, val)
             }
-            
         },
         get: function(key) {
             if(isUndefined(model[key])) return handleError(
-                new Error(`${key} does not exists.`)
+                new Error(`${key} does not exist.`)
             );
 
             return model[key];

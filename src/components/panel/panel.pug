@@ -1,0 +1,24 @@
+include ../checkmark/checkmark
+
+mixin input(type, name='', label='')
+  .panel-input
+    input(type=type, name=name)
+    label(for=name) #{label}
+
+mixin panel(id)
+  .panel
+    h2 Configure
+    form(action='', id=id)
+      .left
+        +input('text', 'min', 'Min')
+        +input('text', 'max', 'Max')
+        +input('text', 'step', 'Step')
+        input(type='submit', value='Submit')
+      .right
+        +checkmark('showBubble', {type:'checkbox', label:'Show bubble'})
+        +checkmark('showSteps', {type:'checkbox', label:'Show steps'})
+        +checkmark('horizontal', {type:'checkbox', label:'Horizontal'})
+        
+
+
+  

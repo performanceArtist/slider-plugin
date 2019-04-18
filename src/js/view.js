@@ -15,13 +15,19 @@ function create(type, attr={}) {
 
 View.prototype = {
     init: function(controller) {
+        let isHorizontal = this.model.get('horizontal'),
+            newClass = isHorizontal ? 'slider-hor' : 'slider-ver',
+            bubbleStyle = this.model.get('showBubble') ? 'display:absolute;' : 'display:none;',
+            max = this.model.get('max'),
+            min = this.model.get('min');
+
         let dom = {
-            cont: create('div', {class:this.model.get('preset')}),
+            cont: create('div', {class:'slider-cont'}),
             input: create('input', {type:'text'}),
-            slider: create('div', {class:`slider ${this.model.get('modifier')}`}),
+            slider: create('div', {class:`slider ${newClass}`}),
             bubble: create('div', {
                 class:'value-bubble', 
-                style: this.model.get('showBubble') ? 'display:absolute;' : 'display:none;'
+                style: bubbleStyle
             }),
             sliderDone: create('div', {class:'slider-done'}),
             sliderHead: create('span', {class:'slider-head'})
@@ -29,36 +35,38 @@ View.prototype = {
 
         dom.cont.appendChild(dom.input);
         dom.cont.appendChild(dom.slider);
+        dom.bubble.innerHTML = min;
         [dom.bubble, dom.sliderDone, dom.sliderHead].forEach(el => {
             dom.slider.appendChild(el);
         });
 
         if(this.model.get('showSteps')) {
-            let step = this.model.get('step'),
-                max = this.model.get('max');
+            let step = this.model.get('step');
 
-            for(let i=0; i<=max; i+=step) {
-                let hor = this.model.get('modifier') === 'slider-hor',
-                    perc = Math.round(100*i/max),
-                    label = create('label', {style: hor ? `left:${perc}%` : `top:${perc}%`});
-                label.innerHTML = i;
+            for(let i=0; i<=max-min; i+=step) {
+                let perc = 100*i/(max-min),
+                    label = create('label', {style: isHorizontal ? `left:${perc}%` : `top:${perc}%`});
+                label.innerHTML = i + min; //).toFixed(2)
                 dom.slider.appendChild(label);
             }
         }
 
+        this.root.innerHTML = '';
         this.root.appendChild(dom.cont);
         
         dom.slider.addEventListener('click', controller.clickHandler);
-        dom.input.addEventListener('input', controller.handleInput);
+        dom.sliderHead.addEventListener('mousedown', controller.dragHandler);
+        dom.input.addEventListener('input', controller.inputHandler);
 
-        let len = this.model.get('modifier') === 'slider-hor' ? dom.slider.offsetWidth : dom.slider.offsetHeight;
+        let len = isHorizontal ? dom.slider.offsetWidth : dom.slider.offsetHeight;
         this.model.set('sliderLength', len);
+
         this.dom = dom;
     },
     update: function() {
         let pos = this.model.get('pos'),
             value = this.model.get('value'),
-            hor = this.model.get('modifier') === 'slider-hor';
+            hor = this.model.get('horizontal');
 
         if(hor) {
             this.dom.sliderHead.style.left = pos + 'px';

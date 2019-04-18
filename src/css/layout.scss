@@ -3,5 +3,16 @@ body {
 }
 
 #content {
-    padding: 2%;
+    padding: 3%;
+    padding-top: 1%;
+}
+
+.examples {
+    display: flex;
+    flex-direction:row;
+    margin-bottom: 5%;
+
+    #example1, #example2 {
+        margin-right: 5%;
+    }
 }

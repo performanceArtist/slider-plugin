@@ -1,0 +1,105 @@
+body {
+  margin: 0; }
+
+#content {
+  padding: 2%; }
+
+.slider-cont .slider .value-bubble {
+  position: relative;
+  background: red;
+  border-radius: .4em; }
+  .slider-cont .slider .value-bubble:after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 0;
+    border: 6px solid transparent; }
+
+.slider-cont {
+  display: inline-block; }
+  .slider-cont input {
+    margin-bottom: 0.5em; }
+  .slider-cont .slider {
+    background: #E6E6E6;
+    position: relative;
+    border-radius: 0.1em; }
+    .slider-cont .slider .slider-done {
+      position: absolute;
+      z-index: 1;
+      display: block;
+      border: 0;
+      background: #4EB7A8;
+      border-radius: 0.1em; }
+    .slider-cont .slider .slider-head {
+      cursor: pointer;
+      border-radius: 50%;
+      border: none;
+      background: #4EB7A8;
+      position: absolute;
+      z-index: 2;
+      width: 25px;
+      height: 25px; }
+    .slider-cont .slider .value-bubble {
+      margin-bottom: 6px;
+      position: absolute;
+      line-height: 175%;
+      color: #FFFFFF;
+      font-size: 1em;
+      font-weight: bold;
+      text-align: center; }
+  .slider-cont .slider-hor {
+    width: 300px;
+    height: 14px;
+    margin-top: 45px;
+    margin-left: 5px; }
+    .slider-cont .slider-hor .slider-done {
+      height: 100%;
+      width: 0; }
+    .slider-cont .slider-hor .slider-head {
+      top: -6px;
+      left: 0; }
+    .slider-cont .slider-hor .value-bubble {
+      top: -45px;
+      left: -5px;
+      width: 36px;
+      height: 30px; }
+      .slider-cont .slider-hor .value-bubble:after {
+        bottom: 0;
+        left: 50%;
+        border-top-color: red;
+        border-bottom: 0;
+        margin-left: -6px;
+        margin-bottom: -6px; }
+    .slider-cont .slider-hor label {
+      position: absolute;
+      width: 20px;
+      margin-left: 0px;
+      text-align: center;
+      margin-top: 20px; }
+  .slider-cont .slider-ver {
+    width: 14px;
+    height: 300px; }
+    .slider-cont .slider-ver .slider-done {
+      height: 0;
+      width: 100%; }
+    .slider-cont .slider-ver .slider-head {
+      top: 0;
+      left: -6px; }
+    .slider-cont .slider-ver .value-bubble {
+      top: -5px;
+      left: 28px;
+      width: 36px;
+      height: 30px; }
+      .slider-cont .slider-ver .value-bubble:after {
+        left: 0;
+        top: 50%;
+        border-right-color: red;
+        border-left: 0;
+        margin-top: -6px;
+        margin-left: -6px; }
+    .slider-cont .slider-ver label {
+      position: absolute;
+      width: 20px;
+      margin-left: -20px;
+      text-align: center; }
+

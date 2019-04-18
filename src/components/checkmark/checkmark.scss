@@ -1,0 +1,56 @@
+.checkmark {
+    position: relative;
+    cursor: pointer;
+    padding-left: 35px;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    display: inline-block;
+    line-height: 180%;
+
+    input {
+        display: none;
+        cursor: pointer;
+    }
+
+    &:hover input ~ .checkmark-icon {
+        background-color: #ccc;
+    }
+
+    input:checked ~ .checkmark-icon {
+        background-color: $light-green;
+    }
+
+    input:checked ~ .checkmark-icon:after {
+        border-color: white;
+    }
+
+    .checkmark-icon:after {
+        left: 9px;
+        top: 5px;
+        width: 5px;
+        height: 10px;
+        border-width: 0 3px 3px 0;
+        -webkit-transform: rotate(45deg);
+        -ms-transform: rotate(45deg);
+        transform: rotate(45deg);
+    }
+}
+  
+.checkmark-icon {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 25px;
+    width: 25px;
+    background-color: #eee;
+    border-radius: 50%;
+
+    &:after {
+        content: "";
+        position: absolute;
+        border: solid;
+        border-color: $medium-grey;
+    }
+}

@@ -1,12 +1,17 @@
+include components/panel/panel
+
 doctype html
 
 html(lang='en')
   head
     meta(charset='utf-8')
-    title Test page
+    title Slider testing
   body
     #content
-      h1 Hello world
-      #test
-      br
-      #test1
+      h1 Slider testing
+      .examples
+        #example1
+        #example2
+        #example3
+      #config-example
+      +panel('panel')
