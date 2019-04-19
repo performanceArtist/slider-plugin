@@ -1,4 +1,4 @@
-//defaults, can be changed via 'set' method
+//defaults, values can be changed via 'set' method
 const def = {
     value: 0,
     min: 0,
@@ -28,18 +28,18 @@ function isUndefined(val) {
     return val === undefined;
 }
 
-function throwError(m, type='Unknown') {
-    const e = new MyError(m);
-    console.log(e);
-}
-
 const Model = function(selector, opt={}) {
     //model is private
     let model = {};
     Object.assign(model, def);
 
     for (let i in opt) {
-        validate(i, opt[i]);
+        let res = validate(i, opt[i]);
+        if(res instanceof MyError) {
+            res.show();
+        } else {
+            model[i] = res;
+        }
     }
 
     //cannot be changed through 'set'
