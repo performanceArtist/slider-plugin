@@ -5,7 +5,7 @@ function Controller(model, view) {
     this.clickHandler = function(e) {    
         if(e.target.className === 'slider-head' || e.target.className === 'value-bubble') return;
 
-        var rect = e.target.getBoundingClientRect(),
+        let rect = e.target.getBoundingClientRect(),
             pos = model.get('horizontal') ? e.clientX - rect.left : e.clientY - rect.top,
             valLen = model.get('max') - model.get('min'),
             value = Math.round(valLen*pos/model.get('sliderLength'));
@@ -44,7 +44,7 @@ function Controller(model, view) {
 
     }
 
-    view.init(this);
+    view.render(this);
 }
 
 export default Controller;

@@ -1,6 +1,7 @@
 function View(model) {
     this.model = model;
     this.root = document.querySelector(model.get('selector'));
+    if(!this.root) throw new Error(`Invalid selector (${model.get('selector')}): element not found.`)
     model.addObserver(this);
 }
 
@@ -14,7 +15,7 @@ function create(type, attr={}) {
 }
 
 View.prototype = {
-    init: function(controller) {
+    render: function(controller) {
         let isHorizontal = this.model.get('horizontal'),
             newClass = isHorizontal ? 'slider-hor' : 'slider-ver',
             bubbleStyle = this.model.get('showBubble') ? 'display:absolute;' : 'display:none;',
@@ -66,9 +67,9 @@ View.prototype = {
     update: function() {
         let pos = this.model.get('pos'),
             value = this.model.get('value'),
-            hor = this.model.get('horizontal');
+            isHorizontal = this.model.get('horizontal');
 
-        if(hor) {
+        if(isHorizontal) {
             this.dom.sliderHead.style.left = pos + 'px';
             this.dom.sliderDone.style.width = pos + 5 + 'px';
             this.dom.bubble.style.left = pos - 4 + 'px';

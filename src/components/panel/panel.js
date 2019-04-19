@@ -9,13 +9,16 @@ export default function(selector, slider) {
             if(el.type === 'submit') return;
 
             let name = el.name,
-                val = el.value;
+                val = el.value.trim();
 
             if(el.type === 'radio' || el.type === 'checkbox') val = el.checked;
+
+            //no empty strings
+            if(val === '') return;
 
             slider.model.set(name, val);
         });
 
-        slider.view.init(slider.controller);
+        slider.view.render(slider.controller);
     });
 }

@@ -22,6 +22,11 @@ const config = {
         test: /\.pug$/,
         use: ['pug-loader']
       },
+      { 
+        test: /\.js$/, 
+        exclude: /node_modules/, 
+        loader: "babel-loader"
+      },
       {
         test: /\.(sa|sc|c)ss$/,
         use: [

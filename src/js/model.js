@@ -10,13 +10,27 @@ const def = {
     sliderLength: 0
 }
 
-//helpers
+class MyError extends Error {
+    constructor(message, type='Unknown') {
+        super(message);
+        this.type = type;
+    }
+
+    show() {
+        //show everything
+        //console.log(this);
+        //'Friendly' message
+        console.log(this.message, `(${this.type})`);
+    }
+}
+
 function isUndefined(val) {
     return val === undefined;
 }
 
-function handleError(e) {
-    console.error(e || e.stack);
+function throwError(m, type='Unknown') {
+    const e = new MyError(m);
+    console.log(e);
 }
 
 const Model = function(selector, opt={}) {
@@ -34,11 +48,9 @@ const Model = function(selector, opt={}) {
     model.observers = [];
 
     function validate(key, val) {
-        if(isUndefined(def[key])) return handleError(
-            new Error(`${key} does not exist or isn't configurable.`)
-        );
-        
-        if(val === '') return;
+        if(isUndefined(def[key])) {
+            return new MyError(`${key} does not exist or is not configurable.`, 'notProperty');
+        }
 
         //check types
         switch(key) {
@@ -48,18 +60,14 @@ const Model = function(selector, opt={}) {
             case 'step':
                 val = parseFloat(val);
                 if(isNaN(val)) {
-                    return handleError(
-                        new Error(`${key} is not a number.`)
-                    );
+                    return new MyError(`${key} is not a number.`, 'notNum');
                 }
                 break;
             case 'showBubble':
             case 'showSteps':
             case 'horizontal':
                 if(typeof val !== "boolean") {
-                    return handleError(
-                        new Error(`${val} is not a boolean.`)
-                    );
+                    return new MyError(`${key} is not a boolean.`, 'notBool');
                 }
                 break;
         }
@@ -67,32 +75,35 @@ const Model = function(selector, opt={}) {
         switch(key) {
             case 'value':
                 if(val > (model.max - model.min)) {
-                    model.value = model.max;
                     model.pos = model.sliderLength;
+                    return model.max;
                 } else if(val < 0) {
-                    model.value = model.min;
                     model.pos = 0;
+                    return model.min;
                 } else {
                     val = model.step*Math.round(val/model.step);
                     model.pos = model.sliderLength*val/(model.max - model.min);
-                    model.value = model.min + val;
+                    val += model.min;
+                }
+                break;
+            case 'min':
+                if(val > model.max) {
+                    return new MyError(`Invalid min value: ${val}`, 'notMin');
                 }
                 break;
             case 'max':
-                if(val > model.min) model.max = val;
-                break;
-            case 'min':
-                if(val < model.max) model.min = val;
+                if(val < model.min) {
+                    return new MyError(`Invalid max value: ${val}`, 'notMax');
+                }
                 break;
             case 'step':
-                if(model.min + val < model.min) return handleError(
-                    new Error(`Invalid step value.`)
-                );
-                model.step = val;
+                if(val <= 0) {
+                    return new MyError(`Invalid step value: ${val}`, 'notStep');
+                }
                 break;
-            default:
-                model[key] = val;
         }
+
+        return val;
     }
 
     //public methods
@@ -100,17 +111,27 @@ const Model = function(selector, opt={}) {
         set: function(key, val) {
             if(key instanceof Object) {
                 for(let i in key) {
-                    validate(i, key[i]);
+                    const res = validate(i, key[i]);
+                    if(res instanceof MyError) {
+                        res.show();
+                    } else {
+                        model[i] = res;
+                    }
                 }
             } else {
-                validate(key, val)
+                const res = validate(key, val);
+                if(res instanceof MyError) {
+                    res.show();
+                } else {
+                    model[key] = res;
+                }
             }
         },
+        validate: validate,
         get: function(key) {
-            if(isUndefined(model[key])) return handleError(
-                new Error(`${key} does not exist.`)
-            );
-
+            if(isUndefined(model[key])) {
+                throw new MyError(`${key} does not exist.`, 'noKey');
+            }
             return model[key];
         },
         addObserver: function(ob) {
@@ -124,4 +145,4 @@ const Model = function(selector, opt={}) {
     }
 }
 
-export default Model;
+export {Model, MyError};
