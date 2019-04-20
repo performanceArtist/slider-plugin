@@ -56,7 +56,7 @@ test('Check if events were added to their respective elements',
 });
 
 //test view updates
-test('Check if values are set after update call', () => {
+test('Check if values are set after an update call', () => {
     model.set('value', 20);
     view.update();
 
