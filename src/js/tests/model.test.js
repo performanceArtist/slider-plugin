@@ -1,4 +1,5 @@
-import {Model, MyError} from '../model';
+import Model from '../model';
+import MyError from '../MyError';
 
 //sample model, default values(don't set anything in this model, create one if the need arises)
 const def = {
@@ -98,6 +99,10 @@ test('Min value should be less than max and vice versa', () => {
 });
 
 //step validation
-test('Step should be more than zero', () => {
+test(`Step should be more than zero, less than max/min difference 
+and max/min difference should be divisable by it`,
+ () => {
     myErrorCheck('step', -4, 'notStep');
+    myErrorCheck('step', 13, 'notStep');
+    myErrorCheck('step', 200, 'notStep');
 });

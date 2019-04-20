@@ -1,3 +1,5 @@
+import MyError from './MyError';
+
 //defaults, values can be changed via 'set' method
 const def = {
     value: 0,
@@ -8,20 +10,6 @@ const def = {
     showSteps: false,
     horizontal: true,
     sliderLength: 0
-}
-
-class MyError extends Error {
-    constructor(message, type='Unknown') {
-        super(message);
-        this.type = type;
-    }
-
-    show() {
-        //show everything
-        //console.log(this);
-        //'Friendly' message
-        console.log(this.message, `(${this.type})`);
-    }
 }
 
 function isUndefined(val) {
@@ -79,7 +67,7 @@ const Model = function(selector, opt={}) {
                     return model.max;
                 } else if(val < 0) {
                     model.pos = 0;
-                    return model.min;
+                    return 0;
                 } else {
                     val = model.step*Math.round(val/model.step);
                     model.pos = model.sliderLength*val/(model.max - model.min);
@@ -97,7 +85,7 @@ const Model = function(selector, opt={}) {
                 }
                 break;
             case 'step':
-                if(val <= 0) {
+                if(val <= 0 || (model.max-model.min) % val !== 0 || val > (model.max-model.min)) {
                     return new MyError(`Invalid step value: ${val}`, 'notStep');
                 }
                 break;
@@ -145,4 +133,4 @@ const Model = function(selector, opt={}) {
     }
 }
 
-export {Model, MyError};
+export default Model;

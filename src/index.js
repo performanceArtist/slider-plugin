@@ -1,6 +1,6 @@
 import './main.scss';
 
-import {Model} from './js/model';
+import Model from './js/model';
 import View from './js/view';
 import Controller from './js/controller';
 
