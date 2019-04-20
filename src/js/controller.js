@@ -27,7 +27,8 @@ function inputHandler(e) {
 }
 
 function dragHandler(e) {
-    let hor = this.model.get('horizontal'),
+    let model = this.model,
+        hor = model.get('horizontal'),
         head = e.target,
         x = head.offsetLeft,
         y = head.offsetTop,
@@ -36,11 +37,11 @@ function dragHandler(e) {
 
     function moveEl(e) {
         let pos = hor ? x + e.clientX - ox : y + e.clientY - oy,
-            valLen = this.model.get('max') - this.model.get('min'),
-            value = Math.round(valLen*pos/this.model.get('sliderLength'));
+            valLen = model.get('max') - model.get('min'),
+            value = valLen*pos/model.get('sliderLength');
 
-        this.model.set('value', value);
-        this.model.notifyAll();
+        model.set('value', value);
+        model.notifyAll();
     }
 
     head.addEventListener('mousemove', moveEl);
