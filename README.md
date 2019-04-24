@@ -96,7 +96,7 @@ Here are the value constraints:
 
 * `value`, `min`, `max` and `step` should be numbers.
 * `showBubble`, `showStep` and `horizontal` should be booleans.
-* `value` should be a positive number lying between `min` and `max`. If it goes out of bounds, it'll be rounded to zero or `max`. Otherwise it is rounded to the nearest value divisible by `step`.
+* `value` should be a positive number lying between zero and `min`-`max` difference. If it goes out of bounds, it'll be rounded to zero or `max`. Otherwise it is rounded to the nearest value divisible by `step`.
 * `min` should be less than `max`.
 * `max` should be more than `min`.
 * `step` should be positive, `min` and `max` difference should be divisible by `step`.
