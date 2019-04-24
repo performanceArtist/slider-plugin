@@ -57,7 +57,7 @@ View.prototype = {
         
         dom.slider.addEventListener('click', controller.clickHandler);
         dom.sliderHead.addEventListener('mousedown', controller.dragHandler);
-        dom.input.addEventListener('input', controller.inputHandler);
+        dom.input.addEventListener('blur', controller.inputHandler);
 
         let len = isHorizontal ? dom.slider.offsetWidth : dom.slider.offsetHeight;
         this.model.set('sliderLength', len);

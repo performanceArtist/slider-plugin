@@ -26,10 +26,10 @@ test('Set value on click, notify observers(view)',
     expect(model.notifyAll).toBeCalled();
 });
 
-test('Change value on input, notify observers', 
+test('Change value on blur, notify observers', 
 () => {
     view.dom.input.value = 20;
-    view.dom.input.dispatchEvent(new Event('input'));
+    view.dom.input.dispatchEvent(new Event('blur'));
     expect(controller.inputHandler).toBeCalled();
     expect(model.set).toBeCalled();
     expect(model.get('value')).toBe(20);

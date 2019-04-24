@@ -49,7 +49,7 @@ test('Check if events were added to their respective elements',
 () => {
     view.dom.slider.dispatchEvent(new Event('click'));
     expect(controller.clickHandler).toBeCalled();
-    view.dom.input.dispatchEvent(new Event('input'));
+    view.dom.input.dispatchEvent(new Event('blur'));
     expect(controller.inputHandler).toBeCalled();
     view.dom.sliderHead.dispatchEvent(new Event('mousedown'));
     expect(controller.dragHandler).toBeCalled();

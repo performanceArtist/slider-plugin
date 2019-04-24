@@ -49,7 +49,6 @@ function dragHandler(e) {
     window.addEventListener('mouseup', function(e) {
         head.removeEventListener('mousemove', moveEl);
     });
-
 }
 
 export default Controller;
