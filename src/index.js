@@ -17,8 +17,8 @@ function initPlugin(selector, opt={}) {
 window.onload = function() {
     let example1 = initPlugin('#example1'),
         example2 = initPlugin('#example2', {
-            step:20, 
-            showBubble:false, 
+            step: 20, 
+            showBubble: false, 
             showSteps: true
         }),
         example3 = initPlugin('#example3', {
