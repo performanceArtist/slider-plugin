@@ -21,7 +21,7 @@ initPlugin('#slider', {
 initPlugin('does-not-exist');
 ```
 
-Default options(can be overriden during initialization or changed with `model.set` method after object had been created):
+Default options(can be overriden during initialization or changed with `model.set` method after object has been created):
 
 ```js
 const def = {
@@ -88,9 +88,13 @@ slider.view.render();
 
 ## Architecture
 
+### UML
+
+![UML diagram](diagram.png)
+
 ### Model
 
-The main concern of the model is to store values which represent slider's state. It also has some validation logic. For instance, if you try setting `max` to a string, the action will fail. Instead it'll show an error message in console. 
+The main concern of the model is to store values which represent slider's state. It also has some validation logic. For instance, if you try setting `max` to a string, the action will fail. You'll get an error message in console instead. 
 
 Here are the value constraints:
 
@@ -99,9 +103,9 @@ Here are the value constraints:
 * `value` should be a positive number lying between zero and `min`-`max` difference. If it goes out of bounds, it'll be rounded to zero or `max`. Otherwise it is rounded to the nearest value divisible by `step`.
 * `min` should be less than `max`.
 * `max` should be more than `min`.
-* `step` should be positive, `min` and `max` difference should be divisible by `step`.
+* `step` should be positive, `min` and `max` difference should be divisible by it.
 
-Model also has methods for adding and notifying observers(views). `addObserver` simply adds an object reference to an array, `notifyAll` calls each view's `update` method. Though in this case there is no need to have multiple views, this can still come in handy for some new features.
+Model also has methods for adding and notifying observers(views). `addObserver` simply adds an object reference to an array, `notifyAll` calls each view's `update` method. Although here there is no need to have multiple views, this can still come in handy for some new features.
 
 ### View
 
@@ -116,8 +120,8 @@ After intitialization `render` method should be called with a controller as an a
 
 ### Controller
 
-Controller is used to implement event handling logic. Its constructor has two parameters - model and view. It calls view's `render` method, providing reference to the controller as an argument. `render` adds browser events to the controller's handlers, which include:
+Controller is used to implement event handling logic. Its constructor has two parameters - model and view. It calls view's `render` method, providing reference to controller as an argument. `render` adds browser events to controller's handlers, which include:
 
 * `clickHandler` is bound to the slider's status bar. It calculates value relative to the bar's width, calls model's `set` and `notifyAll` methods(all handlers do this, since the model's `value` is updated).
-* `inputHandler` takes input's element value on blur event, sets it and notifies view.
+* `inputHandler` takes input element value on blur event, sets it and notifies view.
 * `dragHandler` is called on mousedown event on the slider's handle. While mouse key is pressed, it updates the slider's and model's values accordingly.

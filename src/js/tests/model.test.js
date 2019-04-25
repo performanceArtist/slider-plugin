@@ -11,6 +11,7 @@ const def = {
     showSteps: false,
     horizontal: true,
 };
+
 const model = new Model();
 
 //helper for error checks
@@ -21,7 +22,7 @@ function myErrorCheck(key, val, type) {
 }
 
 //model.validate
-//Returns custom error with 'type' property or value conforming to the slider model
+//Returns custom error with 'type' property
 
 test('Only defined keys', () => {
     myErrorCheck('doesntExist', 20, 'notProperty');
@@ -66,9 +67,9 @@ test('When setting the value, return a number, parse and round it if necessary',
     }
 );
 
-test('If value is too big or too small, set it to the model\'s min or max', () => {
-    expect(model.validate('value', -10)).toBe(model.get('min'));
-    expect(model.validate('value', 200)).toBe(model.get('max'));
+test('If value is too big or too small, set it to zero or the model\'s min and max difference', () => {
+    expect(model.validate('value', -10)).toBe(0);
+    expect(model.validate('value', 200)).toBe(model.get('max') - model.get('min'));
 });
 
 test('Value is relative to the max and min difference and defaults to zero', () => {

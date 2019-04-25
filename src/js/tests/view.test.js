@@ -51,7 +51,7 @@ test('Check if events were added to their respective elements',
     expect(controller.clickHandler).toBeCalled();
     view.dom.input.dispatchEvent(new Event('blur'));
     expect(controller.inputHandler).toBeCalled();
-    view.dom.sliderHead.dispatchEvent(new Event('mousedown'));
+    view.dom.sliderHandle.dispatchEvent(new Event('mousedown'));
     expect(controller.dragHandler).toBeCalled();
 });
 
@@ -61,11 +61,11 @@ test('Check if values are set after an update call', () => {
     view.update();
 
     let pos = model.get('pos'),
-        sliderHead = pos + 'px',
+        sliderHandle = pos + 'px',
         sliderDone = pos + 5 + 'px',
         bubble = pos - 4 + 'px';
     
-    expect(view.dom.sliderHead.style.left).toBe(sliderHead);
+    expect(view.dom.sliderHandle.style.left).toBe(sliderHandle);
     expect(view.dom.sliderDone.style.width).toBe(sliderDone);
     expect(view.dom.bubble.style.left).toBe(bubble);
 

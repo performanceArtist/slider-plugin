@@ -2,7 +2,15 @@ body {
   margin: 0; }
 
 #content {
-  padding: 2%; }
+  padding: 3%;
+  padding-top: 1%; }
+
+.examples {
+  display: flex;
+  flex-direction: row;
+  margin-bottom: 5%; }
+  .examples #example1, .examples #example2 {
+    margin-right: 5%; }
 
 .slider-cont .slider .value-bubble {
   position: relative;
@@ -102,4 +110,68 @@ body {
       width: 20px;
       margin-left: -20px;
       text-align: center; }
+
+.checkmark {
+  position: relative;
+  cursor: pointer;
+  padding-left: 35px;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  display: inline-block;
+  line-height: 180%; }
+  .checkmark input {
+    display: none;
+    cursor: pointer; }
+  .checkmark:hover input ~ .checkmark-icon {
+    background-color: #ccc; }
+  .checkmark input:checked ~ .checkmark-icon {
+    background-color: #4EB7A8; }
+  .checkmark input:checked ~ .checkmark-icon:after {
+    border-color: white; }
+  .checkmark .checkmark-icon:after {
+    left: 9px;
+    top: 5px;
+    width: 5px;
+    height: 10px;
+    border-width: 0 3px 3px 0;
+    -webkit-transform: rotate(45deg);
+    -ms-transform: rotate(45deg);
+    transform: rotate(45deg); }
+
+.checkmark-icon {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 25px;
+  width: 25px;
+  background-color: #eee;
+  border-radius: 50%; }
+  .checkmark-icon:after {
+    content: "";
+    position: absolute;
+    border: solid;
+    border-color: #969696; }
+
+.panel {
+  padding-top: 2%;
+  font-size: 1em;
+  width: 400px; }
+  .panel form {
+    display: flex; }
+  .panel .left {
+    margin-right: 2em;
+    padding-top: 0.2em; }
+  .panel input[type=submit] {
+    margin-top: 1em; }
+  .panel .panel-input {
+    margin-bottom: 1em; }
+    .panel .panel-input input {
+      width: 5em; }
+    .panel .panel-input label {
+      margin-left: 0.8em; }
+  .panel .checkmark {
+    display: block;
+    margin-bottom: 0.5em; }
 

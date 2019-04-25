@@ -31,13 +31,13 @@ View.prototype = {
                 style: bubbleStyle
             }),
             sliderDone: create('div', {class:'slider-done'}),
-            sliderHead: create('span', {class:'slider-head'})
+            sliderHandle: create('span', {class:'slider-head'})
         }
 
         dom.cont.appendChild(dom.input);
         dom.cont.appendChild(dom.slider);
         dom.bubble.innerHTML = min;
-        [dom.bubble, dom.sliderDone, dom.sliderHead].forEach(el => {
+        [dom.bubble, dom.sliderDone, dom.sliderHandle].forEach(el => {
             dom.slider.appendChild(el);
         });
 
@@ -56,7 +56,7 @@ View.prototype = {
         this.root.appendChild(dom.cont);
         
         dom.slider.addEventListener('click', controller.clickHandler);
-        dom.sliderHead.addEventListener('mousedown', controller.dragHandler);
+        dom.sliderHandle.addEventListener('mousedown', controller.dragHandler);
         dom.input.addEventListener('blur', controller.inputHandler);
 
         let len = isHorizontal ? dom.slider.offsetWidth : dom.slider.offsetHeight;
@@ -70,11 +70,11 @@ View.prototype = {
             isHorizontal = this.model.get('horizontal');
 
         if(isHorizontal) {
-            this.dom.sliderHead.style.left = pos + 'px';
+            this.dom.sliderHandle.style.left = pos + 'px';
             this.dom.sliderDone.style.width = pos + 5 + 'px';
             this.dom.bubble.style.left = pos - 4 + 'px';
         } else {
-            this.dom.sliderHead.style.top = pos + 'px';
+            this.dom.sliderHandle.style.top = pos + 'px';
             this.dom.sliderDone.style.height = pos + 5 + 'px';
             this.dom.bubble.style.top = pos - 4 + 'px';
         }
