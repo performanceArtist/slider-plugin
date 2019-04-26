@@ -17,7 +17,7 @@ function create(type, attr={}) {
 View.prototype = {
     render: function(controller) {
         let isHorizontal = this.model.get('horizontal'),
-            newClass = isHorizontal ? 'slider-hor' : 'slider-ver',
+            newClass = isHorizontal ? 'slider_hor' : 'slider_ver',
             bubbleStyle = this.model.get('showBubble') ? 'display:absolute;' : 'display:none;',
             max = this.model.get('max'),
             min = this.model.get('min');
@@ -30,8 +30,8 @@ View.prototype = {
                 class:'value-bubble', 
                 style: bubbleStyle
             }),
-            sliderDone: create('div', {class:'slider-done'}),
-            sliderHandle: create('span', {class:'slider-head'})
+            sliderDone: create('div', {class:'slider__done'}),
+            sliderHandle: create('span', {class:'slider__head'})
         }
 
         dom.cont.appendChild(dom.input);
@@ -47,7 +47,7 @@ View.prototype = {
             for(let i=0; i<=max-min; i+=step) {
                 let perc = 100*i/(max-min),
                     label = create('label', {style: isHorizontal ? `left:${perc}%` : `top:${perc}%`});
-                label.innerHTML = i + min; //).toFixed(2)
+                label.innerHTML = i + min; 
                 dom.slider.appendChild(label);
             }
         }

@@ -11,7 +11,7 @@
         position: relative;
         border-radius: 0.1em;
 
-        .slider-done {
+        &__done {
             position: absolute;
             z-index: 1;
             display: block;
@@ -20,7 +20,7 @@
             border-radius: 0.1em;
         }
 
-        .slider-head {
+        &__head {
             cursor: pointer;
             border-radius: 50%;
             border: none;
@@ -43,18 +43,18 @@
         }
     }
 
-    .slider-hor {
+    .slider_hor {
         width: 300px;
         height: 14px;
         margin-top: 45px;
         margin-left: 5px;
 
-        .slider-done {
+        .slider__done {
             height: 100%;
             width: 0;
         }
 
-        .slider-head {
+        .slider__head {
             top: -6px;
             left: 0;
         }
@@ -85,16 +85,16 @@
 
     }
 
-    .slider-ver {
+    .slider_ver {
         width: 14px;
         height: 300px;
 
-        .slider-done {
+        .slider__done {
             height: 0;
             width: 100%;
         }
 
-        .slider-head {
+        .slider__head {
             top: 0;
             left: -6px;
         }
@@ -118,7 +118,7 @@
         label {
             position: absolute;
             width: 20px;
-            margin-left: -20px;
+            left: -25px;
             text-align: center;
         }
     }

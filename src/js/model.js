@@ -67,7 +67,7 @@ const Model = function(selector, opt={}) {
                     return model.max;
                 } else if(val < 0) {
                     model.pos = 0;
-                    return 0;
+                    return model.min;
                 } else {
                     val = model.step*Math.round(val/model.step);
                     model.pos = model.sliderLength*val/(model.max - model.min);
@@ -118,7 +118,7 @@ const Model = function(selector, opt={}) {
         validate: validate,
         get: function(key) {
             if(isUndefined(model[key])) {
-                throw new MyError(`${key} does not exist.`, 'noKey');
+                throw new MyError(`${key} does not exist.`, 'notKey');
             }
             return model[key];
         },

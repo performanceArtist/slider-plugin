@@ -10,7 +10,7 @@ function Controller(model, view) {
 }
 
 function clickHandler(e) {    
-    if(e.target.className === 'slider-head' || e.target.className === 'value-bubble') return;
+    if(e.target.className === 'slider__head' || e.target.className === 'value-bubble') return;
 
     let rect = e.target.getBoundingClientRect(),
         pos = this.model.get('horizontal') ? e.clientX - rect.left : e.clientY - rect.top,
@@ -22,16 +22,16 @@ function clickHandler(e) {
 }
 
 function inputHandler(e) {
-    this.model.set('value', e.target.value);
+    this.model.set('value', e.target.value - this.model.get('min'));
     this.model.notifyAll();
 }
 
 function dragHandler(e) {
     let model = this.model,
         hor = model.get('horizontal'),
-        head = e.target,
-        x = head.offsetLeft,
-        y = head.offsetTop,
+        handle = e.target,
+        x = handle.offsetLeft,
+        y = handle.offsetTop,
         ox = e.clientX,
         oy = e.clientY;
 
@@ -44,10 +44,10 @@ function dragHandler(e) {
         model.notifyAll();
     }
 
-    head.addEventListener('mousemove', moveEl);
+    handle.addEventListener('mousemove', moveEl);
 
     window.addEventListener('mouseup', function(e) {
-        head.removeEventListener('mousemove', moveEl);
+        handle.removeEventListener('mousemove', moveEl);
     });
 }
 
