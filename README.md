@@ -94,13 +94,13 @@ slider.view.render();
 
 ### Model
 
-The main concern of the model is to store values which represent slider's state. It also has some validation logic. For instance, if you try setting `max` to a string, the action will fail. You'll get an error message in console instead. 
+The main concern of the model is to store values which represent slider's state. It also has some validation logic. For instance, if you try setting `max` to a random string, the action will fail. You'll get an error message in console instead. 
 
 Here are the value constraints:
 
 * `value`, `min`, `max` and `step` should be numbers.
 * `showBubble`, `showStep` and `horizontal` should be booleans.
-* `value` should be a positive number lying between zero and `min`-`max` difference. If it goes out of bounds, it'll be rounded to zero or `max`. Otherwise it is rounded to the nearest value divisible by `step`.
+* `value` should be a number lying between `min` and `max`. If it goes out of bounds, it'll be rounded to `min` or `max` respectively. Otherwise it is rounded to the nearest value divisible by `step`.
 * `min` should be less than `max`.
 * `max` should be more than `min`.
 * `step` should be positive, `min` and `max` difference should be divisible by it.

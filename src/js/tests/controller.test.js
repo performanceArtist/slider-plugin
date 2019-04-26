@@ -35,3 +35,9 @@ test('Change value on blur, notify observers',
     expect(model.get('value')).toBe(20);
     expect(model.notifyAll).toBeCalled();
 });
+
+test('Set value on click, notify observers(view)', 
+() => {
+    view.dom.sliderHandle.dispatchEvent(new Event('mousedown'));
+    expect(controller.dragHandler).toBeCalled();
+});

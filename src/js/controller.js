@@ -15,14 +15,14 @@ function clickHandler(e) {
     let rect = e.target.getBoundingClientRect(),
         pos = this.model.get('horizontal') ? e.clientX - rect.left : e.clientY - rect.top,
         valLen = this.model.get('max') - this.model.get('min'),
-        value = Math.round(valLen*pos/this.model.get('sliderLength'));
+        relValue = valLen*pos/this.model.get('sliderLength');
 
-    this.model.set('value', value);
+    this.model.set('value', relValue + this.model.get('min'));
     this.model.notifyAll();
 }
 
 function inputHandler(e) {
-    this.model.set('value', e.target.value - this.model.get('min'));
+    this.model.set('value', e.target.value);
     this.model.notifyAll();
 }
 
@@ -38,9 +38,9 @@ function dragHandler(e) {
     function moveEl(e) {
         let pos = hor ? x + e.clientX - ox : y + e.clientY - oy,
             valLen = model.get('max') - model.get('min'),
-            value = valLen*pos/model.get('sliderLength');
+            relValue = valLen*pos/model.get('sliderLength');
 
-        model.set('value', value);
+        model.set('value', relValue + model.get('min'));
         model.notifyAll();
     }
 

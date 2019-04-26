@@ -1,4 +1,4 @@
-import MyError from './MyError';
+import SliderError from './SliderError';
 
 //defaults, values can be changed via 'set' method
 const def = {
@@ -23,7 +23,7 @@ const Model = function(selector, opt={}) {
 
     for (let i in opt) {
         let res = validate(i, opt[i]);
-        if(res instanceof MyError) {
+        if(res instanceof SliderError) {
             res.show();
         } else {
             model[i] = res;
@@ -37,7 +37,7 @@ const Model = function(selector, opt={}) {
 
     function validate(key, val) {
         if(isUndefined(def[key])) {
-            return new MyError(`${key} does not exist or is not configurable.`, 'notProperty');
+            return new SliderError(`${key} does not exist or is not configurable.`, 'notProperty');
         }
 
         //check types
@@ -48,45 +48,44 @@ const Model = function(selector, opt={}) {
             case 'step':
                 val = parseFloat(val);
                 if(isNaN(val)) {
-                    return new MyError(`${key} is not a number.`, 'notNum');
+                    return new SliderError(`${key} is not a number.`, 'notNum');
                 }
                 break;
             case 'showBubble':
             case 'showSteps':
             case 'horizontal':
                 if(typeof val !== "boolean") {
-                    return new MyError(`${key} is not a boolean.`, 'notBool');
+                    return new SliderError(`${key} is not a boolean.`, 'notBool');
                 }
                 break;
         }
 
         switch(key) {
             case 'value':
-                if(val > (model.max - model.min)) {
+                if(val > model.max) {
                     model.pos = model.sliderLength;
                     return model.max;
-                } else if(val < 0) {
+                } else if(val < model.min) {
                     model.pos = 0;
                     return model.min;
                 } else {
                     val = model.step*Math.round(val/model.step);
-                    model.pos = model.sliderLength*val/(model.max - model.min);
-                    val += model.min;
+                    model.pos = model.sliderLength*(val - model.min)/(model.max - model.min);
                 }
                 break;
             case 'min':
                 if(val > model.max) {
-                    return new MyError(`Invalid min value: ${val}`, 'notMin');
+                    return new SliderError(`Invalid min value: ${val}`, 'notMin');
                 }
                 break;
             case 'max':
                 if(val < model.min) {
-                    return new MyError(`Invalid max value: ${val}`, 'notMax');
+                    return new SliderError(`Invalid max value: ${val}`, 'notMax');
                 }
                 break;
             case 'step':
                 if(val <= 0 || (model.max-model.min) % val !== 0 || val > (model.max-model.min)) {
-                    return new MyError(`Invalid step value: ${val}`, 'notStep');
+                    return new SliderError(`Invalid step value: ${val}`, 'notStep');
                 }
                 break;
         }
@@ -100,7 +99,7 @@ const Model = function(selector, opt={}) {
             if(key instanceof Object) {
                 for(let i in key) {
                     const res = validate(i, key[i]);
-                    if(res instanceof MyError) {
+                    if(res instanceof SliderError) {
                         res.show();
                     } else {
                         model[i] = res;
@@ -108,7 +107,7 @@ const Model = function(selector, opt={}) {
                 }
             } else {
                 const res = validate(key, val);
-                if(res instanceof MyError) {
+                if(res instanceof SliderError) {
                     res.show();
                 } else {
                     model[key] = res;
@@ -118,7 +117,7 @@ const Model = function(selector, opt={}) {
         validate: validate,
         get: function(key) {
             if(isUndefined(model[key])) {
-                throw new MyError(`${key} does not exist.`, 'notKey');
+                throw new SliderError(`${key} does not exist.`, 'notKey');
             }
             return model[key];
         },

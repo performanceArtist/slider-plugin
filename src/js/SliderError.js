@@ -1,4 +1,4 @@
-class MyError extends Error {
+class SliderError extends Error {
     constructor(message, type='Unknown') {
         super(message);
         this.type = type;
@@ -12,4 +12,4 @@ class MyError extends Error {
     }
 }
 
-export default MyError;
+export default SliderError;
