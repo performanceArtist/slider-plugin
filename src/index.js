@@ -22,9 +22,9 @@ window.onload = function() {
             showSteps: true
         }),
         example3 = initPlugin('#example3', {
-            horizontal: false,
             min: 40,
-            max: 80
+            max: 75,
+            horizontal: false
         }),
         configExample = initPlugin('#config-example');
 

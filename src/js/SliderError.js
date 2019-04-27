@@ -5,8 +5,7 @@ class SliderError extends Error {
     }
 
     show() {
-        //show everything
-        //console.log(this);
+        //console.error(this);
         //'Friendly' message
         console.log(this.message, `(${this.type})`);
     }

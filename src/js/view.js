@@ -6,7 +6,7 @@ function View(model) {
 }
 
 //helper to create nodes
-function create(type, attr={}) {
+function createNode(type, attr={}) {
     let node = document.createElement(type);
     for (let i in attr) {
         node.setAttribute(i, attr[i]);
@@ -23,15 +23,15 @@ View.prototype = {
             min = this.model.get('min');
 
         let dom = {
-            cont: create('div', {class:'slider-cont'}),
-            input: create('input', {type:'text'}),
-            slider: create('div', {class:`slider ${newClass}`}),
-            bubble: create('div', {
+            cont: createNode('div', {class:'slider-cont'}),
+            input: createNode('input', {type:'text'}),
+            slider: createNode('div', {class:`slider ${newClass}`}),
+            bubble: createNode('div', {
                 class:'value-bubble', 
                 style: bubbleStyle
             }),
-            sliderDone: create('div', {class:'slider__done'}),
-            sliderHandle: create('span', {class:'slider__head'})
+            sliderDone: createNode('div', {class:'slider__done'}),
+            sliderHandle: createNode('span', {class:'slider__head'})
         }
 
         dom.cont.appendChild(dom.input);
@@ -46,7 +46,7 @@ View.prototype = {
 
             for(let i=0; i<=max-min; i+=step) {
                 let perc = 100*i/(max-min),
-                    label = create('label', {style: isHorizontal ? `left:${perc}%` : `top:${perc}%`});
+                    label = createNode('label', {style: isHorizontal ? `left:${perc}%` : `top:${perc}%`});
                 label.innerHTML = i + min; 
                 dom.slider.appendChild(label);
             }
@@ -55,9 +55,9 @@ View.prototype = {
         this.root.innerHTML = '';
         this.root.appendChild(dom.cont);
         
-        dom.slider.addEventListener('click', controller.clickHandler);
-        dom.sliderHandle.addEventListener('mousedown', controller.dragHandler);
-        dom.input.addEventListener('blur', controller.inputHandler);
+        dom.slider.addEventListener('click', controller.handleClick);
+        dom.sliderHandle.addEventListener('mousedown', controller.handleDrag);
+        dom.input.addEventListener('blur', controller.handleInput);
 
         let len = isHorizontal ? dom.slider.offsetWidth : dom.slider.offsetHeight;
         this.model.set('sliderLength', len);

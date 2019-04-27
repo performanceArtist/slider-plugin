@@ -122,6 +122,6 @@ After intitialization `render` method should be called with a controller as an a
 
 Controller is used to implement event handling logic. Its constructor has two parameters - model and view. It calls view's `render` method, providing reference to controller as an argument. `render` adds browser events to controller's handlers, which include:
 
-* `clickHandler` is bound to the slider's status bar. It calculates value relative to the bar's width, calls model's `set` and `notifyAll` methods(all handlers do this, since the model's `value` is updated).
-* `inputHandler` takes input element value on blur event, sets it and notifies view.
-* `dragHandler` is called on mousedown event on the slider's handle. While mouse key is pressed, it updates the slider's and model's values accordingly.
+* `handleClick` is bound to the slider's status bar. It calculates value relative to the bar's width, calls model's `set` and `notifyAll` methods(all handlers do this, since the model's `value` is updated).
+* `handleInput` takes input element value on blur event, sets it and notifies view.
+* `handleDrag` is called on mousedown event on the slider's handle. While mouse key is pressed, it updates the slider's and model's values accordingly.

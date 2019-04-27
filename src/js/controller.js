@@ -2,14 +2,14 @@ function Controller(model, view) {
     this.model = model;
     this.view = view;
 
-    this.clickHandler = clickHandler.bind(this);
-    this.dragHandler = dragHandler.bind(this);
-    this.inputHandler = inputHandler.bind(this);
+    this.handleClick = handleClick.bind(this);
+    this.handleDrag = handleDrag.bind(this);
+    this.handleInput = handleInput.bind(this);
 
     view.render(this);
 }
 
-function clickHandler(e) {    
+function handleClick(e) {    
     if(e.target.className === 'slider__head' || e.target.className === 'value-bubble') return;
 
     let rect = e.target.getBoundingClientRect(),
@@ -21,12 +21,12 @@ function clickHandler(e) {
     this.model.notifyAll();
 }
 
-function inputHandler(e) {
+function handleInput(e) {
     this.model.set('value', e.target.value);
     this.model.notifyAll();
 }
 
-function dragHandler(e) {
+function handleDrag(e) {
     let model = this.model,
         hor = model.get('horizontal'),
         handle = e.target,

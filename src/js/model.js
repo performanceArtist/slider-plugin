@@ -19,6 +19,8 @@ function isUndefined(val) {
 const Model = function(selector, opt={}) {
     //model is private
     let model = {};
+
+    //copy object
     Object.assign(model, def);
 
     for (let i in opt) {
@@ -30,7 +32,7 @@ const Model = function(selector, opt={}) {
         }
     }
 
-    //cannot be changed through 'set'
+    //private, cannot be changed through 'set'
     model.pos = 0;
     model.selector = selector;
     model.observers = [];
@@ -46,6 +48,7 @@ const Model = function(selector, opt={}) {
             case 'max':
             case 'min':
             case 'step':
+            case 'sliderLength':
                 val = parseFloat(val);
                 if(isNaN(val)) {
                     return new SliderError(`${key} is not a number.`, 'notNum');
@@ -58,8 +61,10 @@ const Model = function(selector, opt={}) {
                     return new SliderError(`${key} is not a boolean.`, 'notBool');
                 }
                 break;
+            default:
+                return new SliderError(`${key} is not configurable`, 'notConf');
         }
-
+        
         switch(key) {
             case 'value':
                 if(val > model.max) {
@@ -69,7 +74,7 @@ const Model = function(selector, opt={}) {
                     model.pos = 0;
                     return model.min;
                 } else {
-                    val = model.step*Math.round(val/model.step);
+                    val = model.min + model.step*Math.round((val - model.min)/model.step);
                     model.pos = model.sliderLength*(val - model.min)/(model.max - model.min);
                 }
                 break;
@@ -88,9 +93,22 @@ const Model = function(selector, opt={}) {
                     return new SliderError(`Invalid step value: ${val}`, 'notStep');
                 }
                 break;
+            case 'sliderLength':
+                if(val <= 0) {
+                    return new SliderError('Invalid slider length value', 'notLength');
+                }
         }
 
         return val;
+    }
+
+    function setVal(key, val) {
+        const res = validate(key, val);
+        if(res instanceof SliderError) {
+            res.show();
+        } else {
+            model[key] = res;
+        }
     }
 
     //public methods
@@ -98,26 +116,16 @@ const Model = function(selector, opt={}) {
         set: function(key, val) {
             if(key instanceof Object) {
                 for(let i in key) {
-                    const res = validate(i, key[i]);
-                    if(res instanceof SliderError) {
-                        res.show();
-                    } else {
-                        model[i] = res;
-                    }
+                    setVal(i, key[i]);
                 }
             } else {
-                const res = validate(key, val);
-                if(res instanceof SliderError) {
-                    res.show();
-                } else {
-                    model[key] = res;
-                }
+                setVal(key, val);
             }
         },
         validate: validate,
         get: function(key) {
             if(isUndefined(model[key])) {
-                throw new SliderError(`${key} does not exist.`, 'notKey');
+                throw new SliderError(`${key} does not exist.`, 'notProperty');
             }
             return model[key];
         },

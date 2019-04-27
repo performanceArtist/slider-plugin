@@ -27,9 +27,9 @@ test('Given a model with valid selector, should set the root element and add its
 //test rendering calls
 const controller = new Controller(model, view);
 //create mocks for further testing
-controller.clickHandler = jest.fn(controller.clickHandler);
-controller.inputHandler = jest.fn(controller.inputHandler);
-controller.dragHandler = jest.fn(controller.dragHandler);
+controller.handleClick = jest.fn(controller.handleClick);
+controller.handleInput = jest.fn(controller.handleInput);
+controller.handleDrag = jest.fn(controller.handleDrag);
 
 test('Given a controller, should create dom object, and set model\'s sliderLength', 
 () => {
@@ -48,11 +48,11 @@ test('Newly created elements now should be inside the root element',
 test('Check if events were added to their respective elements', 
 () => {
     view.dom.slider.dispatchEvent(new Event('click'));
-    expect(controller.clickHandler).toBeCalled();
+    expect(controller.handleClick).toBeCalled();
     view.dom.input.dispatchEvent(new Event('blur'));
-    expect(controller.inputHandler).toBeCalled();
+    expect(controller.handleInput).toBeCalled();
     view.dom.sliderHandle.dispatchEvent(new Event('mousedown'));
-    expect(controller.dragHandler).toBeCalled();
+    expect(controller.handleDrag).toBeCalled();
 });
 
 //test view updates
