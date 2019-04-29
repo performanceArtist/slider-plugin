@@ -10,13 +10,12 @@ const config = {
   output: {
     path: path.resolve(__dirname, 'dist'),
     filename: "index.js",
-    //publicPath: '/slider/'
+    publicPath: '/slider/'
   },
-
   devServer: {
     port: 5000,
   },
-  devtool: 'sourcemap',
+  //devtool: 'sourcemap',
   module: {
     rules: [
       { 

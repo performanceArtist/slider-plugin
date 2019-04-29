@@ -23,13 +23,17 @@ const Model = function(selector, opt={}) {
     //copy object
     Object.assign(model, def);
 
-    for (let i in opt) {
-        let res = validate(i, opt[i]);
+    function setVal(key, val) {
+        const res = validate(key, val);
         if(res instanceof SliderError) {
             res.show();
         } else {
-            model[i] = res;
+            model[key] = res;
         }
+    }
+
+    for (let i in opt) {
+        setVal(i, opt[i]);
     }
 
     //private, cannot be changed through 'set'
@@ -100,15 +104,6 @@ const Model = function(selector, opt={}) {
         }
 
         return val;
-    }
-
-    function setVal(key, val) {
-        const res = validate(key, val);
-        if(res instanceof SliderError) {
-            res.show();
-        } else {
-            model[key] = res;
-        }
     }
 
     //public methods
