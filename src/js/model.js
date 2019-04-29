@@ -129,7 +129,11 @@ const Model = function(selector, opt={}) {
         },
         notifyAll: function() {
             model.observers.forEach(ob => {
-                ob.update();
+                try {
+                    ob.update();
+                } catch(err) {
+                    console.error(err);
+                }
             });
         }
     }
