@@ -1,54 +1,54 @@
-function Controller(model, view) {
-    this.model = model;
-    this.view = view;
+function handleClick(e) {
+  if (e.target.className === 'slider__head' || e.target.className === 'value-bubble') return;
 
-    this.handleClick = handleClick.bind(this);
-    this.handleDrag = handleDrag.bind(this);
-    this.handleInput = handleInput.bind(this);
+  const rect = e.target.getBoundingClientRect();
+  const pos = this.model.get('horizontal') ? e.clientX - rect.left : e.clientY - rect.top;
+  const valLen = this.model.get('max') - this.model.get('min');
+  const relValue = valLen * pos / this.model.get('sliderLength');
 
-    view.render(this);
-}
-
-function handleClick(e) {    
-    if(e.target.className === 'slider__head' || e.target.className === 'value-bubble') return;
-
-    let rect = e.target.getBoundingClientRect(),
-        pos = this.model.get('horizontal') ? e.clientX - rect.left : e.clientY - rect.top,
-        valLen = this.model.get('max') - this.model.get('min'),
-        relValue = valLen*pos/this.model.get('sliderLength');
-
-    this.model.set('value', relValue + this.model.get('min'));
-    this.model.notifyAll();
+  this.model.set('value', relValue + this.model.get('min'));
+  this.model.notifyAll();
 }
 
 function handleInput(e) {
-    this.model.set('value', e.target.value);
-    this.model.notifyAll();
+  this.model.set('value', e.target.value);
+  this.model.notifyAll();
 }
 
 function handleDrag(e) {
-    let model = this.model,
-        hor = model.get('horizontal'),
-        handle = e.target,
-        x = handle.offsetLeft,
-        y = handle.offsetTop,
-        ox = e.clientX,
-        oy = e.clientY;
+  const { model } = this;
+  const hor = model.get('horizontal');
+  const handle = e.target;
+  const x = handle.offsetLeft;
+  const y = handle.offsetTop;
+  const ox = e.clientX;
+  const oy = e.clientY;
 
-    function moveEl(e) {
-        let pos = hor ? x + e.clientX - ox : y + e.clientY - oy,
-            valLen = model.get('max') - model.get('min'),
-            relValue = valLen*pos/model.get('sliderLength');
+  function moveEl(ev) {
+    const pos = hor ? x + ev.clientX - ox : y + ev.clientY - oy;
+    const valLen = model.get('max') - model.get('min');
+    const relValue = valLen * pos / model.get('sliderLength');
 
-        model.set('value', relValue + model.get('min'));
-        model.notifyAll();
-    }
+    model.set('value', relValue + model.get('min'));
+    model.notifyAll();
+  }
 
-    handle.addEventListener('mousemove', moveEl);
+  handle.addEventListener('mousemove', moveEl);
 
-    window.addEventListener('mouseup', function(e) {
-        handle.removeEventListener('mousemove', moveEl);
-    });
+  window.addEventListener('mouseup', () => {
+    handle.removeEventListener('mousemove', moveEl);
+  });
+}
+
+function Controller(model, view) {
+  this.model = model;
+  this.view = view;
+
+  this.handleClick = handleClick.bind(this);
+  this.handleDrag = handleDrag.bind(this);
+  this.handleInput = handleInput.bind(this);
+
+  view.render(this);
 }
 
 export default Controller;

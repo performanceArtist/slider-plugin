@@ -6,27 +6,27 @@ import Controller from './js/controller';
 
 import panel from './components/panel/panel';
 
-function initPlugin(selector, opt={}) {
-    let model = new Model(selector, opt),
-        view = new View(model),
-        controller = new Controller(model, view);
+function initPlugin(selector, opt = {}) {
+  const model = new Model(selector, opt);
+  const view = new View(model);
+  const controller = new Controller(model, view);
 
-    return {model, view, controller};
+  return { model, view, controller };
 }
 
-window.onload = function() {
-    let example1 = initPlugin('#example1'),
-        example2 = initPlugin('#example2', {
-            step: 20, 
-            showBubble: false, 
-            showSteps: true
-        }),
-        example3 = initPlugin('#example3', {
-            min: 40,
-            max: 75,
-            horizontal: false
-        }),
-        configExample = initPlugin('#config-example');
+window.onload = function init() {
+  initPlugin('#example1');
+  initPlugin('#example2', {
+    step: 20,
+    showBubble: false,
+    showSteps: true,
+  });
+  initPlugin('#example3', {
+    min: 40,
+    max: 75,
+    horizontal: false,
+  });
+  const configExample = initPlugin('#config-example');
 
-    panel('panel', configExample);
-}
+  panel('panel', configExample);
+};
