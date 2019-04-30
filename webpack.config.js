@@ -10,12 +10,10 @@ const config = {
   output: {
     path: path.resolve(__dirname, 'dist'),
     filename: 'index.js',
-    publicPath: '/slider/',
   },
   devServer: {
     port: 5000,
   },
-  devtool: 'sourcemap',
   module: {
     rules: [
       {
@@ -49,4 +47,16 @@ const config = {
   ],
 };
 
-module.exports = config;
+module.exports = ((env, options) => {
+  if (options.mode === 'production') {
+    config.output.publicPath = '/slider/';
+  }
+
+  if (options.mode === 'development') {
+    config.output.publicPath = '/';
+    config.devtool = 'source-map';
+  }
+
+  return config;
+});
+

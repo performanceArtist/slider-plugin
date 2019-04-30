@@ -8,7 +8,7 @@ export default function (selector, slider) {
     Array.prototype.forEach.call(e.target.elements, (elm) => {
       if (elm.type === 'submit') return;
 
-      const { name } = el;
+      const { name } = elm;
       let val = elm.value.trim();
 
       if (elm.type === 'radio' || elm.type === 'checkbox') val = elm.checked;
