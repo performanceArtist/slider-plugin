@@ -1,10 +1,16 @@
 function handleClick(e) {
-  if (e.target.className === 'slider__head' || e.target.className === 'value-bubble') return;
+  if (
+    e.target.className === 'slider__head' ||
+    e.target.className === 'value-bubble'
+  )
+    return;
 
   const rect = e.target.getBoundingClientRect();
-  const pos = this.model.get('horizontal') ? e.clientX - rect.left : e.clientY - rect.top;
+  const pos = this.model.get('horizontal')
+    ? e.clientX - rect.left
+    : e.clientY - rect.top;
   const valLen = this.model.get('max') - this.model.get('min');
-  const relValue = valLen * pos / this.model.get('sliderLength');
+  const relValue = (valLen * pos) / this.model.get('sliderLength');
 
   this.model.set('value', relValue + this.model.get('min'));
   this.model.notifyAll();
@@ -27,7 +33,7 @@ function handleDrag(e) {
   function moveEl(ev) {
     const pos = hor ? x + ev.clientX - ox : y + ev.clientY - oy;
     const valLen = model.get('max') - model.get('min');
-    const relValue = valLen * pos / model.get('sliderLength');
+    const relValue = (valLen * pos) / model.get('sliderLength');
 
     model.set('value', relValue + model.get('min'));
     model.notifyAll();

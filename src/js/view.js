@@ -1,7 +1,10 @@
 function View(model) {
   this.model = model;
   this.root = document.querySelector(model.get('selector'));
-  if (!this.root) throw new Error(`Invalid selector (${model.get('selector')}): element not found.`);
+  if (!this.root)
+    throw new Error(
+      `Invalid selector (${model.get('selector')}): element not found.`
+    );
   model.addObserver(this);
 }
 
@@ -9,7 +12,7 @@ function View(model) {
 function createNode(type, attr = {}) {
   const node = document.createElement(type);
 
-  Object.keys(attr).forEach((key) => {
+  Object.keys(attr).forEach(key => {
     node.setAttribute(key, attr[key]);
   });
 
@@ -20,7 +23,9 @@ View.prototype = {
   render(controller) {
     const isHorizontal = this.model.get('horizontal');
     const newClass = isHorizontal ? 'slider_hor' : 'slider_ver';
-    const bubbleStyle = this.model.get('showBubble') ? 'display:absolute;' : 'display:none;';
+    const bubbleStyle = this.model.get('showBubble')
+      ? 'display:absolute;'
+      : 'display:none;';
     const max = this.model.get('max');
     const min = this.model.get('min');
 
@@ -30,16 +35,16 @@ View.prototype = {
       slider: createNode('div', { class: `slider ${newClass}` }),
       bubble: createNode('div', {
         class: 'value-bubble',
-        style: bubbleStyle,
+        style: bubbleStyle
       }),
       sliderDone: createNode('div', { class: 'slider__done' }),
-      sliderHandle: createNode('span', { class: 'slider__head' }),
+      sliderHandle: createNode('span', { class: 'slider__head' })
     };
 
     dom.cont.appendChild(dom.input);
     dom.cont.appendChild(dom.slider);
     dom.bubble.innerHTML = min;
-    [dom.bubble, dom.sliderDone, dom.sliderHandle].forEach((el) => {
+    [dom.bubble, dom.sliderDone, dom.sliderHandle].forEach(el => {
       dom.slider.appendChild(el);
     });
 
@@ -47,8 +52,10 @@ View.prototype = {
       const step = this.model.get('step');
 
       for (let i = 0; i <= max - min; i += step) {
-        const perc = 100 * i / (max - min);
-        const label = createNode('label', { style: isHorizontal ? `left:${perc}%` : `top:${perc}%` });
+        const perc = (100 * i) / (max - min);
+        const label = createNode('label', {
+          style: isHorizontal ? `left:${perc}%` : `top:${perc}%`
+        });
         label.innerHTML = i + min;
         dom.slider.appendChild(label);
       }
@@ -83,7 +90,7 @@ View.prototype = {
 
     this.dom.bubble.innerHTML = value;
     this.dom.input.value = value;
-  },
+  }
 };
 
 export default View;

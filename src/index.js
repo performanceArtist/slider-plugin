@@ -19,12 +19,12 @@ window.onload = function init() {
   initPlugin('#example2', {
     step: 20,
     showBubble: false,
-    showSteps: true,
+    showSteps: true
   });
   initPlugin('#example3', {
     min: 40,
     max: 75,
-    horizontal: false,
+    horizontal: false
   });
   const configExample = initPlugin('#config-example');
 

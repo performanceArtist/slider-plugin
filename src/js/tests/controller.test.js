@@ -18,26 +18,23 @@ model.notifyAll = jest.fn(model.notifyAll);
 model.set('sliderLength', 200);
 view.render(controller);
 
-test('Set value on click, notify observers(view)',
-  () => {
-    view.dom.slider.dispatchEvent(new Event('click'));
-    expect(controller.handleClick).toBeCalled();
-    expect(model.set).toBeCalled();
-    expect(model.notifyAll).toBeCalled();
-  });
+test('Set value on click, notify observers(view)', () => {
+  view.dom.slider.dispatchEvent(new Event('click'));
+  expect(controller.handleClick).toBeCalled();
+  expect(model.set).toBeCalled();
+  expect(model.notifyAll).toBeCalled();
+});
 
-test('Change value on blur, notify observers',
-  () => {
-    view.dom.input.value = 20;
-    view.dom.input.dispatchEvent(new Event('blur'));
-    expect(controller.handleInput).toBeCalled();
-    expect(model.set).toBeCalled();
-    expect(model.get('value')).toBe(20);
-    expect(model.notifyAll).toBeCalled();
-  });
+test('Change value on blur, notify observers', () => {
+  view.dom.input.value = 20;
+  view.dom.input.dispatchEvent(new Event('blur'));
+  expect(controller.handleInput).toBeCalled();
+  expect(model.set).toBeCalled();
+  expect(model.get('value')).toBe(20);
+  expect(model.notifyAll).toBeCalled();
+});
 
-test('Set value on click, notify observers(view)',
-  () => {
-    view.dom.sliderHandle.dispatchEvent(new Event('mousedown'));
-    expect(controller.handleDrag).toBeCalled();
-  });
+test('Set value on click, notify observers(view)', () => {
+  view.dom.sliderHandle.dispatchEvent(new Event('mousedown'));
+  expect(controller.handleDrag).toBeCalled();
+});

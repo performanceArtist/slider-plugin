@@ -9,7 +9,7 @@ const def = {
   showBubble: true,
   showSteps: false,
   horizontal: true,
-  sliderLength: 0,
+  sliderLength: 0
 };
 
 function isUndefined(val) {
@@ -51,7 +51,10 @@ const Model = function Model(selector, opt = {}) {
 
   function validate(key, value) {
     if (isUndefined(def[key])) {
-      return new SliderError(`${key} does not exist or is not configurable.`, 'notProperty');
+      return new SliderError(
+        `${key} does not exist or is not configurable.`,
+        'notProperty'
+      );
     }
 
     let val = checkType(key, value);
@@ -65,12 +68,15 @@ const Model = function Model(selector, opt = {}) {
         if (val > model.max) {
           model.pos = model.sliderLength;
           return model.max;
-        } if (val < model.min) {
+        }
+        if (val < model.min) {
           model.pos = 0;
           return model.min;
         }
-        val = model.min + model.step * Math.round((val - model.min) / model.step);
-        model.pos = model.sliderLength * (val - model.min) / (model.max - model.min);
+        val =
+          model.min + model.step * Math.round((val - model.min) / model.step);
+        model.pos =
+          (model.sliderLength * (val - model.min)) / (model.max - model.min);
         return val;
       case 'min':
         if (val > model.max) {
@@ -83,7 +89,11 @@ const Model = function Model(selector, opt = {}) {
         }
         break;
       case 'step':
-        if (val <= 0 || (model.max - model.min) % val !== 0 || val > (model.max - model.min)) {
+        if (
+          val <= 0 ||
+          (model.max - model.min) % val !== 0 ||
+          val > model.max - model.min
+        ) {
           return new SliderError(`Invalid step value: ${val}`, 'notStep');
         }
         break;
@@ -108,7 +118,7 @@ const Model = function Model(selector, opt = {}) {
     }
   }
 
-  Object.keys(opt).forEach((key) => {
+  Object.keys(opt).forEach(key => {
     setVal(key, opt[key]);
   });
 
@@ -121,7 +131,7 @@ const Model = function Model(selector, opt = {}) {
   return {
     set(key, val) {
       if (key instanceof Object) {
-        Object.keys(key).forEach((k) => {
+        Object.keys(key).forEach(k => {
           setVal(k, key[k]);
         });
       } else {
@@ -139,14 +149,14 @@ const Model = function Model(selector, opt = {}) {
       model.observers.push(ob);
     },
     notifyAll() {
-      model.observers.forEach((ob) => {
+      model.observers.forEach(ob => {
         try {
           ob.update();
         } catch (err) {
           console.error(err);
         }
       });
-    },
+    }
   };
 };
 

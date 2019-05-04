@@ -61,9 +61,11 @@ test('When setting the value, return a number, parse and round it if necessary',
   expect(model.validate('value', '5')).toBe(5);
 });
 
-test('If value is too big or too small, set it to the model\'s max or min', () => {
+test("If value is too big or too small, set it to the model's max or min", () => {
   expect(model.validate('value', -10)).toBe(model.get('min'));
-  expect(model.validate('value', 200)).toBe(model.get('max') - model.get('min'));
+  expect(model.validate('value', 200)).toBe(
+    model.get('max') - model.get('min')
+  );
 });
 
 test('Check negative value setting', () => {
@@ -72,17 +74,16 @@ test('Check negative value setting', () => {
   expect(negative.validate('value', -30)).toBe(-30);
 });
 
-test('Position of the slider\'s handle should be set proportionally to value',
-  () => {
-    const nmodel = new Model();
+test("Position of the slider's handle should be set proportionally to value", () => {
+  const nmodel = new Model();
 
-    nmodel.set({
-      sliderLength: 200,
-      value: 20,
-    });
-
-    expect(nmodel.get('pos')).toBe(40);
+  nmodel.set({
+    sliderLength: 200,
+    value: 20
   });
+
+  expect(nmodel.get('pos')).toBe(40);
+});
 
 // min/max validation
 test('Min value should be less than max and vice versa', () => {
@@ -92,8 +93,7 @@ test('Min value should be less than max and vice versa', () => {
 
 // step validation
 test(`Step should be more than zero, less than max/min difference 
-and max/min difference should be divisable by it`,
-() => {
+and max/min difference should be divisable by it`, () => {
   sliderErrorCheck('step', -4, 'notStep');
   sliderErrorCheck('step', 13, 'notStep');
   sliderErrorCheck('step', 200, 'notStep');
