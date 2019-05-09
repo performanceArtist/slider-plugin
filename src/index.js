@@ -11,19 +11,22 @@ function initPlugin(selector, opt = {}) {
   const view = new View(model);
   const controller = new Controller(model, view);
 
-  return { model, view, controller };
+  return {
+    set: model.set,
+    get: model.get
+  };
 }
 
 window.onload = function init() {
   initPlugin('#example1');
   initPlugin('#example2', {
+    value: 18,
     step: 20,
     showBubble: false,
     showSteps: true
   });
   initPlugin('#example3', {
     min: 40,
-    max: 75,
     horizontal: false
   });
   const configExample = initPlugin('#config-example');

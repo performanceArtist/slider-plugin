@@ -39,7 +39,7 @@ test("Given a controller, should create dom object, and set model's sliderLength
 });
 
 test('Newly created elements now should be inside the root element', () => {
-  expect(view.dom.cont.parentNode === view.root).toBe(true);
+  expect(view.dom.container.parentNode === view.root).toBe(true);
 });
 
 test('Check if events were added to their respective elements', () => {
@@ -56,7 +56,7 @@ test('Check if values are set after an update call', () => {
   model.set('value', 20);
   view.update();
 
-  const pos = model.get('pos');
+  const pos = model.get('handlePosition');
   const sliderHandle = `${pos}px`;
   const sliderDone = `${pos + 5}px`;
   const bubble = `${pos - 4}px`;

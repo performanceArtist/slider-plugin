@@ -82,7 +82,7 @@ test("Position of the slider's handle should be set proportionally to value", ()
     value: 20
   });
 
-  expect(nmodel.get('pos')).toBe(40);
+  expect(nmodel.get('handlePosition')).toBe(40);
 });
 
 // min/max validation

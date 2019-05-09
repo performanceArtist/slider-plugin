@@ -1,18 +1,19 @@
 body {
-    margin: 0;
+  margin: 0;
 }
 
-#content {
-    padding: 3%;
-    padding-top: 1%;
+.content {
+  padding: 3%;
+  padding-top: 1%;
 }
 
 .examples {
-    display: flex;
-    flex-direction:row;
-    margin-bottom: 5%;
+  display: flex;
+  flex-direction: row;
+  margin-bottom: 5%;
 
-    #example1, #example2 {
-        margin-right: 5%;
-    }
+  #example1,
+  #example2 {
+    margin-right: 5%;
+  }
 }

@@ -10,15 +10,13 @@ function handleClick(e) {
     ? e.clientX - rect.left
     : e.clientY - rect.top;
   const valLen = this.model.get('max') - this.model.get('min');
-  const relValue = (valLen * pos) / this.model.get('sliderLength');
+  const relValue = (valLen * pos) / this.view.helpers.sliderLength;
 
   this.model.set('value', relValue + this.model.get('min'));
-  this.model.notifyAll();
 }
 
 function handleInput(e) {
   this.model.set('value', e.target.value);
-  this.model.notifyAll();
 }
 
 function handleDrag(e) {
@@ -33,10 +31,9 @@ function handleDrag(e) {
   function moveEl(ev) {
     const pos = hor ? x + ev.clientX - ox : y + ev.clientY - oy;
     const valLen = model.get('max') - model.get('min');
-    const relValue = (valLen * pos) / model.get('sliderLength');
+    const relValue = (valLen * pos) / this.view.helpers.sliderLength;
 
     model.set('value', relValue + model.get('min'));
-    model.notifyAll();
   }
 
   handle.addEventListener('mousemove', moveEl);
@@ -54,7 +51,11 @@ function Controller(model, view) {
   this.handleDrag = handleDrag.bind(this);
   this.handleInput = handleInput.bind(this);
 
-  view.render(this);
+  view.render();
+
+  view.dom.slider.addEventListener('click', this.handleClick);
+  view.dom.sliderHandle.addEventListener('mousedown', this.handleDrag);
+  view.dom.input.addEventListener('blur', this.handleInput);
 }
 
 export default Controller;

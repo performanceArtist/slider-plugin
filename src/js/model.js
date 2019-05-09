@@ -8,35 +8,24 @@ const def = {
   step: 1,
   showBubble: true,
   showSteps: false,
-  horizontal: true,
-  sliderLength: 0
+  horizontal: true
 };
 
-function isUndefined(val) {
-  return val === undefined;
-}
-
 function checkType(key, val) {
-  let num = 0;
-
   switch (key) {
     case 'value':
     case 'max':
     case 'min':
     case 'step':
-    case 'sliderLength':
-      num = parseFloat(val);
-      if (Number.isNaN(num)) {
-        return new SliderError(`${key} is not a number.`, 'notNum');
-      }
-      return num;
+      return Number.isNaN(parseFloat(val))
+        ? new SliderError(`${key} is not a number.`, 'notNum')
+        : parseFloat(val);
     case 'showBubble':
     case 'showSteps':
     case 'horizontal':
-      if (typeof val !== 'boolean') {
-        return new SliderError(`${key} is not a boolean.`, 'notBool');
-      }
-      return val;
+      return typeof val !== 'boolean'
+        ? new SliderError(`${key} is not a boolean.`, 'notBool')
+        : val;
     default:
       return new SliderError(`${key} is not configurable`, 'notConf');
   }
@@ -44,13 +33,13 @@ function checkType(key, val) {
 
 const Model = function Model(selector, opt = {}) {
   // model is private
-  const model = {};
+  const model = { state: {}, props: {} };
 
   // copy object
-  Object.assign(model, def);
+  Object.assign(model.state, def);
 
   function validate(key, value) {
-    if (isUndefined(def[key])) {
+    if (def[key] === undefined) {
       return new SliderError(
         `${key} does not exist or is not configurable.`,
         'notProperty'
@@ -65,41 +54,34 @@ const Model = function Model(selector, opt = {}) {
 
     switch (key) {
       case 'value':
-        if (val > model.max) {
-          model.pos = model.sliderLength;
-          return model.max;
+        if (val > model.state.max) {
+          return model.state.max;
         }
-        if (val < model.min) {
-          model.pos = 0;
-          return model.min;
+        if (val < model.state.min) {
+          return model.state.min;
         }
         val =
-          model.min + model.step * Math.round((val - model.min) / model.step);
-        model.pos =
-          (model.sliderLength * (val - model.min)) / (model.max - model.min);
+          model.state.min +
+          model.state.step *
+            Math.round((val - model.state.min) / model.state.step);
         return val;
       case 'min':
-        if (val > model.max) {
+        if (val > model.state.max) {
           return new SliderError(`Invalid min value: ${val}`, 'notMin');
         }
         break;
       case 'max':
-        if (val < model.min) {
+        if (val < model.state.min) {
           return new SliderError(`Invalid max value: ${val}`, 'notMax');
         }
         break;
       case 'step':
         if (
           val <= 0 ||
-          (model.max - model.min) % val !== 0 ||
-          val > model.max - model.min
+          (model.state.max - model.state.min) % val !== 0 ||
+          val > model.state.max - model.state.min
         ) {
           return new SliderError(`Invalid step value: ${val}`, 'notStep');
-        }
-        break;
-      case 'sliderLength':
-        if (val <= 0) {
-          return new SliderError('Invalid slider length value', 'notLength');
         }
         break;
       default:
@@ -109,53 +91,75 @@ const Model = function Model(selector, opt = {}) {
     return val;
   }
 
-  function setVal(key, val) {
+  // private, cannot be changed through 'set'
+  model.props = {
+    selector
+  };
+
+  model.observers = [];
+
+  function setValue(key, val) {
     const res = validate(key, val);
     if (res instanceof SliderError) {
       res.show();
     } else {
-      model[key] = res;
+      model.state[key] = res;
     }
   }
 
   Object.keys(opt).forEach(key => {
-    setVal(key, opt[key]);
+    setValue(key, opt[key]);
   });
 
-  // private, cannot be changed through 'set'
-  model.pos = 0;
-  model.selector = selector;
-  model.observers = [];
+  function notifyRender() {
+    model.observers.forEach(ob => {
+      try {
+        ob.render();
+      } catch (err) {
+        console.error(err);
+      }
+    });
+  }
+
+  function notifyUpdate() {
+    model.observers.forEach(ob => {
+      try {
+        ob.update();
+      } catch (err) {
+        console.error(err);
+      }
+    });
+  }
 
   // public methods
   return {
     set(key, val) {
       if (key instanceof Object) {
         Object.keys(key).forEach(k => {
-          setVal(k, key[k]);
+          setValue(k, key[k]);
         });
+        notifyRender();
+        notifyUpdate();
       } else {
-        setVal(key, val);
+        setValue(key, val);
+        if (key === 'value') {
+          notifyUpdate();
+        } else {
+          notifyRender();
+        }
       }
     },
     validate,
     get(key) {
-      if (isUndefined(model[key])) {
+      if (model.state[key] === undefined && model.props[key] === undefined) {
         throw new SliderError(`${key} does not exist.`, 'notProperty');
       }
-      return model[key];
+
+      if (model.state[key]) return model.state[key];
+      if (model.props[key]) return model.props[key];
     },
     addObserver(ob) {
       model.observers.push(ob);
-    },
-    notifyAll() {
-      model.observers.forEach(ob => {
-        try {
-          ob.update();
-        } catch (err) {
-          console.error(err);
-        }
-      });
     }
   };
 };
