@@ -20,15 +20,17 @@ function initPlugin(selector, opt = {}) {
 window.onload = function init() {
   initPlugin('#example1');
   initPlugin('#example2', {
-    value: 18,
+    value: 20,
     step: 20,
     showBubble: false,
     showSteps: true
   });
   initPlugin('#example3', {
+    value: 50,
     min: 40,
     horizontal: false
   });
+
   const configExample = initPlugin('#config-example');
 
   panel('panel', configExample);

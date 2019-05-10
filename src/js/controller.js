@@ -23,6 +23,7 @@ function handleDrag(e) {
   const { model } = this;
   const hor = model.get('horizontal');
   const handle = e.target;
+  const sliderLength = this.view.helpers.sliderLength;
   const x = handle.offsetLeft;
   const y = handle.offsetTop;
   const ox = e.clientX;
@@ -31,7 +32,7 @@ function handleDrag(e) {
   function moveEl(ev) {
     const pos = hor ? x + ev.clientX - ox : y + ev.clientY - oy;
     const valLen = model.get('max') - model.get('min');
-    const relValue = (valLen * pos) / this.view.helpers.sliderLength;
+    const relValue = (valLen * pos) / sliderLength;
 
     model.set('value', relValue + model.get('min'));
   }
@@ -51,11 +52,7 @@ function Controller(model, view) {
   this.handleDrag = handleDrag.bind(this);
   this.handleInput = handleInput.bind(this);
 
-  view.render();
-
-  view.dom.slider.addEventListener('click', this.handleClick);
-  view.dom.sliderHandle.addEventListener('mousedown', this.handleDrag);
-  view.dom.input.addEventListener('blur', this.handleInput);
+  view.render(this);
 }
 
 export default Controller;

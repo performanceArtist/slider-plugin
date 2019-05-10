@@ -7,7 +7,6 @@ function View(model) {
     );
 
   model.addObserver(this);
-  console.log(model.get('value'));
 }
 
 // helper to create nodes
@@ -21,15 +20,38 @@ function createNode(type, attr = {}) {
   return node;
 }
 
-View.prototype = {
-  render() {
-    const isHorizontal = this.model.get('horizontal');
+View.prototype.update = function update() {
+  const value = this.model.get('value');
+  const min = this.model.get('min');
+  const max = this.model.get('max');
+  const isHorizontal = this.model.get('horizontal');
+  const pos = (this.helpers.sliderLength * (value - min)) / (max - min);
+
+  if (isHorizontal) {
+    this.dom.sliderHandle.style.left = `${pos}px`;
+    this.dom.sliderDone.style.width = `${pos + 5}px`;
+    this.dom.bubble.style.left = `${pos - 4}px`;
+  } else {
+    this.dom.sliderHandle.style.top = `${pos}px`;
+    this.dom.sliderDone.style.height = `${pos + 5}px`;
+    this.dom.bubble.style.top = `${pos - 4}px`;
+  }
+
+  this.dom.bubble.innerHTML = value;
+  this.dom.input.value = value;
+};
+
+View.prototype.render = function render(controller) {
+  const view = this;
+
+  function rerender() {
+    const isHorizontal = view.model.get('horizontal');
     const newClass = isHorizontal ? 'slider_hor' : 'slider_ver';
-    const bubbleStyle = this.model.get('showBubble')
+    const bubbleStyle = view.model.get('showBubble')
       ? 'display:absolute;'
       : 'display:none;';
-    const max = this.model.get('max');
-    const min = this.model.get('min');
+    const max = view.model.get('max');
+    const min = view.model.get('min');
 
     const dom = {
       container: createNode('div', { class: 'slider-cont' }),
@@ -50,8 +72,8 @@ View.prototype = {
       dom.slider.appendChild(el);
     });
 
-    if (this.model.get('showSteps')) {
-      const step = this.model.get('step');
+    if (view.model.get('showSteps')) {
+      const step = view.model.get('step');
 
       for (let i = 0; i <= max - min; i += step) {
         const percentage = (100 * i) / (max - min);
@@ -63,39 +85,27 @@ View.prototype = {
       }
     }
 
-    this.root.innerHTML = '';
-    this.root.appendChild(dom.container);
+    dom.slider.addEventListener('click', controller.handleClick);
+    dom.sliderHandle.addEventListener('mousedown', controller.handleDrag);
+    dom.input.addEventListener('blur', controller.handleInput);
+
+    // do this before getting the slider length
+    view.root.innerHTML = '';
+    view.root.appendChild(dom.container);
 
     const length = isHorizontal
       ? dom.slider.offsetWidth
       : dom.slider.offsetHeight;
 
-    this.helpers = { sliderLength: length };
+    view.helpers = { sliderLength: length };
+    view.dom = dom;
 
-    this.dom = dom;
-  },
-  update() {
-    const value = this.model.get('value');
-    const min = this.model.get('min');
-    const max = this.model.get('max');
-    const isHorizontal = this.model.get('horizontal');
-
-    console.log(value, min, max, isHorizontal, this.helpers.sliderLength);
-    const pos = (this.helpers.sliderLength * (value - min)) / (max - min);
-
-    if (isHorizontal) {
-      this.dom.sliderHandle.style.left = `${pos}px`;
-      this.dom.sliderDone.style.width = `${pos + 5}px`;
-      this.dom.bubble.style.left = `${pos - 4}px`;
-    } else {
-      this.dom.sliderHandle.style.top = `${pos}px`;
-      this.dom.sliderDone.style.height = `${pos + 5}px`;
-      this.dom.bubble.style.top = `${pos - 4}px`;
-    }
-
-    this.dom.bubble.innerHTML = value;
-    this.dom.input.value = value;
+    // update value
+    view.update();
   }
+
+  this.rerender = rerender;
+  rerender();
 };
 
 export default View;

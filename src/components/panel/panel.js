@@ -18,7 +18,5 @@ export default function(selector, slider) {
 
       slider.set(name, val);
     });
-
-    slider.render();
   });
 }

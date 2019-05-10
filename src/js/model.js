@@ -111,25 +111,33 @@ const Model = function Model(selector, opt = {}) {
     setValue(key, opt[key]);
   });
 
-  function notifyRender() {
+  function notify(type) {
     model.observers.forEach(ob => {
       try {
-        ob.render();
+        switch (type) {
+          case 'update':
+            ob.update();
+            break;
+          case 'rerender':
+            ob.rerender();
+            break;
+          default:
+            throw new Error('Invalid type argument');
+        }
       } catch (err) {
         console.error(err);
       }
     });
   }
 
-  function notifyUpdate() {
-    model.observers.forEach(ob => {
-      try {
-        ob.update();
-      } catch (err) {
-        console.error(err);
-      }
-    });
-  }
+  const debounce = (func, delay) => {
+    let inDebounce;
+    return function callFunction(...args) {
+      const context = this;
+      clearTimeout(inDebounce);
+      inDebounce = setTimeout(() => func.apply(context, args), delay);
+    };
+  };
 
   // public methods
   return {
@@ -138,14 +146,19 @@ const Model = function Model(selector, opt = {}) {
         Object.keys(key).forEach(k => {
           setValue(k, key[k]);
         });
-        notifyRender();
-        notifyUpdate();
+        //to make sure it's still valid after min/max were set
+        if (key.value !== undefined) setValue('value', key.value);
+        debounce(() => {
+          notify('rerender');
+        }, 200)();
       } else {
         setValue(key, val);
         if (key === 'value') {
-          notifyUpdate();
+          notify('update');
         } else {
-          notifyRender();
+          debounce(() => {
+            notify('rerender');
+          }, 60)();
         }
       }
     },
@@ -155,8 +168,11 @@ const Model = function Model(selector, opt = {}) {
         throw new SliderError(`${key} does not exist.`, 'notProperty');
       }
 
-      if (model.state[key]) return model.state[key];
-      if (model.props[key]) return model.props[key];
+      if (model.state[key] === undefined) {
+        return model.props[key];
+      }
+
+      return model.state[key];
     },
     addObserver(ob) {
       model.observers.push(ob);
