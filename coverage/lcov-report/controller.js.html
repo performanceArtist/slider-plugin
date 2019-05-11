@@ -20,14 +20,14 @@
     </h1>
     <div class='clearfix'>
       <div class='fl pad1y space-right2'>
-        <span class="strong">77.42% </span>
+        <span class="strong">82.76% </span>
         <span class="quiet">Statements</span>
-        <span class='fraction'>24/31</span>
+        <span class='fraction'>24/29</span>
       </div>
       <div class='fl pad1y space-right2'>
-        <span class="strong">50% </span>
+        <span class="strong">37.5% </span>
         <span class="quiet">Branches</span>
-        <span class='fraction'>4/8</span>
+        <span class='fraction'>3/8</span>
       </div>
       <div class='fl pad1y space-right2'>
         <span class="strong">66.67% </span>
@@ -35,16 +35,16 @@
         <span class='fraction'>4/6</span>
       </div>
       <div class='fl pad1y space-right2'>
-        <span class="strong">80% </span>
+        <span class="strong">82.76% </span>
         <span class="quiet">Lines</span>
-        <span class='fraction'>24/30</span>
+        <span class='fraction'>24/29</span>
       </div>
     </div>
     <p class="quiet">
       Press <em>n</em> or <em>j</em> to go to the next uncovered block, <em>b</em>, <em>p</em> or <em>k</em> for the previous block.
     </p>
   </div>
-  <div class='status-line medium'></div>
+  <div class='status-line high'></div>
 <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -100,7 +100,16 @@
 <a name='L52'></a><a href='#L52'>52</a>
 <a name='L53'></a><a href='#L53'>53</a>
 <a name='L54'></a><a href='#L54'>54</a>
-<a name='L55'></a><a href='#L55'>55</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L55'></a><a href='#L55'>55</a>
+<a name='L56'></a><a href='#L56'>56</a>
+<a name='L57'></a><a href='#L57'>57</a>
+<a name='L58'></a><a href='#L58'>58</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
@@ -109,15 +118,14 @@
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
@@ -129,9 +137,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -155,44 +161,47 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">function handleClick(e) {
-  <span class="missing-if-branch" title="if path not taken" >I</span>if (e.target.className === 'slider__head' || e.target.className === 'value-bubble') <span class="cstat-no" title="statement not covered" >return;</span>
+  <span class="missing-if-branch" title="if path not taken" >I</span>if (
+    e.target.className !== 'slider__slider slider_hor' &amp;&amp;
+<span class="branch-1 cbranch-no" title="branch not covered" >    e.target.className !== 'slider__done'</span>
+  )
+<span class="cstat-no" title="statement not covered" >    return;</span>
+&nbsp;
+  const { horizontal, max, min } = this.model.getState();
 &nbsp;
   const rect = e.target.getBoundingClientRect();
-  const pos = this.model.get('horizontal') ? e.clientX - rect.left : <span class="branch-1 cbranch-no" title="branch not covered" >e.clientY - rect.top;</span>
-  const valLen = this.model.get('max') - this.model.get('min');
-  const relValue = valLen * pos / this.model.get('sliderLength');
+  const pos = horizontal ? e.clientX - rect.left : <span class="branch-1 cbranch-no" title="branch not covered" >e.clientY - rect.top;</span>
+  const valLen = max - min;
+  const relValue = (valLen * pos) / this.view.helpers.sliderLength;
 &nbsp;
-  this.model.set('value', relValue + this.model.get('min'));
-  this.model.notifyAll();
+  this.model.setState({ value: relValue + min });
 }
 &nbsp;
 function handleInput(e) {
-  this.model.set('value', e.target.value);
-  this.model.notifyAll();
+  this.model.setState({ value: e.target.value });
 }
 &nbsp;
 function handleDrag(e) {
   const { model } = this;
-  const hor = model.get('horizontal');
+  const { sliderLength } = this.view.helpers;
+  const { horizontal, max, min } = model.getState();
   const handle = e.target;
   const x = handle.offsetLeft;
   const y = handle.offsetTop;
   const ox = e.clientX;
   const oy = e.clientY;
 &nbsp;
-  function <span class="fstat-no" title="function not covered" >moveEl(</span>ev) {
-    const pos = <span class="cstat-no" title="statement not covered" >hor ? x + ev.clientX - ox : y + ev.clientY - oy;</span>
-    const valLen = <span class="cstat-no" title="statement not covered" >model.get('max') - model.get('min');</span>
-    const relValue = <span class="cstat-no" title="statement not covered" >valLen * pos / model.get('sliderLength');</span>
+  function <span class="fstat-no" title="function not covered" >moveHandle(</span>ev) {
+    const pos = <span class="cstat-no" title="statement not covered" >horizontal ? x + ev.clientX - ox : y + ev.clientY - oy;</span>
+    const relValue = <span class="cstat-no" title="statement not covered" >((max - min) * pos) / sliderLength;</span>
 &nbsp;
-<span class="cstat-no" title="statement not covered" >    model.set('value', relValue + model.get('min'));</span>
-<span class="cstat-no" title="statement not covered" >    model.notifyAll();</span>
+<span class="cstat-no" title="statement not covered" >    model.setState({ value: relValue + min });</span>
   }
 &nbsp;
-  handle.addEventListener('mousemove', moveEl);
+  handle.addEventListener('mousemove', moveHandle);
 &nbsp;
   window.addEventListener('mouseup', <span class="fstat-no" title="function not covered" >()</span> =&gt; {
-<span class="cstat-no" title="statement not covered" >    handle.removeEventListener('mousemove', moveEl);</span>
+<span class="cstat-no" title="statement not covered" >    handle.removeEventListener('mousemove', moveHandle);</span>
   });
 }
 &nbsp;
@@ -214,7 +223,7 @@ export default Controller;
 </div><!-- /wrapper -->
 <div class='footer quiet pad2 space-top1 center small'>
   Code coverage
-  generated by <a href="https://istanbul.js.org/" target="_blank">istanbul</a> at Wed May 01 2019 03:09:19 GMT+0700 (GMT+07:00)
+  generated by <a href="https://istanbul.js.org/" target="_blank">istanbul</a> at Sun May 12 2019 01:32:17 GMT+0700 (GMT+07:00)
 </div>
 </div>
 <script src="prettify.js"></script>
