@@ -1,7 +1,7 @@
 function handleClick(e) {
   if (
-    e.target.className === 'slider__head' ||
-    e.target.className === 'value-bubble'
+    e.target.className !== 'slider__slider slider_hor' &&
+    e.target.className !== 'slider__done'
   )
     return;
 
@@ -29,18 +29,17 @@ function handleDrag(e) {
   const ox = e.clientX;
   const oy = e.clientY;
 
-  function moveEl(ev) {
+  function moveHandle(ev) {
     const pos = horizontal ? x + ev.clientX - ox : y + ev.clientY - oy;
-    const valLen = max - min;
-    const relValue = (valLen * pos) / sliderLength;
+    const relValue = ((max - min) * pos) / sliderLength;
 
     model.setState({ value: relValue + min });
   }
 
-  handle.addEventListener('mousemove', moveEl);
+  handle.addEventListener('mousemove', moveHandle);
 
   window.addEventListener('mouseup', () => {
-    handle.removeEventListener('mousemove', moveEl);
+    handle.removeEventListener('mousemove', moveHandle);
   });
 }
 

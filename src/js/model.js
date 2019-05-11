@@ -31,7 +31,7 @@ function checkType(key, val) {
   }
 }
 
-const Model = function Model(selector, opt = {}) {
+const Model = function Model(selector, options = {}) {
   // model is private
   const model = { state: {}, props: {} };
 
@@ -168,7 +168,7 @@ const Model = function Model(selector, opt = {}) {
     }
   };
 
-  setState(opt);
+  setState(options);
 
   // public methods
   return {

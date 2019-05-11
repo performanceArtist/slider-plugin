@@ -24,13 +24,13 @@ View.prototype.update = function update() {
   const pos = (this.helpers.sliderLength * (value - min)) / (max - min);
 
   if (horizontal) {
-    this.dom.sliderHandle.style.left = `${pos}px`;
+    this.dom.sliderHandle.style.left = `${pos - 2}px`;
     this.dom.sliderDone.style.width = `${pos + 5}px`;
-    this.dom.bubble.style.left = `${pos - 4}px`;
+    this.dom.bubble.style.left = `${pos - 6}px`;
   } else {
-    this.dom.sliderHandle.style.top = `${pos}px`;
+    this.dom.sliderHandle.style.top = `${pos - 2}px`;
     this.dom.sliderDone.style.height = `${pos + 5}px`;
-    this.dom.bubble.style.top = `${pos - 4}px`;
+    this.dom.bubble.style.top = `${pos - 6}px`;
   }
 
   this.dom.bubble.innerHTML = value;
