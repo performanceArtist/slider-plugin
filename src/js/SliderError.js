@@ -4,10 +4,14 @@ class SliderError extends Error {
     this.type = type;
   }
 
+  getMessage() {
+    return `${this.message} (${this.type})`;
+  }
+
   show() {
-    // console.error(this);
+    console.error(this);
     // 'Friendly' message
-    console.log(this.message, `(${this.type})`);
+    console.log(this.getMessage());
   }
 }
 

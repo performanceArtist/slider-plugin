@@ -2,10 +2,12 @@ export default function(selector, slider) {
   const el = document.getElementById(selector);
   if (!el) return;
 
-  el.addEventListener('submit', e => {
+  el.addEventListener('change', e => {
     e.preventDefault();
 
-    Array.prototype.forEach.call(e.target.elements, elm => {
+    const options = {};
+
+    Array.prototype.forEach.call(e.currentTarget.elements, elm => {
       if (elm.type === 'submit') return;
 
       const { name } = elm;
@@ -16,7 +18,9 @@ export default function(selector, slider) {
       // no empty strings
       if (val === '') return;
 
-      slider.set(name, val);
+      options[name] = val;
     });
+
+    slider.setState(options);
   });
 }

@@ -1,10 +1,9 @@
 function View(model) {
   this.model = model;
-  this.root = document.querySelector(model.get('selector'));
+  const { selector } = model.props;
+  this.root = document.querySelector(selector);
   if (!this.root)
-    throw new Error(
-      `Invalid selector (${model.get('selector')}): element not found.`
-    );
+    throw new Error(`Invalid selector (${selector}): element not found.`);
 
   model.addObserver(this);
 }
@@ -21,13 +20,10 @@ function createNode(type, attr = {}) {
 }
 
 View.prototype.update = function update() {
-  const value = this.model.get('value');
-  const min = this.model.get('min');
-  const max = this.model.get('max');
-  const isHorizontal = this.model.get('horizontal');
+  const { value, min, max, horizontal } = this.model.getState();
   const pos = (this.helpers.sliderLength * (value - min)) / (max - min);
 
-  if (isHorizontal) {
+  if (horizontal) {
     this.dom.sliderHandle.style.left = `${pos}px`;
     this.dom.sliderDone.style.width = `${pos + 5}px`;
     this.dom.bubble.style.left = `${pos - 4}px`;
@@ -45,40 +41,54 @@ View.prototype.render = function render(controller) {
   const view = this;
 
   function rerender() {
-    const isHorizontal = view.model.get('horizontal');
-    const newClass = isHorizontal ? 'slider_hor' : 'slider_ver';
-    const bubbleStyle = view.model.get('showBubble')
-      ? 'display:absolute;'
-      : 'display:none;';
-    const max = view.model.get('max');
-    const min = view.model.get('min');
+    const {
+      min,
+      max,
+      showBubble,
+      horizontal,
+      showSteps,
+      step
+    } = view.model.getState();
+    const newClass = horizontal ? 'slider_hor' : 'slider_ver';
+    const bubbleStyle = showBubble ? 'display:absolute;' : 'display:none;';
 
     const dom = {
-      container: createNode('div', { class: 'slider-cont' }),
-      input: createNode('input', { type: 'text' }),
-      slider: createNode('div', { class: `slider ${newClass}` }),
+      container: createNode('div', { class: 'slider' }),
+      input: createNode('input', { class: 'slider__input', type: 'text' }),
+      slider: createNode('div', { class: `slider__slider ${newClass}` }),
       bubble: createNode('div', {
-        class: 'value-bubble',
+        class: 'slider__bubble',
         style: bubbleStyle
       }),
       sliderDone: createNode('div', { class: 'slider__done' }),
-      sliderHandle: createNode('span', { class: 'slider__head' })
+      sliderHandle: createNode('span', { class: 'slider__head' }),
+      errorCont: createNode('div', { class: 'slider__error-container' })
     };
 
     dom.container.appendChild(dom.input);
     dom.container.appendChild(dom.slider);
+    dom.container.appendChild(dom.errorCont);
+    view.model.props.errors
+      .map(err => {
+        const row = createNode('div', { class: 'slider__error' });
+        row.innerHTML = err.getMessage();
+        return row;
+      })
+      .forEach(elm => {
+        dom.errorCont.appendChild(elm);
+      });
+    view.model.props.errors = [];
     dom.bubble.innerHTML = min;
     [dom.bubble, dom.sliderDone, dom.sliderHandle].forEach(el => {
       dom.slider.appendChild(el);
     });
 
-    if (view.model.get('showSteps')) {
-      const step = view.model.get('step');
-
+    if (showSteps) {
       for (let i = 0; i <= max - min; i += step) {
         const percentage = (100 * i) / (max - min);
         const label = createNode('label', {
-          style: isHorizontal ? `left:${percentage}%` : `top:${percentage}%`
+          class: 'slider__label',
+          style: horizontal ? `left:${percentage}%` : `top:${percentage}%`
         });
         label.innerHTML = i + min;
         dom.slider.appendChild(label);
@@ -93,7 +103,7 @@ View.prototype.render = function render(controller) {
     view.root.innerHTML = '';
     view.root.appendChild(dom.container);
 
-    const length = isHorizontal
+    const length = horizontal
       ? dom.slider.offsetWidth
       : dom.slider.offsetHeight;
 

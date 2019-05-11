@@ -12,8 +12,8 @@ function initPlugin(selector, opt = {}) {
   const controller = new Controller(model, view);
 
   return {
-    set: model.set,
-    get: model.get
+    setState: model.setState,
+    getState: model.getState
   };
 }
 
@@ -26,7 +26,7 @@ window.onload = function init() {
     showSteps: true
   });
   initPlugin('#example3', {
-    value: 50,
+    value: 10,
     min: 40,
     horizontal: false
   });
