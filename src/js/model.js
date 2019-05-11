@@ -175,6 +175,7 @@ const Model = function Model(selector, options = {}) {
     validate,
     getState: () => Object.assign(model.state, {}),
     setState,
+    notify,
     props: model.props,
     addObserver(ob) {
       model.observers.push(ob);

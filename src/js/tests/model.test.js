@@ -6,7 +6,8 @@ const model = new Model();
 
 test('Check custom settings', () => {
   const custom = new Model('selector', { min: 50 });
-  expect(custom.get('min')).toBe(50);
+  const { min } = custom.getState();
+  expect(min).toBe(50);
 });
 
 // helper for error checks
@@ -36,21 +37,20 @@ test('Return custom error for invalid argument type', () => {
   isBool.forEach(el => sliderErrorCheck(el, 42, 'notBool'));
 });
 
-test('Get model property by key, if property is defined, otherwise throw an error', () => {
-  expect(() => model.get('nothing')).toThrow(SliderError);
-  expect(model.get('max')).toBe(100);
+test('Get model property by key, if property is defined', () => {
+  expect(model.getState().max).toBe(100);
 });
 
 test('Set model property only if the new value passed the validation', () => {
   const smodel = new Model('test', { value: 0 });
 
   expect(smodel.validate('value', 'string')).toBeInstanceOf(SliderError);
-  smodel.set('value', 'string');
-  expect(smodel.get('value')).toBe(0);
+  smodel.setState({ value: 'string' });
+  expect(smodel.getState().value).toBe(0);
 
   expect(smodel.validate('value', 5)).toBe(5);
-  smodel.set('value', 5);
-  expect(smodel.get('value')).toBe(5);
+  smodel.setState({ value: 5 });
+  expect(smodel.getState().value).toBe(5);
 });
 
 // value validation
@@ -62,27 +62,15 @@ test('When setting the value, return a number, parse and round it if necessary',
 });
 
 test("If value is too big or too small, set it to the model's max or min", () => {
-  expect(model.validate('value', -10)).toBe(model.get('min'));
-  expect(model.validate('value', 200)).toBe(
-    model.get('max') - model.get('min')
-  );
+  const { max, min } = model.getState();
+  expect(model.validate('value', -10)).toBe(min);
+  expect(model.validate('value', 200)).toBe(max - min);
 });
 
 test('Check negative value setting', () => {
   const negative = new Model('none', { min: -50, max: 50 });
 
   expect(negative.validate('value', -30)).toBe(-30);
-});
-
-test("Position of the slider's handle should be set proportionally to value", () => {
-  const nmodel = new Model();
-
-  nmodel.set({
-    sliderLength: 200,
-    value: 20
-  });
-
-  expect(nmodel.get('handlePosition')).toBe(40);
 });
 
 // min/max validation

@@ -9,7 +9,7 @@ class SliderError extends Error {
   }
 
   show() {
-    console.error(this);
+    //console.error(this);
     // 'Friendly' message
     console.log(this.getMessage());
   }
