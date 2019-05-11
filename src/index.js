@@ -11,21 +11,26 @@ function initPlugin(selector, opt = {}) {
   const view = new View(model);
   const controller = new Controller(model, view);
 
-  return { model, view, controller };
+  return {
+    setState: model.setState,
+    getState: model.getState
+  };
 }
 
 window.onload = function init() {
   initPlugin('#example1');
   initPlugin('#example2', {
+    value: 20,
     step: 20,
     showBubble: false,
     showSteps: true
   });
   initPlugin('#example3', {
+    value: 10,
     min: 40,
-    max: 75,
     horizontal: false
   });
+
   const configExample = initPlugin('#config-example');
 
   panel('panel', configExample);

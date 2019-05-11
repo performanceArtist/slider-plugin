@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "jest",
+    "coverage": "jest --coverage",
     "build": "webpack --mode=production",
     "dev": "webpack --mode=development",
     "start": "webpack-dev-server --mode=development"

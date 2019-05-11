@@ -8,49 +8,46 @@ const def = {
   step: 1,
   showBubble: true,
   showSteps: false,
-  horizontal: true,
-  sliderLength: 0
+  horizontal: true
 };
 
-function isUndefined(val) {
-  return val === undefined;
-}
-
 function checkType(key, val) {
-  let num = 0;
-
   switch (key) {
     case 'value':
     case 'max':
     case 'min':
     case 'step':
-    case 'sliderLength':
-      num = parseFloat(val);
-      if (Number.isNaN(num)) {
-        return new SliderError(`${key} is not a number.`, 'notNum');
-      }
-      return num;
+      return Number.isNaN(parseFloat(val))
+        ? new SliderError(`${key} is not a number.`, 'notNum')
+        : parseFloat(val);
     case 'showBubble':
     case 'showSteps':
     case 'horizontal':
-      if (typeof val !== 'boolean') {
-        return new SliderError(`${key} is not a boolean.`, 'notBool');
-      }
-      return val;
+      return typeof val !== 'boolean'
+        ? new SliderError(`${key} is not a boolean.`, 'notBool')
+        : val;
     default:
       return new SliderError(`${key} is not configurable`, 'notConf');
   }
 }
 
-const Model = function Model(selector, opt = {}) {
+const Model = function Model(selector, options = {}) {
   // model is private
-  const model = {};
+  const model = { state: {}, props: {} };
 
   // copy object
-  Object.assign(model, def);
+  Object.assign(model.state, def);
+
+  // private, cannot be changed through 'set'
+  model.props = {
+    selector,
+    errors: []
+  };
+
+  model.observers = [];
 
   function validate(key, value) {
-    if (isUndefined(def[key])) {
+    if (def[key] === undefined) {
       return new SliderError(
         `${key} does not exist or is not configurable.`,
         'notProperty'
@@ -65,41 +62,34 @@ const Model = function Model(selector, opt = {}) {
 
     switch (key) {
       case 'value':
-        if (val > model.max) {
-          model.pos = model.sliderLength;
-          return model.max;
+        if (val > model.state.max) {
+          return model.state.max;
         }
-        if (val < model.min) {
-          model.pos = 0;
-          return model.min;
+        if (val < model.state.min) {
+          return model.state.min;
         }
         val =
-          model.min + model.step * Math.round((val - model.min) / model.step);
-        model.pos =
-          (model.sliderLength * (val - model.min)) / (model.max - model.min);
+          model.state.min +
+          model.state.step *
+            Math.round((val - model.state.min) / model.state.step);
         return val;
       case 'min':
-        if (val > model.max) {
+        if (val >= model.state.max) {
           return new SliderError(`Invalid min value: ${val}`, 'notMin');
         }
         break;
       case 'max':
-        if (val < model.min) {
+        if (val <= model.state.min) {
           return new SliderError(`Invalid max value: ${val}`, 'notMax');
         }
         break;
       case 'step':
         if (
           val <= 0 ||
-          (model.max - model.min) % val !== 0 ||
-          val > model.max - model.min
+          (model.state.max - model.state.min) % val !== 0 ||
+          val > model.state.max - model.state.min
         ) {
           return new SliderError(`Invalid step value: ${val}`, 'notStep');
-        }
-        break;
-      case 'sliderLength':
-        if (val <= 0) {
-          return new SliderError('Invalid slider length value', 'notLength');
         }
         break;
       default:
@@ -109,53 +99,86 @@ const Model = function Model(selector, opt = {}) {
     return val;
   }
 
-  function setVal(key, val) {
+  function notify(type) {
+    model.observers.forEach(ob => {
+      try {
+        switch (type) {
+          case 'update':
+            ob.update();
+            break;
+          case 'rerender':
+            ob.rerender();
+            break;
+          default:
+            throw new Error('Invalid type argument');
+        }
+      } catch (err) {
+        console.error(err);
+      }
+    });
+  }
+
+  const debounce = (func, delay) => {
+    let inDebounce;
+    return function callFunction(...args) {
+      const context = this;
+      clearTimeout(inDebounce);
+      inDebounce = setTimeout(() => func.apply(context, args), delay);
+    };
+  };
+
+  function setValue(key, val) {
     const res = validate(key, val);
     if (res instanceof SliderError) {
+      model.props.errors.push(res);
       res.show();
     } else {
-      model[key] = res;
+      model.state[key] = res;
     }
   }
 
-  Object.keys(opt).forEach(key => {
-    setVal(key, opt[key]);
-  });
+  const setState = (options = {}) => {
+    if (!(options instanceof Object)) {
+      console.log('Invalid object');
+      return;
+    }
 
-  // private, cannot be changed through 'set'
-  model.pos = 0;
-  model.selector = selector;
-  model.observers = [];
+    const keys = Object.keys(options);
+    const hasValue = keys.includes('value');
+    const otherOptions = keys.filter(key => key !== 'value');
+
+    otherOptions.forEach(key => {
+      setValue(key, options[key]);
+    });
+
+    // set value after options update to ensure it's valid
+    if (hasValue) {
+      setValue('value', options.value);
+    } else {
+      setValue('value', model.state.value);
+    }
+
+    // decide whether to rerender everything or not
+    if (otherOptions.length === 0) {
+      notify('update');
+    } else {
+      debounce(() => {
+        notify('rerender');
+      }, 200)();
+    }
+  };
+
+  setState(options);
 
   // public methods
   return {
-    set(key, val) {
-      if (key instanceof Object) {
-        Object.keys(key).forEach(k => {
-          setVal(k, key[k]);
-        });
-      } else {
-        setVal(key, val);
-      }
-    },
     validate,
-    get(key) {
-      if (isUndefined(model[key])) {
-        throw new SliderError(`${key} does not exist.`, 'notProperty');
-      }
-      return model[key];
-    },
+    getState: () => Object.assign(model.state, {}),
+    setState,
+    notify,
+    props: model.props,
     addObserver(ob) {
       model.observers.push(ob);
-    },
-    notifyAll() {
-      model.observers.forEach(ob => {
-        try {
-          ob.update();
-        } catch (err) {
-          console.error(err);
-        }
-      });
     }
   };
 };

@@ -1,10 +1,10 @@
 function View(model) {
   this.model = model;
-  this.root = document.querySelector(model.get('selector'));
+  const { selector } = model.props;
+  this.root = document.querySelector(selector);
   if (!this.root)
-    throw new Error(
-      `Invalid selector (${model.get('selector')}): element not found.`
-    );
+    throw new Error(`Invalid selector (${selector}): element not found.`);
+
   model.addObserver(this);
 }
 
@@ -19,78 +19,103 @@ function createNode(type, attr = {}) {
   return node;
 }
 
-View.prototype = {
-  render(controller) {
-    const isHorizontal = this.model.get('horizontal');
-    const newClass = isHorizontal ? 'slider_hor' : 'slider_ver';
-    const bubbleStyle = this.model.get('showBubble')
-      ? 'display:absolute;'
-      : 'display:none;';
-    const max = this.model.get('max');
-    const min = this.model.get('min');
+View.prototype.update = function update() {
+  const { value, min, max, horizontal } = this.model.getState();
+  const pos = (this.helpers.sliderLength * (value - min)) / (max - min);
+
+  if (horizontal) {
+    this.dom.sliderHandle.style.left = `${pos - 2}px`;
+    this.dom.sliderDone.style.width = `${pos + 5}px`;
+    this.dom.bubble.style.left = `${pos - 6}px`;
+  } else {
+    this.dom.sliderHandle.style.top = `${pos - 2}px`;
+    this.dom.sliderDone.style.height = `${pos + 5}px`;
+    this.dom.bubble.style.top = `${pos - 6}px`;
+  }
+
+  this.dom.bubble.innerHTML = value;
+  this.dom.input.value = value;
+};
+
+View.prototype.render = function render(controller) {
+  const view = this;
+
+  function rerender() {
+    const {
+      min,
+      max,
+      showBubble,
+      horizontal,
+      showSteps,
+      step
+    } = view.model.getState();
+    const newClass = horizontal ? 'slider_hor' : 'slider_ver';
+    const bubbleStyle = showBubble ? 'display:absolute;' : 'display:none;';
 
     const dom = {
-      cont: createNode('div', { class: 'slider-cont' }),
-      input: createNode('input', { type: 'text' }),
-      slider: createNode('div', { class: `slider ${newClass}` }),
+      container: createNode('div', { class: 'slider' }),
+      input: createNode('input', { class: 'slider__input', type: 'text' }),
+      slider: createNode('div', { class: `slider__slider ${newClass}` }),
       bubble: createNode('div', {
-        class: 'value-bubble',
+        class: 'slider__bubble',
         style: bubbleStyle
       }),
       sliderDone: createNode('div', { class: 'slider__done' }),
-      sliderHandle: createNode('span', { class: 'slider__head' })
+      sliderHandle: createNode('span', { class: 'slider__head' }),
+      errorCont: createNode('div', { class: 'slider__error-container' })
     };
 
-    dom.cont.appendChild(dom.input);
-    dom.cont.appendChild(dom.slider);
+    dom.container.appendChild(dom.input);
+    dom.container.appendChild(dom.slider);
+    dom.container.appendChild(dom.errorCont);
+    view.model.props.errors
+      .map(err => {
+        const row = createNode('div', { class: 'slider__error' });
+        row.innerHTML = err.getMessage();
+        return row;
+      })
+      .forEach(elm => {
+        dom.errorCont.appendChild(elm);
+      });
+    view.model.props.errors = [];
     dom.bubble.innerHTML = min;
     [dom.bubble, dom.sliderDone, dom.sliderHandle].forEach(el => {
       dom.slider.appendChild(el);
     });
 
-    if (this.model.get('showSteps')) {
-      const step = this.model.get('step');
-
+    if (showSteps) {
       for (let i = 0; i <= max - min; i += step) {
-        const perc = (100 * i) / (max - min);
+        const percentage = (100 * i) / (max - min);
         const label = createNode('label', {
-          style: isHorizontal ? `left:${perc}%` : `top:${perc}%`
+          class: 'slider__label',
+          style: horizontal ? `left:${percentage}%` : `top:${percentage}%`
         });
         label.innerHTML = i + min;
         dom.slider.appendChild(label);
       }
     }
 
-    this.root.innerHTML = '';
-    this.root.appendChild(dom.cont);
-
     dom.slider.addEventListener('click', controller.handleClick);
     dom.sliderHandle.addEventListener('mousedown', controller.handleDrag);
     dom.input.addEventListener('blur', controller.handleInput);
 
-    const len = isHorizontal ? dom.slider.offsetWidth : dom.slider.offsetHeight;
-    this.model.set('sliderLength', len);
+    // do this before getting the slider length
+    view.root.innerHTML = '';
+    view.root.appendChild(dom.container);
 
-    this.dom = dom;
-  },
-  update() {
-    const pos = this.model.get('pos');
-    const value = this.model.get('value');
-    const isHorizontal = this.model.get('horizontal');
+    const length = horizontal
+      ? dom.slider.offsetWidth
+      : dom.slider.offsetHeight;
 
-    if (isHorizontal) {
-      this.dom.sliderHandle.style.left = `${pos}px`;
-      this.dom.sliderDone.style.width = `${pos + 5}px`;
-      this.dom.bubble.style.left = `${pos - 4}px`;
-    } else {
-      this.dom.sliderHandle.style.top = `${pos}px`;
-      this.dom.sliderDone.style.height = `${pos + 5}px`;
-      this.dom.bubble.style.top = `${pos - 4}px`;
-    }
+    view.helpers = { sliderLength: length };
+    view.dom = dom;
 
-    this.dom.bubble.innerHTML = value;
-    this.dom.input.value = value;
+    // update value
+    view.update();
   }
+
+  this.rerender = rerender;
+  rerender();
 };
 
 export default View;

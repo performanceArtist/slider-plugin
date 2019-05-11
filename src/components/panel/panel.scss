@@ -1,34 +1,33 @@
 .panel {
-    padding-top: 2%;
-    font-size: 1em;
-    width: 400px;
+  padding-top: 2%;
+  font-size: 1em;
+  width: 400px;
 
-    form {
-        display: flex;
-    }
+  form {
+    display: flex;
+  }
 
-    .left {
-        margin-right: 2em;
-        padding-top: 0.2em;
-    }
-    
-    input[type=submit] {
-        margin-top: 1em;
-    }
+  .left {
+    margin-right: 2em;
+    padding-top: 0.2em;
+  }
 
-    .panel-input {
-        margin-bottom: 1em;
-        input {
-            width: 5em;
-        }
-        label {
-            margin-left: 0.8em;
-        } 
-    }
+  input[type='submit'] {
+    margin-top: 1em;
+  }
 
-    .checkmark {
-        display: block;
-        margin-bottom: 0.5em;
+  .panel-input {
+    margin-bottom: 1em;
+    input {
+      width: 5em;
     }
+    label {
+      margin-left: 0.8em;
+    }
+  }
 
+  .checkmark {
+    display: block;
+    margin-bottom: 0.5em;
+  }
 }
