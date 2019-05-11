@@ -1,6 +1,6 @@
 function handleClick(e) {
   if (
-    e.target.className !== 'slider__slider slider_hor' &&
+    !e.target.classList.contains('slider__slider') &&
     e.target.className !== 'slider__done'
   )
     return;

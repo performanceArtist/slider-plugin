@@ -1,7 +1,7 @@
 body {
   margin: 0; }
 
-#content {
+.content {
   padding: 3%;
   padding-top: 1%; }
 
@@ -9,103 +9,106 @@ body {
   display: flex;
   flex-direction: row;
   margin-bottom: 5%; }
-  .examples #example1, .examples #example2 {
+  .examples #example1,
+  .examples #example2 {
     margin-right: 5%; }
 
-.slider-cont .slider .value-bubble {
+.slider__bubble {
   position: relative;
   background: red;
-  border-radius: .4em; }
-  .slider-cont .slider .value-bubble:after {
+  border-radius: 0.4em; }
+  .slider__bubble:after {
     content: '';
     position: absolute;
     width: 0;
     height: 0;
     border: 6px solid transparent; }
 
-.slider-cont {
+.slider {
   display: inline-block; }
-  .slider-cont input {
+  .slider__input {
     margin-bottom: 0.5em; }
-  .slider-cont .slider {
-    background: #E6E6E6;
+  .slider__slider {
+    background: #e6e6e6;
     position: relative;
     border-radius: 0.1em; }
-    .slider-cont .slider__done {
-      position: absolute;
-      z-index: 1;
-      display: block;
-      border: 0;
-      background: #4EB7A8;
-      border-radius: 0.1em; }
-    .slider-cont .slider__head {
-      cursor: pointer;
-      border-radius: 50%;
-      border: none;
-      background: #4EB7A8;
-      position: absolute;
-      z-index: 2;
-      width: 25px;
-      height: 25px; }
-    .slider-cont .slider .value-bubble {
-      margin-bottom: 6px;
-      position: absolute;
-      line-height: 175%;
-      color: #FFFFFF;
-      font-size: 1em;
-      font-weight: bold;
-      text-align: center; }
-  .slider-cont .slider_hor {
+  .slider__bubble {
+    margin-bottom: 6px;
+    position: absolute;
+    line-height: 175%;
+    color: #ffffff;
+    font-size: 1em;
+    font-weight: bold;
+    text-align: center; }
+  .slider__done {
+    position: absolute;
+    z-index: 1;
+    display: block;
+    border: 0;
+    background: #4eb7a8;
+    border-radius: 0.1em; }
+  .slider__head {
+    cursor: pointer;
+    border-radius: 50%;
+    border: none;
+    background: #4eb7a8;
+    position: absolute;
+    z-index: 2;
+    width: 25px;
+    height: 25px; }
+  .slider__error-container {
+    margin-top: 2.5rem; }
+  .slider .slider_hor {
     width: 300px;
     height: 14px;
     margin-top: 45px;
     margin-left: 5px; }
-    .slider-cont .slider_hor .slider__done {
+    .slider .slider_hor .slider__done {
       height: 100%;
       width: 0; }
-    .slider-cont .slider_hor .slider__head {
+    .slider .slider_hor .slider__head {
       top: -6px;
       left: 0; }
-    .slider-cont .slider_hor .value-bubble {
+    .slider .slider_hor .slider__bubble {
       top: -45px;
       left: -5px;
       width: 36px;
       height: 30px; }
-      .slider-cont .slider_hor .value-bubble:after {
+      .slider .slider_hor .slider__bubble:after {
         bottom: 0;
         left: 50%;
         border-top-color: red;
         border-bottom: 0;
         margin-left: -6px;
         margin-bottom: -6px; }
-    .slider-cont .slider_hor label {
+    .slider .slider_hor .slider__label {
       position: absolute;
       width: 20px;
       margin-left: 0px;
       text-align: center;
       margin-top: 20px; }
-  .slider-cont .slider_ver {
+  .slider .slider_ver {
     width: 14px;
     height: 300px; }
-    .slider-cont .slider_ver .slider__done {
+    .slider .slider_ver .slider__done {
       height: 0;
       width: 100%; }
-    .slider-cont .slider_ver .slider__head {
+    .slider .slider_ver .slider__head {
       top: 0;
       left: -6px; }
-    .slider-cont .slider_ver .value-bubble {
+    .slider .slider_ver .slider__bubble {
       top: -5px;
       left: 28px;
       width: 36px;
       height: 30px; }
-      .slider-cont .slider_ver .value-bubble:after {
+      .slider .slider_ver .slider__bubble:after {
         left: 0;
         top: 50%;
         border-right-color: red;
         border-left: 0;
         margin-top: -6px;
         margin-left: -6px; }
-    .slider-cont .slider_ver label {
+    .slider .slider_ver .slider__label {
       position: absolute;
       width: 20px;
       left: -25px;
@@ -127,7 +130,7 @@ body {
   .checkmark:hover input ~ .checkmark-icon {
     background-color: #ccc; }
   .checkmark input:checked ~ .checkmark-icon {
-    background-color: #4EB7A8; }
+    background-color: #4eb7a8; }
   .checkmark input:checked ~ .checkmark-icon:after {
     border-color: white; }
   .checkmark .checkmark-icon:after {
@@ -149,7 +152,7 @@ body {
   background-color: #eee;
   border-radius: 50%; }
   .checkmark-icon:after {
-    content: "";
+    content: '';
     position: absolute;
     border: solid;
     border-color: #969696; }
@@ -163,7 +166,7 @@ body {
   .panel .left {
     margin-right: 2em;
     padding-top: 0.2em; }
-  .panel input[type=submit] {
+  .panel input[type='submit'] {
     margin-top: 1em; }
   .panel .panel-input {
     margin-bottom: 1em; }
