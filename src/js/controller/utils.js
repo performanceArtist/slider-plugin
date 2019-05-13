@@ -43,15 +43,4 @@ function handleDrag(e) {
   });
 }
 
-function Controller(model, view) {
-  this.model = model;
-  this.view = view;
-
-  this.handleClick = handleClick.bind(this);
-  this.handleDrag = handleDrag.bind(this);
-  this.handleInput = handleInput.bind(this);
-
-  view.render(this);
-}
-
-export default Controller;
+export { handleClick, handleDrag, handleInput };

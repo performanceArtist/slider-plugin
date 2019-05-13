@@ -1,59 +1,12 @@
 import SliderError from './SliderError';
 
-// defaults, values can be changed via 'set' method
-const def = {
-  value: 0,
-  min: 0,
-  max: 100,
-  step: 1,
-  showBubble: true,
-  showSteps: false,
-  horizontal: true
-};
-
-function checkType(key, val) {
-  switch (key) {
-    case 'value':
-    case 'max':
-    case 'min':
-    case 'step':
-      return Number.isNaN(parseFloat(val))
-        ? new SliderError(`${key} is not a number.`, 'notNum')
-        : parseFloat(val);
-    case 'showBubble':
-    case 'showSteps':
-    case 'horizontal':
-      return typeof val !== 'boolean'
-        ? new SliderError(`${key} is not a boolean.`, 'notBool')
-        : val;
-    default:
-      return new SliderError(`${key} is not configurable`, 'notConf');
-  }
-}
+import { getInitialState, debounce, checkType } from './utils';
 
 const Model = function Model(selector, options = {}) {
-  // model is private
-  const model = { state: {}, props: {} };
-
-  // copy object
-  Object.assign(model.state, def);
-
-  // private, cannot be changed through 'set'
-  model.props = {
-    selector,
-    errors: []
-  };
-
-  model.observers = [];
+  const model = getInitialState();
+  model.props.selector = selector;
 
   function validate(key, value) {
-    if (def[key] === undefined) {
-      return new SliderError(
-        `${key} does not exist or is not configurable.`,
-        'notProperty'
-      );
-    }
-
     let val = checkType(key, value);
 
     if (val instanceof SliderError) {
@@ -100,14 +53,14 @@ const Model = function Model(selector, options = {}) {
   }
 
   function notify(type) {
-    model.observers.forEach(ob => {
+    model.observers.forEach(observer => {
       try {
         switch (type) {
           case 'update':
-            ob.update();
+            observer.update();
             break;
-          case 'rerender':
-            ob.rerender();
+          case 'render':
+            observer.render();
             break;
           default:
             throw new Error('Invalid type argument');
@@ -118,19 +71,10 @@ const Model = function Model(selector, options = {}) {
     });
   }
 
-  const debounce = (func, delay) => {
-    let inDebounce;
-    return function callFunction(...args) {
-      const context = this;
-      clearTimeout(inDebounce);
-      inDebounce = setTimeout(() => func.apply(context, args), delay);
-    };
-  };
-
   function setValue(key, val) {
     const res = validate(key, val);
     if (res instanceof SliderError) {
-      model.props.errors.push(res);
+      model.props.errors.push(res.getMessage());
       res.show();
     } else {
       model.state[key] = res;
@@ -163,7 +107,7 @@ const Model = function Model(selector, options = {}) {
       notify('update');
     } else {
       debounce(() => {
-        notify('rerender');
+        notify('render');
       }, 200)();
     }
   };

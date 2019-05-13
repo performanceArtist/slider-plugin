@@ -1,5 +1,5 @@
-import Model from '../model';
-import SliderError from '../SliderError';
+import Model from './model';
+import SliderError from './SliderError';
 
 // sample model, default values(don't set anything in this model, create one if the need arises)
 const model = new Model();
