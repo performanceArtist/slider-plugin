@@ -1,22 +1,25 @@
 include ../checkmark/checkmark
 
 mixin input(type, name='', label='')
-  .panel-input
+  .panel__input
     input(type=type, name=name)
     label(for=name) #{label}
 
-mixin panel(id)
+mixin panel({id = 'panel'})
   .panel
     h2 Configure
-    form(action='', id=id)
-      .left
+    form(action='', class='panel__form' id=id)
+      .panel__column.panel__column_left
         +input('text', 'min', 'Min')
         +input('text', 'max', 'Max')
         +input('text', 'step', 'Step')
-      .right
-        +checkmark('showBubble', {type:'checkbox', label:'Show bubble'})
-        +checkmark('showSteps', {type:'checkbox', label:'Show steps'})
-        +checkmark('horizontal', {type:'checkbox', label:'Horizontal'})
+      .panel__column.panel__column_right
+        .panel__checkmark
+          +checkmark({name:'showBubble', type:'checkbox', label:'Show bubble'})
+        .panel__checkmark
+          +checkmark({name:'showSteps', type:'checkbox', label:'Show steps'})
+        .panel__checkmark
+          +checkmark({name:'horizontal', type:'checkbox', label:'Horizontal'})
         
 
 

@@ -1,56 +1,61 @@
 .checkmark {
   position: relative;
   cursor: pointer;
-  padding-left: 35px;
+  font-size: 0.875rem;
+  padding-left: 2.1875rem;
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
   display: inline-block;
-  line-height: 180%;
+  line-height: 1.8rem;
 
-  input {
+  &__input {
     display: none;
     cursor: pointer;
   }
 
-  &:hover input ~ .checkmark-icon {
-    background-color: #ccc;
+  &:hover &__input ~ &__icon {
+    background-color: darken($light-grey, 10);
   }
 
-  input:checked ~ .checkmark-icon {
+  &:hover &__input:checked ~ &__icon {
+    background-color: darken($light-green, 10);
+  }
+
+  &__input:checked ~ &__icon {
     background-color: $light-green;
   }
 
-  input:checked ~ .checkmark-icon:after {
+  &__input:checked ~ &__icon:after {
     border-color: white;
   }
 
-  .checkmark-icon:after {
-    left: 9px;
-    top: 5px;
-    width: 5px;
-    height: 10px;
-    border-width: 0 3px 3px 0;
+  &__icon {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 1.6875rem;
+    width: 1.6875rem;
+    background-color: $light-grey;
+    border-radius: 50%;
+
+    &:after {
+      content: '';
+      position: absolute;
+      border: solid;
+      border-color: $dark-grey;
+    }
+  }
+
+  &__icon:after {
+    left: 0.5625rem;
+    top: 0.3125rem;
+    width: 0.3125rem;
+    height: 0.625rem;
+    border-width: 0 0.1875rem 0.1875rem 0;
     -webkit-transform: rotate(45deg);
     -ms-transform: rotate(45deg);
     transform: rotate(45deg);
-  }
-}
-
-.checkmark-icon {
-  position: absolute;
-  top: 0;
-  left: 0;
-  height: 25px;
-  width: 25px;
-  background-color: #eee;
-  border-radius: 50%;
-
-  &:after {
-    content: '';
-    position: absolute;
-    border: solid;
-    border-color: $medium-grey;
   }
 }

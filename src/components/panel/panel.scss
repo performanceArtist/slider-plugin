@@ -3,20 +3,22 @@
   font-size: 1em;
   width: 400px;
 
-  form {
+  &__form {
     display: flex;
   }
 
-  .left {
-    margin-right: 2em;
-    padding-top: 0.2em;
+  &__column {
+    &_left {
+      margin-right: 2em;
+      padding-top: 0.2em;
+    }
   }
 
   input[type='submit'] {
     margin-top: 1em;
   }
 
-  .panel-input {
+  &__input {
     margin-bottom: 1em;
     input {
       width: 5em;
@@ -26,7 +28,7 @@
     }
   }
 
-  .checkmark {
+  &__checkmark {
     display: block;
     margin-bottom: 0.5em;
   }

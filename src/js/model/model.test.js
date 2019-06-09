@@ -21,12 +21,12 @@ function sliderErrorCheck(key, val, type) {
 // Returns custom error with 'type' property
 
 test('Only defined keys', () => {
-  sliderErrorCheck('doesntExist', 20, 'notProperty');
+  sliderErrorCheck('doesntExist', 20, 'notConf');
 });
 
 test('Only configurable keys', () => {
   // underlying model object has 'selector' property, but it can't be changed
-  sliderErrorCheck('selector', 20, 'notProperty');
+  sliderErrorCheck('selector', 20, 'notConf');
 });
 
 test('Return custom error for invalid argument type', () => {

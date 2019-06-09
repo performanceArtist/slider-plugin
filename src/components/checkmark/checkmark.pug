@@ -1,5 +1,5 @@
-mixin checkmark(name, opt={})
+mixin checkmark({name = 'checkmark', label = 'Checkmark', type = 'checkbox', value = 'value'} = {})
   label.checkmark
-    | #{opt.label}
-    input(type=opt.type, name=name, value=opt.value || '')
-    span.checkmark-icon
+    | #{label}
+    input.checkmark__input(type=type, name=name, value=value)
+    span.checkmark__icon
