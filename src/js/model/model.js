@@ -15,6 +15,14 @@ const Model = function Model(selector, options = {}) {
 
     switch (key) {
       case 'value':
+      case 'firstValue':
+      case 'secondValue':
+        if (model.state.interval) {
+          if (key === 'firstValue' && val >= model.state.secondValue)
+            return model.state.firstValue;
+          if (key === 'secondValue' && val <= model.state.firstValue)
+            return model.state.secondValue;
+        }
         if (val > model.state.max) {
           return model.state.max;
         }
@@ -88,18 +96,26 @@ const Model = function Model(selector, options = {}) {
     }
 
     const keys = Object.keys(options);
-    const hasValue = keys.includes('value');
-    const otherOptions = keys.filter(key => key !== 'value');
+    const otherOptions = keys.filter(
+      key => key !== 'value' && key !== 'firstValue' && key !== 'secondValue'
+    );
 
     otherOptions.forEach(key => {
       setValue(key, options[key]);
     });
 
+    const interval =
+      options.interval === undefined ? model.state.interval : options.interval;
+
     // set value after options update to ensure it's valid
-    if (hasValue) {
-      setValue('value', options.value);
+    if (interval) {
+      const first = options.firstValue || model.state.firstValue;
+      const second = options.secondValue || model.state.secondValue;
+
+      setValue('firstValue', first);
+      setValue('secondValue', second);
     } else {
-      setValue('value', model.state.value);
+      setValue('value', options.value || model.state.value);
     }
 
     // decide whether to rerender everything or not

@@ -14,6 +14,7 @@ function createSlider(model) {
   const {
     min,
     max,
+    interval,
     showBubble,
     horizontal,
     showSteps,
@@ -38,6 +39,17 @@ function createSlider(model) {
 
   dom.container.appendChild(dom.input);
   dom.container.appendChild(dom.slider);
+  if (interval) {
+    dom.first = dom.sliderHandle.cloneNode();
+    dom.first.classList.add('slider__first-handle');
+    dom.second = dom.sliderHandle.cloneNode();
+    dom.second.classList.add('slider__second-handle');
+    dom.firstBubble = dom.bubble.cloneNode();
+    dom.secondBubble = dom.bubble.cloneNode();
+    dom.sliderNone = createNode('div', { class: 'slider__none' });
+    delete dom.sliderHandle;
+  }
+
   dom.container.appendChild(dom.errorCont);
   model.props.errors
     .map(err => {
@@ -49,7 +61,17 @@ function createSlider(model) {
       dom.errorCont.appendChild(elm);
     });
   dom.bubble.innerHTML = min;
-  [dom.bubble, dom.sliderDone, dom.sliderHandle].forEach(el => {
+  const inSlider = interval
+    ? [
+        dom.sliderNone,
+        dom.firstBubble,
+        dom.secondBubble,
+        dom.sliderDone,
+        dom.first,
+        dom.second
+      ]
+    : [dom.bubble, dom.sliderDone, dom.sliderHandle];
+  inSlider.forEach(el => {
     dom.slider.appendChild(el);
   });
 

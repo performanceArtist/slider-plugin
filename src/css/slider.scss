@@ -33,6 +33,15 @@
     border-radius: 0.1em;
   }
 
+  &__none {
+    position: absolute;
+    z-index: 2;
+    display: block;
+    border: 0;
+    background: #e6e6e6;
+    border-radius: 0.1em;
+  }
+
   &__head {
     cursor: pointer;
     border-radius: 50%;
@@ -54,7 +63,8 @@
     margin-top: 45px;
     margin-left: 5px;
 
-    .slider__done {
+    .slider__done,
+    .slider__none {
       height: 100%;
       width: 0;
     }
@@ -93,7 +103,8 @@
     width: 14px;
     height: 300px;
 
-    .slider__done {
+    .slider__done,
+    .slider__none {
       height: 0;
       width: 100%;
     }

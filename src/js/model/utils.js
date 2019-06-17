@@ -6,10 +6,14 @@ const getInitialState = (function getInitialState() {
     min: 0,
     max: 100,
     step: 1,
+    interval: false,
     showBubble: true,
     showSteps: false,
     horizontal: true
   };
+
+  defaults.firstValue = defaults.min;
+  defaults.secondValue = defaults.max;
 
   return function createModel() {
     const model = {
@@ -24,12 +28,15 @@ const getInitialState = (function getInitialState() {
 function checkType(key, val) {
   switch (key) {
     case 'value':
+    case 'firstValue':
+    case 'secondValue':
     case 'max':
     case 'min':
     case 'step':
       return Number.isNaN(parseFloat(val))
         ? new SliderError(`${key} is not a number.`, 'notNum')
         : parseFloat(val);
+    case 'interval':
     case 'showBubble':
     case 'showSteps':
     case 'horizontal':
