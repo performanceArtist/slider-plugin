@@ -3,6 +3,8 @@ import SliderError from './SliderError';
 const getInitialState = (function getInitialState() {
   const defaults = {
     value: 0,
+    firstValue: 0,
+    secondValue: 100,
     min: 0,
     max: 100,
     step: 1,
@@ -12,12 +14,9 @@ const getInitialState = (function getInitialState() {
     horizontal: true
   };
 
-  defaults.firstValue = defaults.min;
-  defaults.secondValue = defaults.max;
-
   return function createModel() {
     const model = {
-      state: Object.assign({}, defaults),
+      state: { ...defaults },
       props: { selector: '', errors: [] },
       observers: []
     };

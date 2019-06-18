@@ -17,18 +17,13 @@ const Model = function Model(selector, options = {}) {
       case 'value':
       case 'firstValue':
       case 'secondValue':
-        if (model.state.interval) {
-          if (key === 'firstValue' && val >= model.state.secondValue)
-            return model.state.firstValue;
-          if (key === 'secondValue' && val <= model.state.firstValue)
-            return model.state.secondValue;
-        }
-        if (val > model.state.max) {
-          return model.state.max;
-        }
-        if (val < model.state.min) {
-          return model.state.min;
-        }
+        if (key === 'firstValue' && val >= model.state.secondValue)
+          return model.state.firstValue;
+        if (key === 'secondValue' && val <= model.state.firstValue)
+          return model.state.secondValue;
+        if (val > model.state.max) return model.state.max;
+        if (val < model.state.min) return model.state.min;
+
         val =
           model.state.min +
           model.state.step *
@@ -104,8 +99,7 @@ const Model = function Model(selector, options = {}) {
       setValue(key, options[key]);
     });
 
-    const interval =
-      options.interval === undefined ? model.state.interval : options.interval;
+    const interval = model.state.interval || options.interval;
 
     // set value after options update to ensure it's valid
     if (interval) {
@@ -133,7 +127,7 @@ const Model = function Model(selector, options = {}) {
   // public methods
   return {
     validate,
-    getState: () => Object.assign(model.state, {}),
+    getState: () => ({ ...model.state }),
     setState,
     notify,
     props: model.props,

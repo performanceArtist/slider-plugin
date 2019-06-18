@@ -17,31 +17,31 @@ View.prototype.init = function init(controller) {
 };
 
 View.prototype.render = function render() {
-  const { horizontal, interval } = this.model.getState();
-
   if (this.controller === undefined) {
     throw new Error('Controller was not initialized.');
   }
+
+  const { horizontal, interval } = this.model.getState();
   const dom = createSlider(this.model);
+
   dom.slider.addEventListener('click', this.controller.handleClick);
   dom.input.addEventListener('blur', this.controller.handleInput);
 
   if (interval) {
-    dom.first.addEventListener('mousedown', this.controller.handleDrag);
-    dom.second.addEventListener('mousedown', this.controller.handleDrag);
+    dom.firstHandle.addEventListener('mousedown', this.controller.handleDrag);
+    dom.secondHandle.addEventListener('mousedown', this.controller.handleDrag);
   } else {
     dom.sliderHandle.addEventListener('mousedown', this.controller.handleDrag);
   }
 
-  // cleanup, can only get slider length after it's been rendered
   this.root.innerHTML = '';
   this.model.props.errors = [];
   this.root.appendChild(dom.container);
-
-  const length = horizontal ? dom.slider.offsetWidth : dom.slider.offsetHeight;
-
-  this.helpers = { sliderLength: length };
   this.dom = dom;
+
+  // can only get slider length after it's been rendered
+  const length = horizontal ? dom.slider.offsetWidth : dom.slider.offsetHeight;
+  this.helpers = { sliderLength: length };
 
   this.update();
 };
@@ -72,7 +72,7 @@ View.prototype.update = function update() {
     } = this.model.getState();
 
     changePosition({
-      handle: this.dom.first,
+      handle: this.dom.firstHandle,
       done: this.dom.sliderNone,
       bubble: this.dom.firstBubble,
       pos: (this.helpers.sliderLength * (firstValue - min)) / (max - min),
@@ -80,7 +80,7 @@ View.prototype.update = function update() {
     });
 
     changePosition({
-      handle: this.dom.second,
+      handle: this.dom.secondHandle,
       done: this.dom.sliderDone,
       bubble: this.dom.secondBubble,
       pos: (this.helpers.sliderLength * (secondValue - min)) / (max - min),
@@ -97,8 +97,8 @@ View.prototype.update = function update() {
       handle: this.dom.sliderHandle,
       done: this.dom.sliderDone,
       bubble: this.dom.bubble,
-      horizontal,
-      pos: (this.helpers.sliderLength * (value - min)) / (max - min)
+      pos: (this.helpers.sliderLength * (value - min)) / (max - min),
+      horizontal
     });
 
     this.dom.bubble.innerHTML = value;

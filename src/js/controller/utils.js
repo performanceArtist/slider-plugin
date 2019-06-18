@@ -6,7 +6,14 @@ function handleClick(e) {
   )
     return;
 
-  const { horizontal, max, min, interval } = this.model.getState();
+  const {
+    firstValue,
+    secondValue,
+    horizontal,
+    max,
+    min,
+    interval
+  } = this.model.getState();
 
   const rect = e.target.getBoundingClientRect();
   const pos = horizontal ? e.clientX - rect.left : e.clientY - rect.top;
@@ -14,8 +21,6 @@ function handleClick(e) {
   const relValue = (valLen * pos) / this.view.helpers.sliderLength;
 
   if (interval) {
-    const { firstValue, secondValue } = this.model.getState();
-
     if (relValue < firstValue - min + (secondValue - firstValue) / 2) {
       this.model.setState({ firstValue: relValue + min });
     } else {
@@ -27,14 +32,11 @@ function handleClick(e) {
 }
 
 function handleInput(e) {
-  const { interval, firstValue, secondValue, max } = this.model.getState();
+  const { interval, firstValue } = this.model.getState();
+
   if (interval) {
     const value = firstValue + parseInt(e.target.value, 10);
-    if (value < max && value > firstValue) {
-      this.model.setState({ secondValue: value });
-    } else {
-      this.model.setState({ secondValue });
-    }
+    this.model.setState({ secondValue: value });
   } else {
     this.model.setState({ value: e.target.value });
   }
