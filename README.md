@@ -88,13 +88,16 @@ You can only set values from the options above:
 ```js
 const slider = init('#slider');
 
-slider.model.setState({ value: 10 });
+slider.setState({ value: 10 });
 
 // getState returns state object copy
-const { value } = slider.model.getState();
+const { value } = slider.getState();
 
-//displays an error due to the model's validation/type checking
-slider.model.set({ value: 'NaN' });
+// displays an error due to the model's validation/type checking
+slider.setState({ value: 'NaN' });
+
+// causes rerender, since not only the value is updated
+slider.setState({value:5, horizontal:false});
 ```
 
 ## Architecture
