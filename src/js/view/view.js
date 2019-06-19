@@ -73,7 +73,7 @@ View.prototype.update = function update() {
 
     changePosition({
       handle: this.dom.firstHandle,
-      done: this.dom.sliderNone,
+      done: this.dom.firstDone,
       bubble: this.dom.firstBubble,
       pos: (this.helpers.sliderLength * (firstValue - min)) / (max - min),
       horizontal
@@ -81,7 +81,7 @@ View.prototype.update = function update() {
 
     changePosition({
       handle: this.dom.secondHandle,
-      done: this.dom.sliderDone,
+      done: this.dom.selected,
       bubble: this.dom.secondBubble,
       pos: (this.helpers.sliderLength * (secondValue - min)) / (max - min),
       horizontal
@@ -95,7 +95,7 @@ View.prototype.update = function update() {
 
     changePosition({
       handle: this.dom.sliderHandle,
-      done: this.dom.sliderDone,
+      done: this.dom.selected,
       bubble: this.dom.bubble,
       pos: (this.helpers.sliderLength * (value - min)) / (max - min),
       horizontal

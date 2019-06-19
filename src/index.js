@@ -3,8 +3,13 @@ import './main.scss';
 import init from './js/slider';
 import panel from './components/panel/panel';
 
+(function($) {
+  $.fn.slider = init;
+})(jQuery);
+
 window.onload = function windowHasLoaded() {
-  init('#example1', { interval: true });
+  $('#example1').slider('#example1', { interval: true });
+
   init('#example2', {
     value: 20,
     step: 20,

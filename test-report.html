@@ -1,0 +1,151 @@
+<html><head><meta charset="utf-8"/><title>Test Report</title><style type="text/css">html, body {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 1rem;
+	margin: 0;
+	padding: 0;
+	color: #333;
+}
+body {
+	padding: 3rem;
+	font-size: 0.85rem;
+}
+header {
+	display: flex;
+	align-items: center;
+}
+#title {
+	font-weight: 100;
+	font-size: 2rem;
+	color: #555;
+	margin: 0;
+	flex-grow: 1;
+}
+#logo {
+	height: 4rem;
+}
+#metadata-container {
+	display: flex;
+	padding-bottom: 1rem;
+	padding-top: 2rem;
+	margin-bottom: 1rem;
+	font-size: 1rem;
+	border-bottom: 1px solid #eee;
+}
+#timestamp {
+	font-weight: bold;
+	color: #999;
+	margin-bottom: 0.5rem;
+	order: 1;
+	flex-grow: 1;
+	text-align: right;
+}
+#summary {
+	color: #999;
+	margin-bottom: 1rem;
+	order: 0;
+	flex-grow: 2;
+}
+.suite-info {
+	padding: 1rem 0;
+	color: #555;
+	display: flex;
+	align-items: center;
+	font-size: 1rem;
+	margin-bottom: 0.5rem;
+}
+.suite-info .suite-path {
+	word-break: break-all;
+	flex-grow: 1;
+	font-weight: bold;
+}
+.suite-info .suite-time {
+	margin-left: 0.5rem;
+	padding: 0.2rem 0.3rem;
+	font-size: 0.75rem;
+}
+.suite-info .suite-time.warn {
+	background-color: #D8000C;
+	color: #fff;
+}
+.suite-table {
+	width: 100%;
+	font-size: 0.85rem;
+	margin-bottom: 2em;
+	box-shadow: 0px 3px 8px rgba(0, 0, 0, 0.3);
+}
+.suite-table tr.passed {
+	color: #2ab156;
+}
+.suite-table tr.passed td.suite {
+	border-left: 0.5rem solid #2ab156;
+}
+
+.suite-table tr.pending {
+	color: #efc52e;
+}
+.suite-table tr.pending td.suite {
+	border-left: 0.5rem solid #efc52e;
+}
+
+.suite-table tr.failed {
+	color: #e6636b;
+}
+.suite-table tr.failed td.suite {
+	border-left: 0.5rem solid #e6636b;
+}
+
+.suite-table td {
+	padding: 1rem;
+	font-size: 0.85rem;
+	vertical-align: top;
+}
+.suite-table td.suite {
+	font-weight: bold;
+	width: 20%;
+}
+.suite-table td.test {
+	font-style: italic;
+	width: 60%;
+}
+.suite-table td.test .failureMsg {
+	font-size: 1rem;
+	border-top: 0.2rem solid #e6636b;
+	padding-top: 1rem;
+	white-space: pre-wrap;
+	white-space: -moz-pre-wrap;
+	white-space: -pre-wrap;
+	white-space: -o-pre-wrap;
+	word-wrap: break-word;
+}
+.suite-table td.result {
+	width: 20%;
+	text-align: right;
+}
+
+/* CONSOLE LOGS */
+.suite-consolelog {
+	margin-bottom: 2rem;
+	padding: 1rem;
+	border-left: 0.5rem solid #666;
+	color: #666;
+	box-shadow: 0px 3px 8px rgba(0, 0, 0, 0.3);
+}
+.suite-consolelog-header {
+	font-weight: bold;
+}
+.suite-consolelog-item {
+	padding: 0.5rem;
+}
+.suite-consolelog-item pre {
+	margin: 0;
+}
+.suite-consolelog-item-origin {
+	color: #aaa;
+	font-weight: bold;
+}
+.suite-consolelog-item-message {
+	font-size: 1rem;
+	padding: 0 0.5rem;
+}
+</style></head><body><div id="jesthtml-content"><header><h1 id="title">Test Report</h1></header><div id="metadata-container"><div id="timestamp">Start: 2019-06-19 13:19:12</div><div id="summary">16 tests -- 16 passed / 0 failed / 0 pending</div></div><div class="suite-info"><div class="suite-path">E:\Programming\github\repos\slider-plugin\src\js\model\model.test.js</div><div class="suite-time warn">13.106s</div></div><table class="suite-table" cellspacing="0" cellpadding="0"><tr class="passed"><td class="suite">Model</td><td class="test">Sets custom settings on initialization</td><td class="result">passed in 0.027s</td></tr><tr class="passed"><td class="suite">Model</td><td class="test">Sets only the defined keys, otherwise returns an error</td><td class="result">passed in 0.003s</td></tr><tr class="passed"><td class="suite">Model</td><td class="test">Returns custom error for invalid argument type</td><td class="result">passed in 0.035s</td></tr><tr class="passed"><td class="suite">Model</td><td class="test">Returns state object copy on "getState" method call</td><td class="result">passed in 0.001s</td></tr><tr class="passed"><td class="suite">Model</td><td class="test">Sets model property only if the new value passed the validation</td><td class="result">passed in 0.041s</td></tr><tr class="passed"><td class="suite">Model</td><td class="test">When setting the value, returns a number, parses and rounds it if necessary</td><td class="result">passed in 0.001s</td></tr><tr class="passed"><td class="suite">Model</td><td class="test">If value is too big or too small, sets it to the model's max or min</td><td class="result">passed in 0.001s</td></tr><tr class="passed"><td class="suite">Model</td><td class="test">Check that min value is less than max and vice versa</td><td class="result">passed in 0.001s</td></tr><tr class="passed"><td class="suite">Model</td><td class="test">Checks that step is more than zero, less than max/min difference 
+  and max/min difference is divisable by it</td><td class="result">passed in 0.003s</td></tr></table><div class="suite-info"><div class="suite-path">E:\Programming\github\repos\slider-plugin\src\js\controller\controller.test.js</div><div class="suite-time warn">17.016s</div></div><table class="suite-table" cellspacing="0" cellpadding="0"><tr class="passed"><td class="suite">Controller</td><td class="test">Sets value on click, notifies observers</td><td class="result">passed in 0.028s</td></tr><tr class="passed"><td class="suite">Controller</td><td class="test">Changes value on blur, notifies observers</td><td class="result">passed in 0.003s</td></tr><tr class="passed"><td class="suite">Controller</td><td class="test">Calls drag handler, notifies observers</td><td class="result">passed in 0.001s</td></tr></table><div class="suite-info"><div class="suite-path">E:\Programming\github\repos\slider-plugin\src\js\view\view.test.js</div><div class="suite-time warn">17.001s</div></div><table class="suite-table" cellspacing="0" cellpadding="0"><tr class="passed"><td class="suite">View</td><td class="test">Given a model with valid selector, sets the root element. Otherwise throws an error.</td><td class="result">passed in 0.022s</td></tr><tr class="passed"><td class="suite">View</td><td class="test">Given a controller, creates dom object and sets model's sliderLength</td><td class="result">passed in 0.003s</td></tr><tr class="passed"><td class="suite">View</td><td class="test">Puts newly created elements inside the root element</td><td class="result">passed in 0.001s</td></tr><tr class="passed"><td class="suite">View</td><td class="test">Adds event handlers to the respective elements</td><td class="result">passed in 0.006s</td></tr></table></div></body></html>

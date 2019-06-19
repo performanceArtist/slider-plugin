@@ -1,14 +1,7 @@
 import Model from './model';
 import SliderError from './SliderError';
 
-// sample model, default values(don't set anything in this model, create one if the need arises)
 const model = new Model();
-
-test('Check custom settings', () => {
-  const custom = new Model('selector', { min: 50 });
-  const { min } = custom.getState();
-  expect(min).toBe(50);
-});
 
 // helper for error checks
 function sliderErrorCheck(key, val, type) {
@@ -17,72 +10,76 @@ function sliderErrorCheck(key, val, type) {
   expect(res.type).toBe(type);
 }
 
-// model.validate
-// Returns custom error with 'type' property
+describe('Model', () => {
+  it('Sets custom settings on initialization', () => {
+    const custom = new Model('selector', { min: 50 });
+    const { min } = custom.getState();
+    expect(min).toBe(50);
+  });
 
-test('Only defined keys', () => {
-  sliderErrorCheck('doesntExist', 20, 'notConf');
-});
+  it('Sets only the defined keys, otherwise returns an error', () => {
+    sliderErrorCheck('does-not-exist', 20, 'notConf');
+  });
 
-test('Only configurable keys', () => {
-  // underlying model object has 'selector' property, but it can't be changed
-  sliderErrorCheck('selector', 20, 'notConf');
-});
+  it('Returns custom error for invalid argument type', () => {
+    const isNumber = [
+      'value',
+      'firstValue',
+      'secondValue',
+      'min',
+      'max',
+      'step'
+    ];
+    const isBool = ['interval', 'showBubble', 'showSteps', 'horizontal'];
 
-test('Return custom error for invalid argument type', () => {
-  const isNumber = ['value', 'min', 'max', 'step'];
-  const isBool = ['showBubble', 'showSteps', 'horizontal'];
+    isNumber.forEach(el => sliderErrorCheck(el, 'NaN', 'notNum'));
+    isBool.forEach(el => sliderErrorCheck(el, 42, 'notBool'));
+  });
 
-  isNumber.forEach(el => sliderErrorCheck(el, 'NaN', 'notNum'));
-  isBool.forEach(el => sliderErrorCheck(el, 42, 'notBool'));
-});
+  it('Returns state object copy on "getState" method call', () => {
+    const state = model.getState();
+    expect(state.max).toBe(100);
+    state.max = 0;
+    expect(model.getState().max).toBe(100);
+  });
 
-test('Get model property by key, if property is defined', () => {
-  expect(model.getState().max).toBe(100);
-});
+  it('Sets model property only if the new value passed the validation', () => {
+    const smodel = new Model('test', { value: 0 });
 
-test('Set model property only if the new value passed the validation', () => {
-  const smodel = new Model('test', { value: 0 });
+    expect(smodel.validate('value', 'string')).toBeInstanceOf(SliderError);
+    smodel.setState({ value: 'string' });
+    expect(smodel.getState().value).toBe(0);
 
-  expect(smodel.validate('value', 'string')).toBeInstanceOf(SliderError);
-  smodel.setState({ value: 'string' });
-  expect(smodel.getState().value).toBe(0);
+    expect(smodel.validate('value', 5)).toBe(5);
+    smodel.setState({ value: 5 });
+    expect(smodel.getState().value).toBe(5);
+  });
 
-  expect(smodel.validate('value', 5)).toBe(5);
-  smodel.setState({ value: 5 });
-  expect(smodel.getState().value).toBe(5);
-});
+  it('When setting the value, returns a number, parses and rounds it if necessary', () => {
+    expect(model.validate('value', 5)).toBe(5);
+    expect(model.validate('value', 5.4)).toBe(5);
+    expect(model.validate('value', 5.6)).toBe(6);
+    expect(model.validate('value', '5')).toBe(5);
+  });
 
-// value validation
-test('When setting the value, return a number, parse and round it if necessary', () => {
-  expect(model.validate('value', 5)).toBe(5);
-  expect(model.validate('value', 5.4)).toBe(5);
-  expect(model.validate('value', 5.6)).toBe(6);
-  expect(model.validate('value', '5')).toBe(5);
-});
+  it("If value is too big or too small, sets it to the model's max or min", () => {
+    const { max, min } = model.getState();
+    const negative = new Model('none', { min: -50, max: 50 });
 
-test("If value is too big or too small, set it to the model's max or min", () => {
-  const { max, min } = model.getState();
-  expect(model.validate('value', -10)).toBe(min);
-  expect(model.validate('value', 200)).toBe(max - min);
-});
+    expect(model.validate('value', -10)).toBe(min);
+    expect(model.validate('value', 200)).toBe(max - min);
+    expect(negative.validate('value', -30)).toBe(-30);
+  });
 
-test('Check negative value setting', () => {
-  const negative = new Model('none', { min: -50, max: 50 });
+  it('Check that min value is less than max and vice versa', () => {
+    sliderErrorCheck('min', 120, 'notMin');
+    sliderErrorCheck('max', -20, 'notMax');
+  });
 
-  expect(negative.validate('value', -30)).toBe(-30);
-});
-
-// min/max validation
-test('Min value should be less than max and vice versa', () => {
-  sliderErrorCheck('min', 120, 'notMin');
-  sliderErrorCheck('max', -20, 'notMax');
-});
-
-// step validation
-test(`Step should be more than zero, less than max/min difference 
-and max/min difference should be divisable by it`, () => {
-  sliderErrorCheck('step', -4, 'notStep');
-  sliderErrorCheck('step', 13, 'notStep');
-  sliderErrorCheck('step', 200, 'notStep');
+  it(`Checks that step is more than zero, less than max/min difference 
+  and max/min difference is divisable by it`, () => {
+    sliderErrorCheck('step', -4, 'notStep');
+    sliderErrorCheck('step', 13, 'notStep');
+    sliderErrorCheck('step', 200, 'notStep');
+  });
 });

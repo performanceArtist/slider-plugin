@@ -32,7 +32,7 @@ function createSlider(model) {
       class: 'slider__bubble',
       style: bubbleStyle
     }),
-    sliderDone: createNode('div', { class: 'slider__done' }),
+    selected: createNode('div', { class: 'slider__done' }),
     sliderHandle: createNode('span', { class: 'slider__head' }),
     errorCont: createNode('div', { class: 'slider__error-container' })
   };
@@ -48,7 +48,7 @@ function createSlider(model) {
     dom.secondHandle.classList.add('slider__second-handle');
     dom.firstBubble = dom.bubble.cloneNode();
     dom.secondBubble = dom.bubble.cloneNode();
-    dom.sliderNone = createNode('div', { class: 'slider__none' });
+    dom.firstDone = createNode('div', { class: 'slider__first-done' });
   }
 
   model.props.errors
@@ -64,14 +64,14 @@ function createSlider(model) {
 
   const inSlider = interval
     ? [
-        dom.sliderNone,
+        dom.firstDone,
         dom.firstBubble,
         dom.secondBubble,
-        dom.sliderDone,
+        dom.selected,
         dom.firstHandle,
         dom.secondHandle
       ]
-    : [dom.bubble, dom.sliderDone, dom.sliderHandle];
+    : [dom.bubble, dom.selected, dom.sliderHandle];
 
   inSlider.forEach(el => {
     dom.slider.appendChild(el);

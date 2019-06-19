@@ -33,7 +33,7 @@
     border-radius: 0.1em;
   }
 
-  &__none {
+  &__first-done {
     position: absolute;
     z-index: 2;
     display: block;
@@ -64,7 +64,7 @@
     margin-left: 5px;
 
     .slider__done,
-    .slider__none {
+    .slider__first-done {
       height: 100%;
       width: 0;
     }
@@ -104,7 +104,7 @@
     height: 300px;
 
     .slider__done,
-    .slider__none {
+    .slider__first-done {
       height: 0;
       width: 100%;
     }

@@ -4,64 +4,54 @@ import Controller from '../controller/controller';
 
 document.body.innerHTML = '<div id="test"></div>';
 
-const model = new Model('#test', {
-  value: 0,
-  min: 0,
-  max: 100,
-  step: 1,
-  showBubble: true,
-  showSteps: false,
-  horizontal: true
-});
-
-// test object initialization
+const model = new Model('#test');
 const view = new View(model);
-
-test('Given a model with valid selector, should set the root element', () => {
-  expect(view.root).toBeInstanceOf(HTMLDivElement);
-});
-
-// test rendering calls
 const controller = new Controller(model, view);
-// create mocks for further testing
 controller.handleClick = jest.fn(controller.handleClick);
 controller.handleInput = jest.fn(controller.handleInput);
 controller.handleDrag = jest.fn(controller.handleDrag);
 
-test("Given a controller, should create dom object, and set model's sliderLength", () => {
-  view.render(controller);
+describe('View', () => {
+  it('Given a model with valid selector, sets the root element. Otherwise throws an error.', () => {
+    expect(() => new View(new Model('#none'))).toThrow();
+    expect(view.root).toBeInstanceOf(HTMLDivElement);
+  });
 
-  // imitation, supposed to be set after rendering
-  view.helpers.sliderLength = 200;
-  expect(view.dom).toBeDefined();
-});
+  it("Given a controller, creates dom object and sets model's sliderLength", () => {
+    view.render(controller);
 
-test('Newly created elements now should be inside the root element', () => {
-  expect(view.dom.container.parentNode === view.root).toBe(true);
-});
+    // imitation, supposed to be set after rendering
+    view.helpers.sliderLength = 200;
+    expect(view.dom).toBeDefined();
+  });
 
-test('Check if events were added to their respective elements', () => {
-  view.dom.slider.dispatchEvent(new Event('click'));
-  expect(controller.handleClick).toBeCalled();
-  view.dom.input.dispatchEvent(new Event('blur'));
-  expect(controller.handleInput).toBeCalled();
-  view.dom.sliderHandle.dispatchEvent(new Event('mousedown'));
-  expect(controller.handleDrag).toBeCalled();
+  it('Puts newly created elements inside the root element', () => {
+    expect(view.dom.container.parentNode === view.root).toBe(true);
+  });
+
+  it('Adds event handlers to the respective elements', () => {
+    view.dom.slider.dispatchEvent(new Event('click'));
+    expect(controller.handleClick).toBeCalled();
+    view.dom.input.dispatchEvent(new Event('blur'));
+    expect(controller.handleInput).toBeCalled();
+    view.dom.sliderHandle.dispatchEvent(new Event('mousedown'));
+    expect(controller.handleDrag).toBeCalled();
+  });
 });
 
 /*
 // test view updates
-test('Check if values are set after an update call', () => {
+it('Check if values are set after an update call', () => {
   model.setState({ value: 20 });
   view.update();
 
   const pos = model.get('handlePosition');
   const sliderHandle = `${pos}px`;
-  const sliderDone = `${pos + 5}px`;
+  const selected = `${pos + 5}px`;
   const bubble = `${pos - 4}px`;
 
   expect(view.dom.sliderHandle.style.left).toBe(sliderHandle);
-  expect(view.dom.sliderDone.style.width).toBe(sliderDone);
+  expect(view.dom.selected.style.width).toBe(selected);
   expect(view.dom.bubble.style.left).toBe(bubble);
 
   expect(view.dom.bubble.innerHTML).toBe('20');
