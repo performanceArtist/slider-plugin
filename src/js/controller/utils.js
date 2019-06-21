@@ -2,7 +2,8 @@ function handleClick(e) {
   if (
     !e.target.classList.contains('slider__slider') &&
     e.target.className !== 'slider__done' &&
-    e.target.className !== 'slider__first-done'
+    e.target.className !== 'slider__first-done' &&
+    e.target.className !== 'slider__label'
   )
     return;
 
@@ -18,16 +19,19 @@ function handleClick(e) {
   const rect = e.target.getBoundingClientRect();
   const pos = horizontal ? e.clientX - rect.left : e.clientY - rect.top;
   const valLen = max - min;
-  const relValue = (valLen * pos) / this.view.helpers.sliderLength;
+  const newValue =
+    e.target.className === 'slider__label'
+      ? e.target.innerHTML
+      : min + (valLen * pos) / this.view.helpers.sliderLength;
 
   if (interval) {
-    if (relValue < firstValue - min + (secondValue - firstValue) / 2) {
-      this.model.setState({ firstValue: relValue + min });
+    if (newValue < firstValue - min + (secondValue - firstValue) / 2) {
+      this.model.setState({ firstValue: newValue });
     } else {
-      this.model.setState({ secondValue: relValue + min });
+      this.model.setState({ secondValue: newValue });
     }
   } else {
-    this.model.setState({ value: relValue + min });
+    this.model.setState({ value: newValue });
   }
 }
 
