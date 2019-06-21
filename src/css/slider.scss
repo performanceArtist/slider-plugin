@@ -1,5 +1,14 @@
 @import 'bubble';
 
+%unselectable {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
 .slider {
   display: inline-block;
 
@@ -15,6 +24,7 @@
 
   &__bubble {
     @extend %bubble;
+    @extend %unselectable;
     margin-bottom: $pointer-size;
     position: absolute;
     line-height: 175%;
@@ -91,6 +101,7 @@
     }
 
     .slider__label {
+      @extend %unselectable;
       position: absolute;
       width: 20px;
       margin-left: 0px;
@@ -131,6 +142,7 @@
     }
 
     .slider__label {
+      @extend %unselectable;
       position: absolute;
       width: 20px;
       left: -25px;
