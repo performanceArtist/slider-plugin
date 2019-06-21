@@ -1,24 +1,25 @@
 export default function(selector, slider) {
-  const el = document.getElementById(selector);
-  if (!el) return;
+  const element = document.getElementById(selector);
+  if (!element) return;
 
-  el.addEventListener('change', e => {
-    e.preventDefault();
+  element.addEventListener('change', event => {
+    event.preventDefault();
 
     const options = {};
 
-    Array.prototype.forEach.call(e.currentTarget.elements, elm => {
-      if (elm.type === 'submit') return;
+    Array.prototype.forEach.call(event.currentTarget.elements, input => {
+      if (input.type === 'submit') return;
 
-      const { name } = elm;
-      let val = elm.value.trim();
+      const { name } = input;
+      let newValue = input.value.trim();
 
-      if (elm.type === 'radio' || elm.type === 'checkbox') val = elm.checked;
+      if (input.type === 'radio' || input.type === 'checkbox')
+        newValue = input.checked;
 
       // no empty strings
-      if (val === '') return;
+      if (newValue === '') return;
 
-      options[name] = val;
+      options[name] = newValue;
     });
 
     slider.setState(options);

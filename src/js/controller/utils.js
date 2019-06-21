@@ -1,9 +1,9 @@
-function handleClick(e) {
+function handleClick(event) {
   if (
-    !e.target.classList.contains('slider__slider') &&
-    e.target.className !== 'slider__done' &&
-    e.target.className !== 'slider__first-done' &&
-    e.target.className !== 'slider__label'
+    !event.target.classList.contains('slider__slider') &&
+    event.target.className !== 'slider__done' &&
+    event.target.className !== 'slider__first-done' &&
+    event.target.className !== 'slider__label'
   )
     return;
 
@@ -16,13 +16,15 @@ function handleClick(e) {
     interval
   } = this.model.getState();
 
-  const rect = e.target.getBoundingClientRect();
-  const pos = horizontal ? e.clientX - rect.left : e.clientY - rect.top;
+  const rect = event.target.getBoundingClientRect();
+  const position = horizontal
+    ? event.clientX - rect.left
+    : event.clientY - rect.top;
   const valLen = max - min;
   const newValue =
-    e.target.className === 'slider__label'
-      ? e.target.innerHTML
-      : min + (valLen * pos) / this.view.helpers.sliderLength;
+    event.target.className === 'slider__label'
+      ? event.target.innerHTML
+      : min + (valLen * position) / this.view.helpers.sliderLength;
 
   if (interval) {
     if (newValue < firstValue - min + (secondValue - firstValue) / 2) {
@@ -35,32 +37,34 @@ function handleClick(e) {
   }
 }
 
-function handleInput(e) {
+function handleInput(event) {
   const { interval, firstValue } = this.model.getState();
 
   if (interval) {
-    const value = firstValue + parseInt(e.target.value, 10);
+    const value = firstValue + parseInt(event.target.value, 10);
     this.model.setState({ secondValue: value });
   } else {
-    this.model.setState({ value: e.target.value });
+    this.model.setState({ value: event.target.value });
   }
 }
 
-function handleDrag(e) {
+function handleDrag(event) {
   const { model } = this;
   const { sliderLength } = this.view.helpers;
   const { horizontal, interval, max, min } = model.getState();
-  const handle = e.target;
-  const x = handle.offsetLeft;
-  const y = handle.offsetTop;
-  const ox = e.clientX;
-  const oy = e.clientY;
+  const handle = event.target;
+  const handleX = handle.offsetLeft;
+  const handleY = handle.offsetTop;
+  const mouseX = event.clientX;
+  const mouseY = event.clientY;
 
-  e.preventDefault();
+  event.preventDefault();
 
-  function moveHandle(ev) {
-    const pos = horizontal ? x + ev.clientX - ox : y + ev.clientY - oy;
-    const relValue = ((max - min) * pos) / sliderLength;
+  function moveHandle(moveEvent) {
+    const position = horizontal
+      ? handleX + moveEvent.clientX - mouseX
+      : handleY + moveEvent.clientY - mouseY;
+    const relValue = ((max - min) * position) / sliderLength;
 
     if (interval) {
       if (handle.classList.contains('slider__first-handle')) {

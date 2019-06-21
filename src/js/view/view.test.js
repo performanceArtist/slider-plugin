@@ -38,23 +38,3 @@ describe('View', () => {
     expect(controller.handleDrag).toBeCalled();
   });
 });
-
-/*
-// test view updates
-it('Check if values are set after an update call', () => {
-  model.setState({ value: 20 });
-  view.update();
-
-  const pos = model.get('handlePosition');
-  const sliderHandle = `${pos}px`;
-  const selected = `${pos + 5}px`;
-  const bubble = `${pos - 4}px`;
-
-  expect(view.dom.sliderHandle.style.left).toBe(sliderHandle);
-  expect(view.dom.selected.style.width).toBe(selected);
-  expect(view.dom.bubble.style.left).toBe(bubble);
-
-  expect(view.dom.bubble.innerHTML).toBe('20');
-  expect(view.dom.input.value).toBe('20');
-});
-*/

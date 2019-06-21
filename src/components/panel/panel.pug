@@ -1,27 +1,28 @@
 include ../checkmark/checkmark
 
 mixin input(type, name='', label='')
-  .panel__input
-    input(type=type, name=name)
-    label(for=name) #{label}
+  .panel__input-wrapper
+    input(type=type, name=name).panel__input
+    label(for=name).panel__label #{label}
 
 mixin panel({id = 'panel'})
   .panel
-    h2 Configure
-    form(action='', class='panel__form' id=id)
-      .panel__column.panel__column_left
-        +input('text', 'min', 'Min')
-        +input('text', 'max', 'Max')
-        +input('text', 'step', 'Step')
-      .panel__column.panel__column_right
-        .panel__checkmark
-          +checkmark({name:'showBubble', type:'checkbox', label:'Show bubble'})
-        .panel__checkmark
-          +checkmark({name:'showSteps', type:'checkbox', label:'Show steps'})
-        .panel__checkmark
-          +checkmark({name:'horizontal', type:'checkbox', label:'Horizontal'})
-        .panel__checkmark
-          +checkmark({name:'interval', type:'checkbox', label:'Interval'})
+    .panel__wrapper
+      h2 Configure
+      form(action='', class='panel__form' id=id)
+        .panel__column.panel__column_left
+          +input('text', 'min', 'Min')
+          +input('text', 'max', 'Max')
+          +input('text', 'step', 'Step')
+        .panel__column.panel__column_right
+          .panel__checkmark
+            +checkmark({name:'showBubble', type:'checkbox', label:'Show bubble'})
+          .panel__checkmark
+            +checkmark({name:'showSteps', type:'checkbox', label:'Show steps'})
+          .panel__checkmark
+            +checkmark({name:'horizontal', type:'checkbox', label:'Horizontal'})
+          .panel__checkmark
+            +checkmark({name:'interval', type:'checkbox', label:'Interval'})
         
 
 

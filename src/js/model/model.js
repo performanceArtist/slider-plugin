@@ -7,52 +7,52 @@ const Model = function Model(selector, options = {}) {
   model.props.selector = selector;
 
   function validate(key, value) {
-    let val = checkType(key, value);
+    let newValue = checkType(key, value);
 
-    if (val instanceof SliderError) {
-      return val;
+    if (newValue instanceof SliderError) {
+      return newValue;
     }
 
     switch (key) {
       case 'value':
       case 'firstValue':
       case 'secondValue':
-        if (key === 'firstValue' && val >= model.state.secondValue)
+        if (key === 'firstValue' && newValue >= model.state.secondValue)
           return model.state.firstValue;
-        if (key === 'secondValue' && val <= model.state.firstValue)
+        if (key === 'secondValue' && newValue <= model.state.firstValue)
           return model.state.secondValue;
-        if (val > model.state.max) return model.state.max;
-        if (val < model.state.min) return model.state.min;
+        if (newValue > model.state.max) return model.state.max;
+        if (newValue < model.state.min) return model.state.min;
 
-        val =
+        newValue =
           model.state.min +
           model.state.step *
-            Math.round((val - model.state.min) / model.state.step);
-        return val;
+            Math.round((newValue - model.state.min) / model.state.step);
+        return newValue;
       case 'min':
-        if (val >= model.state.max) {
-          return new SliderError(`Invalid min value: ${val}`, 'notMin');
+        if (newValue >= model.state.max) {
+          return new SliderError(`Invalid min value: ${newValue}`, 'notMin');
         }
         break;
       case 'max':
-        if (val <= model.state.min) {
-          return new SliderError(`Invalid max value: ${val}`, 'notMax');
+        if (newValue <= model.state.min) {
+          return new SliderError(`Invalid max value: ${newValue}`, 'notMax');
         }
         break;
       case 'step':
         if (
-          val <= 0 ||
-          (model.state.max - model.state.min) % val !== 0 ||
-          val > model.state.max - model.state.min
+          newValue <= 0 ||
+          (model.state.max - model.state.min) % newValue !== 0 ||
+          newValue > model.state.max - model.state.min
         ) {
-          return new SliderError(`Invalid step value: ${val}`, 'notStep');
+          return new SliderError(`Invalid step value: ${newValue}`, 'notStep');
         }
         break;
       default:
         break;
     }
 
-    return val;
+    return newValue;
   }
 
   function notify(type) {
@@ -74,8 +74,8 @@ const Model = function Model(selector, options = {}) {
     });
   }
 
-  function setValue(key, val) {
-    const res = validate(key, val);
+  function setValue(key, newValue) {
+    const res = validate(key, newValue);
     if (res instanceof SliderError) {
       model.props.errors.push(res.getMessage());
       res.show();

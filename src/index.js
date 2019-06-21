@@ -23,6 +23,7 @@ window.onload = function windowHasLoaded() {
     horizontal: false,
     interval: true
   });
+
   const configExample = init('#config-example', { interval: true });
   panel('panel', configExample);
 };

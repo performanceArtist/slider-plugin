@@ -2,8 +2,8 @@ import Model from './model/model';
 import View from './view/view';
 import Controller from './controller/controller';
 
-function init(selector, opt = {}) {
-  const model = new Model(selector, opt);
+function init(selector, options = {}) {
+  const model = new Model(selector, options);
   const view = new View(model);
   const controller = new Controller(model, view);
 

@@ -47,15 +47,15 @@ View.prototype.render = function render() {
   this.update();
 };
 
-function changePosition({ handle, done, bubble, pos, horizontal }) {
+function changePosition({ handle, done, bubble, position, horizontal }) {
   if (horizontal) {
-    handle.style.left = `${pos - 2}px`;
-    done.style.width = `${pos + 5}px`;
-    bubble.style.left = `${pos - 6}px`;
+    handle.style.left = `${position - 2}px`;
+    done.style.width = `${position + 5}px`;
+    bubble.style.left = `${position - 6}px`;
   } else {
-    handle.style.top = `${pos - 2}px`;
-    done.style.height = `${pos + 5}px`;
-    bubble.style.top = `${pos - 6}px`;
+    handle.style.top = `${position - 2}px`;
+    done.style.height = `${position + 5}px`;
+    bubble.style.top = `${position - 6}px`;
   }
 }
 
@@ -76,7 +76,7 @@ View.prototype.update = function update() {
       handle: this.dom.firstHandle,
       done: this.dom.firstDone,
       bubble: this.dom.firstBubble,
-      pos: (this.helpers.sliderLength * (firstValue - min)) / (max - min),
+      position: (this.helpers.sliderLength * (firstValue - min)) / (max - min),
       horizontal
     });
 
@@ -84,7 +84,7 @@ View.prototype.update = function update() {
       handle: this.dom.secondHandle,
       done: this.dom.selected,
       bubble: this.dom.secondBubble,
-      pos: (this.helpers.sliderLength * (secondValue - min)) / (max - min),
+      position: (this.helpers.sliderLength * (secondValue - min)) / (max - min),
       horizontal
     });
 
@@ -98,7 +98,7 @@ View.prototype.update = function update() {
       handle: this.dom.sliderHandle,
       done: this.dom.selected,
       bubble: this.dom.bubble,
-      pos: (this.helpers.sliderLength * (value - min)) / (max - min),
+      position: (this.helpers.sliderLength * (value - min)) / (max - min),
       horizontal
     });
 

@@ -1,7 +1,9 @@
 .panel {
-  padding-top: 2%;
-  font-size: 1em;
-  width: 400px;
+  display: inline-block;
+
+  &__wrapper {
+    padding-top: 2%;
+  }
 
   &__form {
     display: flex;
@@ -14,18 +16,16 @@
     }
   }
 
-  input[type='submit'] {
-    margin-top: 1em;
+  &__input-wrapper {
+    margin-bottom: 1em;
   }
 
   &__input {
-    margin-bottom: 1em;
-    input {
-      width: 5em;
-    }
-    label {
-      margin-left: 0.8em;
-    }
+    width: 5em;
+  }
+
+  &__label {
+    margin-left: 0.8em;
   }
 
   &__checkmark {
