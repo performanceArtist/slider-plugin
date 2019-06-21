@@ -47,7 +47,7 @@ body {
     border: 0;
     background: #4eb7a8;
     border-radius: 0.1em; }
-  .slider__none {
+  .slider__first-done {
     position: absolute;
     z-index: 2;
     display: block;
@@ -71,7 +71,7 @@ body {
     margin-top: 45px;
     margin-left: 5px; }
     .slider .slider_hor .slider__done,
-    .slider .slider_hor .slider__none {
+    .slider .slider_hor .slider__first-done {
       height: 100%;
       width: 0; }
     .slider .slider_hor .slider__head {
@@ -99,7 +99,7 @@ body {
     width: 14px;
     height: 300px; }
     .slider .slider_ver .slider__done,
-    .slider .slider_ver .slider__none {
+    .slider .slider_ver .slider__first-done {
       height: 0;
       width: 100%; }
     .slider .slider_ver .slider__head {

@@ -2,7 +2,7 @@ function handleClick(e) {
   if (
     !e.target.classList.contains('slider__slider') &&
     e.target.className !== 'slider__done' &&
-    e.target.className !== 'slider__none'
+    e.target.className !== 'slider__first-done'
   )
     return;
 
