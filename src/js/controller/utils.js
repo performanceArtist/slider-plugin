@@ -57,7 +57,7 @@ function handleDrag(e) {
     const relValue = ((max - min) * pos) / sliderLength;
 
     if (interval) {
-      if (this.classList.contains('slider__first-handle')) {
+      if (handle.classList.contains('slider__first-handle')) {
         model.setState({ firstValue: relValue + min });
       } else {
         model.setState({ secondValue: relValue + min });
@@ -67,10 +67,10 @@ function handleDrag(e) {
     }
   }
 
-  handle.addEventListener('mousemove', moveHandle);
+  window.addEventListener('mousemove', moveHandle);
 
   window.addEventListener('mouseup', () => {
-    handle.removeEventListener('mousemove', moveHandle);
+    window.removeEventListener('mousemove', moveHandle);
   });
 }
 
