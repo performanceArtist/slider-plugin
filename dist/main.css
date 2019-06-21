@@ -24,7 +24,7 @@ body {
     height: 0;
     border: 6px solid transparent; }
 
-.slider__bubble, .slider .slider_hor .slider__label {
+.slider__bubble, .slider .slider_hor .slider__label, .slider .slider_ver .slider__label {
   -webkit-touch-callout: none;
   -webkit-user-select: none;
   -khtml-user-select: none;

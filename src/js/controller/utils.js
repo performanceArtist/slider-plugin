@@ -52,6 +52,8 @@ function handleDrag(e) {
   const ox = e.clientX;
   const oy = e.clientY;
 
+  e.preventDefault();
+
   function moveHandle(ev) {
     const pos = horizontal ? x + ev.clientX - ox : y + ev.clientY - oy;
     const relValue = ((max - min) * pos) / sliderLength;

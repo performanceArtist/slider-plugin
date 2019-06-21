@@ -25,6 +25,7 @@ View.prototype.render = function render() {
   const dom = createSlider(this.model);
 
   dom.slider.addEventListener('click', this.controller.handleClick);
+  dom.slider.addEventListener('drag', event => event.preventDefault());
   dom.input.addEventListener('blur', this.controller.handleInput);
 
   if (interval) {
