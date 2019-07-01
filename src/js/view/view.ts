@@ -1,11 +1,9 @@
 import { createSlider } from './utils';
 
-function View(model) {
+function View(model, root: HTMLElement) {
   this.model = model;
-  const { selector } = model.props;
-  this.root = document.querySelector(selector);
-  if (!this.root)
-    throw new Error(`Invalid selector (${selector}): element not found.`);
+  if (!root) throw new Error(`Invalid root element`);
+  this.root = root;
 
   model.addObserver(this);
 }
@@ -25,7 +23,9 @@ View.prototype.render = function render() {
   const dom = createSlider(this.model);
 
   dom.slider.addEventListener('click', this.controller.handleClick);
-  dom.slider.addEventListener('drag', event => event.preventDefault());
+  dom.slider.addEventListener('drag', (event: MouseEvent) =>
+    event.preventDefault()
+  );
   dom.input.addEventListener('blur', this.controller.handleInput);
 
   if (interval) {
@@ -47,7 +47,21 @@ View.prototype.render = function render() {
   this.update();
 };
 
-function changePosition({ handle, done, bubble, position, horizontal }) {
+interface PositionArgs {
+  handle: HTMLElement;
+  done: HTMLElement;
+  bubble: HTMLElement;
+  position: number;
+  horizontal: boolean;
+}
+
+function changePosition({
+  handle,
+  done,
+  bubble,
+  position,
+  horizontal
+}: PositionArgs) {
   if (horizontal) {
     handle.style.left = `${position - 2}px`;
     done.style.width = `${position + 5}px`;

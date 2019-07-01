@@ -4,15 +4,19 @@ import SliderError from './SliderError';
 const model = new Model();
 
 // helper for error checks
-function sliderErrorCheck(key, val, type) {
-  const res = model.validate(key, val);
-  expect(res).toBeInstanceOf(SliderError);
-  expect(res.type).toBe(type);
+function sliderErrorCheck(
+  key: string,
+  value: number | string | boolean,
+  type: string
+) {
+  const result = model.validate(key, value);
+  expect(result).toBeInstanceOf(SliderError);
+  expect(result.type).toBe(type);
 }
 
 describe('Model', () => {
   it('Sets custom settings on initialization', () => {
-    const custom = new Model('selector', { min: 50 });
+    const custom = new Model({ min: 50 });
     const { min } = custom.getState();
     expect(min).toBe(50);
   });
@@ -44,7 +48,7 @@ describe('Model', () => {
   });
 
   it('Sets model property only if the new value passed the validation', () => {
-    const smodel = new Model('test', { value: 0 });
+    const smodel = new Model({ value: 0 });
 
     expect(smodel.validate('value', 'string')).toBeInstanceOf(SliderError);
     smodel.setState({ value: 'string' });
@@ -64,7 +68,7 @@ describe('Model', () => {
 
   it("If value is too big or too small, sets it to the model's max or min", () => {
     const { max, min } = model.getState();
-    const negative = new Model('none', { min: -50, max: 50 });
+    const negative = new Model({ min: -50, max: 50 });
 
     expect(model.validate('value', -10)).toBe(min);
     expect(model.validate('value', 200)).toBe(max - min);

@@ -2,10 +2,16 @@ const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const webpack = require('webpack');
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 
 const config = {
   entry: {
-    app: './src/index.js'
+    app: './src/index.ts'
+  },
+
+  resolve: {
+    modules: ['node_modules'],
+    extensions: ['.js', '.ts']
   },
 
   output: {
@@ -22,7 +28,7 @@ const config = {
         use: ['pug-loader']
       },
       {
-        test: /\.js$/,
+        test: /\.(js|ts)$/,
         exclude: /node_modules/,
         loader: 'babel-loader'
       },
@@ -39,6 +45,7 @@ const config = {
     ]
   },
   plugins: [
+    new CleanWebpackPlugin(),
     new HtmlWebpackPlugin({
       template: './src/index.pug'
     }),

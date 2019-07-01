@@ -1,5 +1,13 @@
 import SliderError from './SliderError';
 
+import Options from '../Options';
+
+interface ModelType {
+  state: Options;
+  props: { errors: Array<string> };
+  observers: Array<Function>;
+}
+
 const getInitialState = (function getInitialState() {
   const defaults = {
     value: 0,
@@ -15,16 +23,16 @@ const getInitialState = (function getInitialState() {
   };
 
   return function createModel() {
-    const model = {
+    const model: ModelType = {
       state: { ...defaults },
-      props: { selector: '', errors: [] },
+      props: { errors: [] },
       observers: []
     };
     return model;
   };
 })();
 
-function checkType(key, val) {
+function checkType(key: string, val: string | number | boolean) {
   switch (key) {
     case 'value':
     case 'firstValue':
@@ -47,7 +55,7 @@ function checkType(key, val) {
   }
 }
 
-const debounce = (func, delay) => {
+const debounce = (func: Function, delay: number) => {
   let inDebounce;
   return function callFunction(...args) {
     const context = this;

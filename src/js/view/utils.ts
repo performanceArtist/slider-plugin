@@ -1,9 +1,9 @@
 // helper to create nodes
-function createNode(type, attr = {}) {
+function createNode(type: string, attributes = {}) {
   const node = document.createElement(type);
 
-  Object.keys(attr).forEach(key => {
-    node.setAttribute(key, attr[key]);
+  Object.keys(attributes).forEach(key => {
+    node.setAttribute(key, attributes[key]);
   });
 
   return node;
@@ -24,7 +24,7 @@ function createSlider(model) {
   const newClass = horizontal ? 'slider_hor' : 'slider_ver';
   const bubbleStyle = showBubble ? 'display:absolute;' : 'display:none;';
 
-  const dom = {
+  const dom: Record<string, HTMLElement | Node> = {
     container: createNode('div', { class: 'slider' }),
     input: createNode('input', { class: 'slider__input', type: 'text' }),
     slider: createNode('div', { class: `slider__slider ${newClass}` }),
@@ -52,15 +52,15 @@ function createSlider(model) {
   }
 
   model.props.errors
-    .map(err => {
+    .map((error: string) => {
       const row = createNode('div', { class: 'slider__error' });
-      row.innerHTML = err;
+      row.innerHTML = error;
       return row;
     })
-    .forEach(elm => {
-      dom.errorCont.appendChild(elm);
+    .forEach((element: HTMLElement) => {
+      dom.errorCont.appendChild(element);
     });
-  dom.bubble.innerHTML = min;
+  dom.bubble.appendChild(document.createTextNode(min));
 
   const inSlider = interval
     ? [

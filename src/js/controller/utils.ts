@@ -1,9 +1,11 @@
-function handleClick(event) {
+function handleClick(event: MouseEvent) {
+  const target = event.target as HTMLElement;
+
   if (
-    !event.target.classList.contains('slider__slider') &&
-    event.target.className !== 'slider__done' &&
-    event.target.className !== 'slider__first-done' &&
-    event.target.className !== 'slider__label'
+    !target.classList.contains('slider__slider') &&
+    target.className !== 'slider__done' &&
+    target.className !== 'slider__first-done' &&
+    target.className !== 'slider__label'
   )
     return;
 
@@ -16,14 +18,14 @@ function handleClick(event) {
     interval
   } = this.model.getState();
 
-  const rect = event.target.getBoundingClientRect();
+  const rect = target.getBoundingClientRect();
   const position = horizontal
     ? event.clientX - rect.left
     : event.clientY - rect.top;
   const valLen = max - min;
   const newValue =
-    event.target.className === 'slider__label'
-      ? event.target.innerHTML
+    target.className === 'slider__label'
+      ? target.innerHTML
       : min + (valLen * position) / this.view.helpers.sliderLength;
 
   if (interval) {
@@ -37,22 +39,23 @@ function handleClick(event) {
   }
 }
 
-function handleInput(event) {
+function handleInput(event: Event) {
   const { interval, firstValue } = this.model.getState();
+  const target = event.target as HTMLInputElement;
 
   if (interval) {
-    const value = firstValue + parseInt(event.target.value, 10);
+    const value = firstValue + parseInt(target.value, 10);
     this.model.setState({ secondValue: value });
   } else {
-    this.model.setState({ value: event.target.value });
+    this.model.setState({ value: target.value });
   }
 }
 
-function handleDrag(event) {
+function handleDrag(event: MouseEvent) {
   const { model } = this;
   const { sliderLength } = this.view.helpers;
   const { horizontal, interval, max, min } = model.getState();
-  const handle = event.target;
+  const handle = event.target as HTMLElement;
   const handleX = handle.offsetLeft;
   const handleY = handle.offsetTop;
   const mouseX = event.clientX;
@@ -60,7 +63,7 @@ function handleDrag(event) {
 
   event.preventDefault();
 
-  function moveHandle(moveEvent) {
+  function moveHandle(moveEvent: MouseEvent) {
     const position = horizontal
       ? handleX + moveEvent.clientX - mouseX
       : handleY + moveEvent.clientY - mouseY;

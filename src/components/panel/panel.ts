@@ -1,4 +1,4 @@
-export default function(selector, slider) {
+export default function(selector: string, slider) {
   const element = document.getElementById(selector);
   if (!element) return;
 
@@ -6,12 +6,13 @@ export default function(selector, slider) {
     event.preventDefault();
 
     const options = {};
+    const target = event.currentTarget as HTMLFormElement;
 
-    Array.prototype.forEach.call(event.currentTarget.elements, input => {
+    Array.prototype.forEach.call(target.elements, (input: HTMLInputElement) => {
       if (input.type === 'submit') return;
 
       const { name } = input;
-      let newValue = input.value.trim();
+      let newValue: string | boolean = input.value.trim();
 
       if (input.type === 'radio' || input.type === 'checkbox')
         newValue = input.checked;

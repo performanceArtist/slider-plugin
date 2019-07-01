@@ -4,8 +4,9 @@ import Controller from './controller';
 
 document.body.innerHTML = '<div id="test"></div>';
 
-const model = new Model('#test');
-const view = new View(model);
+const root = document.querySelector('#test');
+const model = new Model();
+const view = new View(model, root);
 const controller = new Controller(model, view);
 
 controller.handleClick = jest.fn(controller.handleClick);

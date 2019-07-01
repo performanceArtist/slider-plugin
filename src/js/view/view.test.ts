@@ -4,8 +4,9 @@ import Controller from '../controller/controller';
 
 document.body.innerHTML = '<div id="test"></div>';
 
-const model = new Model('#test');
-const view = new View(model);
+const root = document.querySelector('#test');
+const model = new Model();
+const view = new View(model, root);
 const controller = new Controller(model, view);
 controller.handleClick = jest.fn(controller.handleClick);
 controller.handleInput = jest.fn(controller.handleInput);
@@ -13,7 +14,8 @@ controller.handleDrag = jest.fn(controller.handleDrag);
 
 describe('View', () => {
   it('Given a model with valid selector, sets the root element. Otherwise throws an error.', () => {
-    expect(() => new View(new Model('#none'))).toThrow();
+    const root = document.querySelector('#none');
+    expect(() => new View(new Model(root))).toThrow();
     expect(view.root).toBeInstanceOf(HTMLDivElement);
   });
 

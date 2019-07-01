@@ -2,9 +2,10 @@ import SliderError from './SliderError';
 
 import { getInitialState, debounce, checkType } from './utils';
 
-const Model = function Model(selector, options = {}) {
+import Options from '../Options';
+
+const Model = function Model(options = {}) {
   const model = getInitialState();
-  model.props.selector = selector;
 
   function validate(key, value) {
     let newValue = checkType(key, value);
@@ -55,8 +56,13 @@ const Model = function Model(selector, options = {}) {
     return newValue;
   }
 
-  function notify(type) {
-    model.observers.forEach(observer => {
+  interface Observer {
+    update?: Function;
+    render?: Function;
+  }
+
+  function notify(type: string) {
+    model.observers.forEach((observer: Observer) => {
       try {
         switch (type) {
           case 'update':
@@ -74,7 +80,7 @@ const Model = function Model(selector, options = {}) {
     });
   }
 
-  function setValue(key, newValue) {
+  function setValue(key: string, newValue: number | string | boolean) {
     const res = validate(key, newValue);
     if (res instanceof SliderError) {
       model.props.errors.push(res.getMessage());
@@ -84,7 +90,7 @@ const Model = function Model(selector, options = {}) {
     }
   }
 
-  const setState = (options = {}) => {
+  const setState = (options: Options = {}) => {
     if (!(options instanceof Object)) {
       console.log('Invalid object');
       return;
@@ -131,8 +137,8 @@ const Model = function Model(selector, options = {}) {
     setState,
     notify,
     props: model.props,
-    addObserver(ob) {
-      model.observers.push(ob);
+    addObserver(observer: Observer) {
+      model.observers.push(observer);
     }
   };
 };
