@@ -1,5 +1,5 @@
 import Model from './model';
-import SliderError from './SliderError';
+import SliderError, { ErrorType } from './SliderError';
 
 const model = new Model();
 
@@ -7,11 +7,11 @@ const model = new Model();
 function sliderErrorCheck(
   key: string,
   value: number | string | boolean,
-  type: string
+  type: ErrorType
 ) {
   const result = model.validate(key, value);
   expect(result).toBeInstanceOf(SliderError);
-  expect(result.type).toBe(type);
+  expect(result.getType()).toBe(type);
 }
 
 describe('Model', () => {
@@ -22,7 +22,7 @@ describe('Model', () => {
   });
 
   it('Sets only the defined keys, otherwise returns an error', () => {
-    sliderErrorCheck('does-not-exist', 20, 'notConf');
+    sliderErrorCheck('does-not-exist', 20, ErrorType.CONF);
   });
 
   it('Returns custom error for invalid argument type', () => {
@@ -36,8 +36,8 @@ describe('Model', () => {
     ];
     const isBool = ['interval', 'showBubble', 'showSteps', 'horizontal'];
 
-    isNumber.forEach(el => sliderErrorCheck(el, 'NaN', 'notNum'));
-    isBool.forEach(el => sliderErrorCheck(el, 42, 'notBool'));
+    isNumber.forEach(el => sliderErrorCheck(el, 'NaN', ErrorType.NUM));
+    isBool.forEach(el => sliderErrorCheck(el, 42, ErrorType.BOOL));
   });
 
   it('Returns state object copy on "getState" method call', () => {
@@ -76,14 +76,14 @@ describe('Model', () => {
   });
 
   it('Check that min value is less than max and vice versa', () => {
-    sliderErrorCheck('min', 120, 'notMin');
-    sliderErrorCheck('max', -20, 'notMax');
+    sliderErrorCheck('min', 120, ErrorType.MIN);
+    sliderErrorCheck('max', -20, ErrorType.MAX);
   });
 
   it(`Checks that step is more than zero, less than max/min difference 
   and max/min difference is divisable by it`, () => {
-    sliderErrorCheck('step', -4, 'notStep');
-    sliderErrorCheck('step', 13, 'notStep');
-    sliderErrorCheck('step', 200, 'notStep');
+    sliderErrorCheck('step', -4, ErrorType.STEP);
+    sliderErrorCheck('step', 13, ErrorType.STEP);
+    sliderErrorCheck('step', 200, ErrorType.STEP);
   });
 });

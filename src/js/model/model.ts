@@ -1,67 +1,14 @@
 import SliderError from './SliderError';
 
-import { getInitialState, debounce, checkType } from './utils';
+import { getInitialState, debounce, checkType, makeValidate } from './utils';
 
-import Options from '../Options';
+import { Options, Observer } from '../types';
 
-const Model = function Model(options = {}) {
+function Model(options = {}) {
   const model = getInitialState();
+  const validate = makeValidate(model.state);
 
-  function validate(key, value) {
-    let newValue = checkType(key, value);
-
-    if (newValue instanceof SliderError) {
-      return newValue;
-    }
-
-    switch (key) {
-      case 'value':
-      case 'firstValue':
-      case 'secondValue':
-        if (key === 'firstValue' && newValue >= model.state.secondValue)
-          return model.state.firstValue;
-        if (key === 'secondValue' && newValue <= model.state.firstValue)
-          return model.state.secondValue;
-        if (newValue > model.state.max) return model.state.max;
-        if (newValue < model.state.min) return model.state.min;
-
-        newValue =
-          model.state.min +
-          model.state.step *
-            Math.round((newValue - model.state.min) / model.state.step);
-        return newValue;
-      case 'min':
-        if (newValue >= model.state.max) {
-          return new SliderError(`Invalid min value: ${newValue}`, 'notMin');
-        }
-        break;
-      case 'max':
-        if (newValue <= model.state.min) {
-          return new SliderError(`Invalid max value: ${newValue}`, 'notMax');
-        }
-        break;
-      case 'step':
-        if (
-          newValue <= 0 ||
-          (model.state.max - model.state.min) % newValue !== 0 ||
-          newValue > model.state.max - model.state.min
-        ) {
-          return new SliderError(`Invalid step value: ${newValue}`, 'notStep');
-        }
-        break;
-      default:
-        break;
-    }
-
-    return newValue;
-  }
-
-  interface Observer {
-    update?: Function;
-    render?: Function;
-  }
-
-  function notify(type: string) {
+  function notify(type: 'update' | 'render') {
     model.observers.forEach((observer: Observer) => {
       try {
         switch (type) {
@@ -141,6 +88,6 @@ const Model = function Model(options = {}) {
       model.observers.push(observer);
     }
   };
-};
+}
 
 export default Model;

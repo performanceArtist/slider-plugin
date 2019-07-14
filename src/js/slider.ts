@@ -2,7 +2,7 @@ import Model from './model/model';
 import View from './view/view';
 import Controller from './controller/controller';
 
-import Options from './Options';
+import { Options } from './types';
 
 function init(root: HTMLElement, options: Options = {}) {
   const model = new Model(options);

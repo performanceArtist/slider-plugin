@@ -1,14 +1,8 @@
-import SliderError from './SliderError';
+import SliderError, { ErrorType } from './SliderError';
 
-import Options from '../Options';
+import { Options, ModelType } from '../types';
 
-interface ModelType {
-  state: Options;
-  props: { errors: Array<string> };
-  observers: Array<Function>;
-}
-
-const getInitialState = (function getInitialState() {
+export const getInitialState = (function getInitialState() {
   const defaults = {
     value: 0,
     firstValue: 0,
@@ -32,7 +26,7 @@ const getInitialState = (function getInitialState() {
   };
 })();
 
-function checkType(key: string, val: string | number | boolean) {
+export const checkType = (key: string, value: any) => {
   switch (key) {
     case 'value':
     case 'firstValue':
@@ -40,28 +34,73 @@ function checkType(key: string, val: string | number | boolean) {
     case 'max':
     case 'min':
     case 'step':
-      return Number.isNaN(parseFloat(val))
-        ? new SliderError(`${key} is not a number.`, 'notNum')
-        : parseFloat(val);
+      return Number.isNaN(parseFloat(value))
+        ? new SliderError(ErrorType.NUM, key)
+        : parseFloat(value);
     case 'interval':
     case 'showBubble':
     case 'showSteps':
     case 'horizontal':
-      return typeof val !== 'boolean'
-        ? new SliderError(`${key} is not a boolean.`, 'notBool')
-        : val;
+      return typeof value !== 'boolean'
+        ? new SliderError(ErrorType.BOOL, key)
+        : value;
     default:
-      return new SliderError(`${key} is not configurable`, 'notConf');
+      return new SliderError(ErrorType.CONF, key);
   }
-}
+};
 
-const debounce = (func: Function, delay: number) => {
-  let inDebounce;
-  return function callFunction(...args) {
+export const debounce = (callback: Function, delay: number) => {
+  let inDebounce: NodeJS.Timeout;
+  return function callFunction(...args: any) {
     const context = this;
     clearTimeout(inDebounce);
-    inDebounce = setTimeout(() => func.apply(context, args), delay);
+    inDebounce = setTimeout(() => callback.apply(context, args), delay);
   };
 };
 
-export { getInitialState, debounce, checkType };
+export const makeValidate = (state: Options) => {
+  return (key: string, value: number | string | boolean) => {
+    const newValue = checkType(key, value);
+
+    if (newValue instanceof SliderError) {
+      return newValue;
+    }
+
+    switch (key) {
+      case 'value':
+      case 'firstValue':
+      case 'secondValue':
+        if (key === 'firstValue' && newValue >= state.secondValue)
+          return state.firstValue;
+        if (key === 'secondValue' && newValue <= state.firstValue)
+          return state.secondValue;
+        if (newValue > state.max) return state.max;
+        if (newValue < state.min) return state.min;
+        return (
+          state.min +
+          state.step *
+            Math.round(((newValue as number) - state.min) / state.step)
+        );
+      case 'min':
+        return newValue >= state.max
+          ? new SliderError(ErrorType.MIN, key)
+          : newValue;
+      case 'max':
+        return newValue <= state.min
+          ? new SliderError(ErrorType.MAX, key)
+          : newValue;
+      case 'step':
+        if (
+          newValue <= 0 ||
+          (state.max - state.min) % (newValue as number) !== 0 ||
+          newValue > state.max - state.min
+        ) {
+          return new SliderError(ErrorType.STEP, key);
+        } else {
+          return newValue;
+        }
+      default:
+        return newValue;
+    }
+  };
+};
