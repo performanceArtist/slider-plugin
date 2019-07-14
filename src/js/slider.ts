@@ -2,10 +2,12 @@ import Model from './model/model';
 import View from './view/view';
 import Controller from './controller/controller';
 
-function init(selector, options = {}) {
-  const model = new Model(selector, options);
-  const view = new View(model);
-  const controller = new Controller(model, view);
+import { Options } from './types';
+
+function init(root: HTMLElement, options: Options = {}) {
+  const model = new Model(options);
+  const view = new View(model, root);
+  new Controller(model, view);
 
   return {
     setState: model.setState,
