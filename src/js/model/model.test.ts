@@ -9,7 +9,7 @@ function sliderErrorCheck(
   value: number | string | boolean,
   type: ErrorType
 ) {
-  const result = model.validate(key, value);
+  const result = model.validate(key, value) as SliderError;
   expect(result).toBeInstanceOf(SliderError);
   expect(result.getType()).toBe(type);
 }

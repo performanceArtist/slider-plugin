@@ -1,48 +1,83 @@
-import SliderError from './SliderError';
+import { getInitialState, debounce, checkType } from './utils';
+import SliderError, { ErrorType } from './SliderError';
+import Observable from '../Observable';
+import { Options, ModelType } from '../types';
 
-import { getInitialState, debounce, checkType, makeValidate } from './utils';
+class Model extends Observable {
+  private _model: ModelType;
 
-import { Options, Observer } from '../types';
+  constructor(options = {}) {
+    super();
 
-function Model(options = {}) {
-  const model = getInitialState();
-  const validate = makeValidate(model.state);
+    this._model = getInitialState();
+    this.setState(options);
 
-  function notify(type: 'update' | 'render') {
-    model.observers.forEach((observer: Observer) => {
-      try {
-        switch (type) {
-          case 'update':
-            observer.update();
-            break;
-          case 'render':
-            observer.render();
-            break;
-          default:
-            throw new Error('Invalid type argument');
-        }
-      } catch (err) {
-        console.error(err);
-      }
-    });
+    this.validate = this.validate.bind(this);
+    this.setState = this.setState.bind(this);
   }
 
-  function setValue(key: string, newValue: number | string | boolean) {
-    const res = validate(key, newValue);
-    if (res instanceof SliderError) {
-      model.props.errors.push(res.getMessage());
-      res.show();
-    } else {
-      model.state[key] = res;
+  validate(key: string, value: number | string | boolean) {
+    const newValue = checkType(key, value);
+    const { state } = this._model;
+
+    if (newValue instanceof SliderError) {
+      return newValue;
+    }
+
+    switch (key) {
+      case 'value':
+      case 'firstValue':
+      case 'secondValue':
+        if (key === 'firstValue' && newValue >= state.secondValue)
+          return state.firstValue;
+        if (key === 'secondValue' && newValue <= state.firstValue)
+          return state.secondValue;
+        if (newValue > state.max) return state.max;
+        if (newValue < state.min) return state.min;
+        return (
+          state.min +
+          state.step *
+            Math.round(((newValue as number) - state.min) / state.step)
+        );
+      case 'min':
+        return newValue >= state.max
+          ? new SliderError(ErrorType.MIN, key)
+          : newValue;
+      case 'max':
+        return newValue <= state.min
+          ? new SliderError(ErrorType.MAX, key)
+          : newValue;
+      case 'step':
+        if (
+          newValue <= 0 ||
+          (state.max - state.min) % (newValue as number) !== 0 ||
+          newValue > state.max - state.min
+        ) {
+          return new SliderError(ErrorType.STEP, key);
+        } else {
+          return newValue;
+        }
+      default:
+        return newValue;
     }
   }
 
-  const setState = (options: Options = {}) => {
+  setState(options: Options = {}) {
     if (!(options instanceof Object)) {
       console.log('Invalid object');
       return;
     }
 
+    const { state, props } = this._model;
+    const setValue = (key: string, newValue: number | string | boolean) => {
+      const res = this.validate(key, newValue);
+      if (res instanceof SliderError) {
+        props.errors.push(res.getMessage());
+        res.show();
+      } else {
+        state[key] = res;
+      }
+    };
     const keys = Object.keys(options);
     const otherOptions = keys.filter(
       key => key !== 'value' && key !== 'firstValue' && key !== 'secondValue'
@@ -52,42 +87,36 @@ function Model(options = {}) {
       setValue(key, options[key]);
     });
 
-    const interval = model.state.interval || options.interval;
-
     // set value after options update to ensure it's valid
+    const interval = state.interval || options.interval;
+
     if (interval) {
-      const first = options.firstValue || model.state.firstValue;
-      const second = options.secondValue || model.state.secondValue;
+      const first = options.firstValue || state.firstValue;
+      const second = options.secondValue || state.secondValue;
 
       setValue('firstValue', first);
       setValue('secondValue', second);
     } else {
-      setValue('value', options.value || model.state.value);
+      setValue('value', options.value || state.value);
     }
 
     // decide whether to rerender everything or not
     if (otherOptions.length === 0) {
-      notify('update');
+      this.notify('update');
     } else {
       debounce(() => {
-        notify('render');
+        this.notify('render');
       }, 200)();
     }
-  };
+  }
 
-  setState(options);
+  getState() {
+    return { ...this._model.state };
+  }
 
-  // public methods
-  return {
-    validate,
-    getState: () => ({ ...model.state }),
-    setState,
-    notify,
-    props: model.props,
-    addObserver(observer: Observer) {
-      model.observers.push(observer);
-    }
-  };
+  getProps() {
+    return { ...this._model.props };
+  }
 }
 
 export default Model;

@@ -15,15 +15,14 @@ controller.handleDrag = jest.fn(controller.handleDrag);
 describe('View', () => {
   it('Given a model with valid selector, sets the root element. Otherwise throws an error.', () => {
     const root = document.querySelector('#none');
-    expect(() => new View(new Model(root))).toThrow();
+    expect(() => new View(new Model(), root)).toThrow();
     expect(view.root).toBeInstanceOf(HTMLDivElement);
   });
 
   it("Given a controller, creates dom object and sets model's sliderLength", () => {
-    view.render(controller);
-
+    view.render();
     // imitation, supposed to be set after rendering
-    view.helpers.sliderLength = 200;
+    view._sliderLength = 200;
     expect(view.dom).toBeDefined();
   });
 

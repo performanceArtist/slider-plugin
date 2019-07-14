@@ -14,8 +14,6 @@ controller.handleInput = jest.fn(controller.handleInput);
 controller.handleDrag = jest.fn(controller.handleDrag);
 model.setState = jest.fn(model.setState);
 
-view.render(controller);
-
 describe('Controller', () => {
   it('Sets value on click, notifies observers', () => {
     view.dom.slider.dispatchEvent(new Event('click'));

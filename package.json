@@ -8,7 +8,8 @@
     "coverage": "jest --coverage",
     "build": "webpack --mode=production",
     "dev": "webpack --mode=development",
-    "start": "webpack-dev-server --mode=development"
+    "start": "webpack-dev-server --mode=development",
+    "tsc": "tsc"
   },
   "author": "",
   "license": "ISC",
@@ -21,6 +22,7 @@
     "@types/node": "^12.0.10",
     "@types/webpack-env": "^1.13.9",
     "@typescript-eslint/eslint-plugin": "^1.11.0",
+    "@typescript-eslint/parser": "^1.12.0",
     "babel-eslint": "^10.0.2",
     "babel-jest": "^24.7.1",
     "babel-loader": "^8.0.5",

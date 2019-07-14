@@ -1,51 +1,118 @@
 import { createSlider } from './utils';
+import Model from '../model/model';
+import Controller from '../controller/controller';
+import Observable from '../Observable';
 
-function View(model, root: HTMLElement) {
-  this.model = model;
-  if (!root) throw new Error(`Invalid root element`);
-  this.root = root;
+import { SliderDOM } from '../types';
 
-  model.addObserver(this);
+class View extends Observable {
+  model: Model;
+  controller: Controller;
+  root: HTMLElement;
+  dom: SliderDOM;
+  _sliderLength: number;
+
+  constructor(model: Model, root: HTMLElement) {
+    super();
+
+    this.model = model;
+    if (!root) throw new Error(`Invalid root element`);
+    this.root = root;
+
+    this.render = this.render.bind(this);
+    this.update = this.update.bind(this);
+    this.getSliderLength = this.getSliderLength.bind(this);
+
+    this.render();
+  }
+
+  render() {
+    const { horizontal, interval } = this.model.getState();
+    const dom = createSlider(this.model.getState(), this.model.getProps());
+
+    dom.slider.addEventListener('click', event => this.notify('click', event));
+    dom.slider.addEventListener('drag', event => this.notify('drag', event));
+    dom.input.addEventListener('blur', event => this.notify('blur', event));
+    if (interval) {
+      dom.firstHandle.addEventListener('mousedown', event =>
+        this.notify('mousedown', event)
+      );
+      dom.secondHandle.addEventListener('mousedown', event =>
+        this.notify('mousedown', event)
+      );
+    } else {
+      dom.sliderHandle.addEventListener('mousedown', event =>
+        this.notify('mousedown', event)
+      );
+    }
+
+    this.root.innerHTML = '';
+    this.root.appendChild(dom.container);
+    this.dom = dom;
+
+    // can only get slider length after it's been rendered
+    const length = horizontal
+      ? dom.slider.offsetWidth
+      : dom.slider.offsetHeight;
+    this._sliderLength = length;
+
+    this.update();
+  }
+
+  update() {
+    const { interval } = this.model.getState();
+    const sliderLength = this.getSliderLength();
+
+    if (interval) {
+      const {
+        firstValue,
+        secondValue,
+        min,
+        max,
+        horizontal
+      } = this.model.getState();
+
+      changePosition({
+        handle: this.dom.firstHandle,
+        done: this.dom.firstDone,
+        bubble: this.dom.firstBubble,
+        position: (sliderLength * (firstValue - min)) / (max - min),
+        horizontal
+      });
+
+      changePosition({
+        handle: this.dom.secondHandle,
+        done: this.dom.selected,
+        bubble: this.dom.secondBubble,
+        position: (sliderLength * (secondValue - min)) / (max - min),
+        horizontal
+      });
+
+      this.dom.firstBubble.innerHTML = firstValue.toString();
+      this.dom.secondBubble.innerHTML = secondValue.toString();
+      const input = this.dom.input as HTMLInputElement;
+      input.value = (secondValue - firstValue).toString();
+    } else {
+      const { value, min, max, horizontal } = this.model.getState();
+
+      changePosition({
+        handle: this.dom.sliderHandle,
+        done: this.dom.selected,
+        bubble: this.dom.bubble,
+        position: (sliderLength * (value - min)) / (max - min),
+        horizontal
+      });
+
+      this.dom.bubble.innerHTML = value.toString();
+      const input = this.dom.input as HTMLInputElement;
+      input.value = value.toString();
+    }
+  }
+
+  getSliderLength() {
+    return this._sliderLength;
+  }
 }
-
-// initializes the controller used in render function
-View.prototype.init = function init(controller) {
-  this.controller = controller;
-  this.render();
-};
-
-View.prototype.render = function render() {
-  if (this.controller === undefined) {
-    throw new Error('Controller was not initialized.');
-  }
-
-  const { horizontal, interval } = this.model.getState();
-  const dom = createSlider(this.model);
-
-  dom.slider.addEventListener('click', this.controller.handleClick);
-  dom.slider.addEventListener('drag', (event: MouseEvent) =>
-    event.preventDefault()
-  );
-  dom.input.addEventListener('blur', this.controller.handleInput);
-
-  if (interval) {
-    dom.firstHandle.addEventListener('mousedown', this.controller.handleDrag);
-    dom.secondHandle.addEventListener('mousedown', this.controller.handleDrag);
-  } else {
-    dom.sliderHandle.addEventListener('mousedown', this.controller.handleDrag);
-  }
-
-  this.root.innerHTML = '';
-  this.model.props.errors = [];
-  this.root.appendChild(dom.container);
-  this.dom = dom;
-
-  // can only get slider length after it's been rendered
-  const length = horizontal ? dom.slider.offsetWidth : dom.slider.offsetHeight;
-  this.helpers = { sliderLength: length };
-
-  this.update();
-};
 
 interface PositionArgs {
   handle: HTMLElement;
@@ -72,53 +139,5 @@ function changePosition({
     bubble.style.top = `${position - 6}px`;
   }
 }
-
-// value update only, no rerender
-View.prototype.update = function update() {
-  const { interval } = this.model.getState();
-
-  if (interval) {
-    const {
-      firstValue,
-      secondValue,
-      min,
-      max,
-      horizontal
-    } = this.model.getState();
-
-    changePosition({
-      handle: this.dom.firstHandle,
-      done: this.dom.firstDone,
-      bubble: this.dom.firstBubble,
-      position: (this.helpers.sliderLength * (firstValue - min)) / (max - min),
-      horizontal
-    });
-
-    changePosition({
-      handle: this.dom.secondHandle,
-      done: this.dom.selected,
-      bubble: this.dom.secondBubble,
-      position: (this.helpers.sliderLength * (secondValue - min)) / (max - min),
-      horizontal
-    });
-
-    this.dom.firstBubble.innerHTML = firstValue;
-    this.dom.secondBubble.innerHTML = secondValue;
-    this.dom.input.value = secondValue - firstValue;
-  } else {
-    const { value, min, max, horizontal } = this.model.getState();
-
-    changePosition({
-      handle: this.dom.sliderHandle,
-      done: this.dom.selected,
-      bubble: this.dom.bubble,
-      position: (this.helpers.sliderLength * (value - min)) / (max - min),
-      horizontal
-    });
-
-    this.dom.bubble.innerHTML = value;
-    this.dom.input.value = value;
-  }
-};
 
 export default View;

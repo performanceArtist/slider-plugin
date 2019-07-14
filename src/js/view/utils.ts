@@ -1,5 +1,7 @@
+import { Options, SliderDOM } from '../types';
+
 // helper to create nodes
-function createNode(type: string, attributes = {}) {
+function createNode(type: string, attributes: { [key: string]: string } = {}) {
   const node = document.createElement(type);
 
   Object.keys(attributes).forEach(key => {
@@ -10,21 +12,12 @@ function createNode(type: string, attributes = {}) {
 }
 
 // creates slider based purely on model
-function createSlider(model) {
-  const {
-    min,
-    max,
-    interval,
-    showBubble,
-    horizontal,
-    showSteps,
-    step
-  } = model.getState();
-
+function createSlider(state: Options, props: any) {
+  const { min, max, interval, showBubble, horizontal, showSteps, step } = state;
   const newClass = horizontal ? 'slider_hor' : 'slider_ver';
   const bubbleStyle = showBubble ? 'display:absolute;' : 'display:none;';
 
-  const dom: Record<string, HTMLElement | Node> = {
+  const dom: SliderDOM = {
     container: createNode('div', { class: 'slider' }),
     input: createNode('input', { class: 'slider__input', type: 'text' }),
     slider: createNode('div', { class: `slider__slider ${newClass}` }),
@@ -42,16 +35,16 @@ function createSlider(model) {
   dom.container.appendChild(dom.errorCont);
 
   if (interval) {
-    dom.firstHandle = dom.sliderHandle.cloneNode();
+    dom.firstHandle = dom.sliderHandle.cloneNode() as HTMLElement;
     dom.firstHandle.classList.add('slider__first-handle');
-    dom.secondHandle = dom.sliderHandle.cloneNode();
+    dom.secondHandle = dom.sliderHandle.cloneNode() as HTMLElement;
     dom.secondHandle.classList.add('slider__second-handle');
-    dom.firstBubble = dom.bubble.cloneNode();
-    dom.secondBubble = dom.bubble.cloneNode();
+    dom.firstBubble = dom.bubble.cloneNode() as HTMLElement;
+    dom.secondBubble = dom.bubble.cloneNode() as HTMLElement;
     dom.firstDone = createNode('div', { class: 'slider__first-done' });
   }
 
-  model.props.errors
+  props.errors
     .map((error: string) => {
       const row = createNode('div', { class: 'slider__error' });
       row.innerHTML = error;
@@ -60,7 +53,7 @@ function createSlider(model) {
     .forEach((element: HTMLElement) => {
       dom.errorCont.appendChild(element);
     });
-  dom.bubble.appendChild(document.createTextNode(min));
+  dom.bubble.appendChild(document.createTextNode(min.toString()));
 
   const inSlider = interval
     ? [
@@ -84,7 +77,7 @@ function createSlider(model) {
         class: 'slider__label',
         style: horizontal ? `left:${percentage}%` : `top:${percentage}%`
       });
-      label.innerHTML = i + min;
+      label.innerHTML = (i + min).toString();
       dom.slider.appendChild(label);
     }
   }

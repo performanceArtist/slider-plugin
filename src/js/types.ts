@@ -9,15 +9,12 @@ export interface Options {
   showBubble?: boolean;
   showSteps?: boolean;
   horizontal?: boolean;
-}
-
-export interface Observer {
-  update?: Function;
-  render?: Function;
+  [key: string]: string | boolean | number;
 }
 
 export interface ModelType {
   state: Options;
   props: { errors: Array<string> };
-  observers: Array<Observer>;
 }
+
+export type SliderDOM = Record<string, HTMLElement>;

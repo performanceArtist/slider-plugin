@@ -5,7 +5,7 @@ export default function(selector: string, slider) {
   element.addEventListener('change', event => {
     event.preventDefault();
 
-    const options = {};
+    const options: { [key: string]: any } = {};
     const target = event.currentTarget as HTMLFormElement;
 
     Array.prototype.forEach.call(target.elements, (input: HTMLInputElement) => {
