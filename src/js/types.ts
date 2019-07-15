@@ -14,7 +14,12 @@ export interface Options {
 
 export interface ModelType {
   state: Options;
-  props: { errors: Array<string> };
+  meta: { errors: Array<string> };
 }
 
 export type SliderDOM = Record<string, HTMLElement>;
+
+export type SliderInterface = {
+  getState: () => Options;
+  setState: (options: Options) => void;
+};

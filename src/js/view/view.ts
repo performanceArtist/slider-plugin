@@ -28,7 +28,7 @@ class View extends Observable {
 
   render() {
     const { horizontal, interval } = this.model.getState();
-    const dom = createSlider(this.model.getState(), this.model.getProps());
+    const dom = createSlider(this.model.getState(), this.model.takeMeta());
 
     dom.slider.addEventListener('click', event => this.notify('click', event));
     dom.slider.addEventListener('drag', event => this.notify('drag', event));

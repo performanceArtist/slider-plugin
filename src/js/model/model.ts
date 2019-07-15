@@ -14,6 +14,8 @@ class Model extends Observable {
 
     this.validate = this.validate.bind(this);
     this.setState = this.setState.bind(this);
+    this.getState = this.getState.bind(this);
+    this.takeMeta = this.takeMeta.bind(this);
   }
 
   validate(key: string, value: number | string | boolean) {
@@ -68,11 +70,11 @@ class Model extends Observable {
       return;
     }
 
-    const { state, props } = this._model;
+    const { state, meta } = this._model;
     const setValue = (key: string, newValue: number | string | boolean) => {
       const res = this.validate(key, newValue);
       if (res instanceof SliderError) {
-        props.errors.push(res.getMessage());
+        meta.errors.push(res.getMessage());
         res.show();
       } else {
         state[key] = res;
@@ -114,8 +116,10 @@ class Model extends Observable {
     return { ...this._model.state };
   }
 
-  getProps() {
-    return { ...this._model.props };
+  takeMeta() {
+    const meta = { ...this._model.meta };
+    this._model.meta.errors = [];
+    return meta;
   }
 }
 

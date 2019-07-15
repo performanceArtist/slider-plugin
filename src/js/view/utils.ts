@@ -12,7 +12,7 @@ function createNode(type: string, attributes: { [key: string]: string } = {}) {
 }
 
 // creates slider based purely on model
-function createSlider(state: Options, props: any) {
+function createSlider(state: Options, { errors }: { errors: Array<string> }) {
   const { min, max, interval, showBubble, horizontal, showSteps, step } = state;
   const newClass = horizontal ? 'slider_hor' : 'slider_ver';
   const bubbleStyle = showBubble ? 'display:absolute;' : 'display:none;';
@@ -44,7 +44,7 @@ function createSlider(state: Options, props: any) {
     dom.firstDone = createNode('div', { class: 'slider__first-done' });
   }
 
-  props.errors
+  errors
     .map((error: string) => {
       const row = createNode('div', { class: 'slider__error' });
       row.innerHTML = error;

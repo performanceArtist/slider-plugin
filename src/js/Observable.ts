@@ -10,7 +10,7 @@ class Observable {
   }
 
   subscribe(callback: Function, type: string) {
-    if (this._observers[type]) {
+    if (this._observers[type] instanceof Array) {
       this._observers[type].push(callback);
     } else {
       this._observers[type] = [callback];
@@ -24,8 +24,7 @@ class Observable {
   }
 
   notify(type: string, data?: any) {
-    if (this._observers[type])
-      this._observers[type].forEach(observer => observer(data));
+    this._observers[type].forEach(observer => observer(data));
   }
 }
 

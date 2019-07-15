@@ -1,8 +1,22 @@
-export default function(selector: string, slider) {
-  const element = document.getElementById(selector);
-  if (!element) return;
+import { SliderInterface } from '../../js/types';
 
-  element.addEventListener('change', event => {
+export default function(selector: string, slider: SliderInterface) {
+  const form = document.getElementById(selector) as HTMLFormElement;
+  const state = slider.getState();
+  if (!form) throw new Error('Invalid selector');
+
+  Array.prototype.forEach.call(form.elements, (input: HTMLInputElement) => {
+    const defaultValue = state[input.name];
+    if (defaultValue !== undefined) {
+      if (input.type === 'radio' || input.type === 'checkbox') {
+        input.checked = defaultValue as boolean;
+      } else {
+        input.value = defaultValue.toString();
+      }
+    }
+  });
+
+  form.addEventListener('change', event => {
     event.preventDefault();
 
     const options: { [key: string]: any } = {};
@@ -18,7 +32,7 @@ export default function(selector: string, slider) {
         newValue = input.checked;
 
       // no empty strings
-      if (newValue === '') return;
+      //if (newValue === '') return;
 
       options[name] = newValue;
     });

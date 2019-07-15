@@ -1,6 +1,6 @@
 import SliderError, { ErrorType } from './SliderError';
 
-import { Options, ModelType } from '../types';
+import { ModelType } from '../types';
 
 export const getInitialState = (function memoizeDefaults() {
   const defaults = {
@@ -18,7 +18,7 @@ export const getInitialState = (function memoizeDefaults() {
 
   return (): ModelType => ({
     state: { ...defaults },
-    props: { errors: [] }
+    meta: { errors: [] }
   });
 })();
 
