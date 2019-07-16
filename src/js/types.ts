@@ -22,4 +22,6 @@ export type SliderDOM = Record<string, HTMLElement>;
 export type SliderInterface = {
   getState: () => Options;
   setState: (options: Options) => void;
+  subscribe: (callback: Function, type: string) => void;
+  unsubscribe: (callback: Function, type: string) => void;
 };

@@ -32,7 +32,7 @@ class View extends Observable {
 
     dom.slider.addEventListener('click', event => this.notify('click', event));
     dom.slider.addEventListener('drag', event => this.notify('drag', event));
-    dom.input.addEventListener('blur', event => this.notify('blur', event));
+
     if (interval) {
       dom.firstHandle.addEventListener('mousedown', event =>
         this.notify('mousedown', event)
@@ -90,8 +90,6 @@ class View extends Observable {
 
       this.dom.firstBubble.innerHTML = firstValue.toString();
       this.dom.secondBubble.innerHTML = secondValue.toString();
-      const input = this.dom.input as HTMLInputElement;
-      input.value = (secondValue - firstValue).toString();
     } else {
       const { value, min, max, horizontal } = this.model.getState();
 
@@ -104,8 +102,6 @@ class View extends Observable {
       });
 
       this.dom.bubble.innerHTML = value.toString();
-      const input = this.dom.input as HTMLInputElement;
-      input.value = value.toString();
     }
   }
 

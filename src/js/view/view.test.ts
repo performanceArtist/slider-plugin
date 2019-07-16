@@ -9,7 +9,6 @@ const model = new Model();
 const view = new View(model, root);
 const controller = new Controller(model, view);
 controller.handleClick = jest.fn(controller.handleClick);
-controller.handleInput = jest.fn(controller.handleInput);
 controller.handleDrag = jest.fn(controller.handleDrag);
 
 describe('View', () => {
@@ -33,8 +32,6 @@ describe('View', () => {
   it('Adds event handlers to the respective elements', () => {
     view.dom.slider.dispatchEvent(new Event('click'));
     expect(controller.handleClick).toBeCalled();
-    view.dom.input.dispatchEvent(new Event('blur'));
-    expect(controller.handleInput).toBeCalled();
     view.dom.sliderHandle.dispatchEvent(new Event('mousedown'));
     expect(controller.handleDrag).toBeCalled();
   });

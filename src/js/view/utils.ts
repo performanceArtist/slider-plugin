@@ -1,7 +1,10 @@
 import { Options, SliderDOM } from '../types';
 
 // helper to create nodes
-function createNode(type: string, attributes: { [key: string]: string } = {}) {
+export function createNode(
+  type: string,
+  attributes: { [key: string]: string } = {}
+) {
   const node = document.createElement(type);
 
   Object.keys(attributes).forEach(key => {
@@ -19,7 +22,6 @@ function createSlider(state: Options, { errors }: { errors: Array<string> }) {
 
   const dom: SliderDOM = {
     container: createNode('div', { class: 'slider' }),
-    input: createNode('input', { class: 'slider__input', type: 'text' }),
     slider: createNode('div', { class: `slider__slider ${newClass}` }),
     bubble: createNode('div', {
       class: 'slider__bubble',
@@ -30,7 +32,6 @@ function createSlider(state: Options, { errors }: { errors: Array<string> }) {
     errorCont: createNode('div', { class: 'slider__error-container' })
   };
 
-  dom.container.appendChild(dom.input);
   dom.container.appendChild(dom.slider);
   dom.container.appendChild(dom.errorCont);
 

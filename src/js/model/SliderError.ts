@@ -11,7 +11,7 @@ const ErrorMessage = new Map<ErrorType, string>([
   [ErrorType.NUM, 'Expected a number'],
   [ErrorType.BOOL, 'Expected a boolean'],
   [ErrorType.CONF, 'Invalid or non-configurable key'],
-  [ErrorType.MAX, 'Should be less than min'],
+  [ErrorType.MAX, 'Should be more than min'],
   [ErrorType.MIN, 'Should be less than max'],
   [ErrorType.STEP, 'min and max difference should be divisible by step']
 ]);

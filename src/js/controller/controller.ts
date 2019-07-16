@@ -11,14 +11,12 @@ class Controller {
 
     this.handleClick = this.handleClick.bind(this);
     this.handleDrag = this.handleDrag.bind(this);
-    this.handleInput = this.handleInput.bind(this);
 
     model.subscribe(view.update, 'update');
     model.subscribe(view.render, 'render');
 
     view.subscribe(this.handleClick, 'click');
     view.subscribe(this.handleDrag, 'mousedown');
-    view.subscribe(this.handleInput, 'blur');
     view.subscribe((event: MouseEvent) => event.preventDefault(), 'drag');
   }
 
@@ -61,18 +59,6 @@ class Controller {
       }
     } else {
       this.model.setState({ value: newValue });
-    }
-  }
-
-  handleInput(event: Event) {
-    const { interval, firstValue } = this.model.getState();
-    const target = event.target as HTMLInputElement;
-
-    if (interval) {
-      const value = firstValue + parseInt(target.value, 10);
-      this.model.setState({ secondValue: value });
-    } else {
-      this.model.setState({ value: parseInt(target.value, 10) });
     }
   }
 

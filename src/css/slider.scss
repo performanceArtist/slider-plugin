@@ -39,7 +39,7 @@
     z-index: 1;
     display: block;
     border: 0;
-    background: #4eb7a8;
+    background: $light-green;
     border-radius: 0.1em;
   }
 
@@ -48,7 +48,7 @@
     z-index: 2;
     display: block;
     border: 0;
-    background: #e6e6e6;
+    background: $light-grey;
     border-radius: 0.1em;
   }
 
@@ -56,7 +56,7 @@
     cursor: pointer;
     border-radius: 50%;
     border: none;
-    background: #4eb7a8;
+    background: $light-green;
     position: absolute;
     z-index: 2;
     width: 25px;
@@ -71,7 +71,6 @@
     width: 300px;
     height: 14px;
     margin-top: 45px;
-    margin-left: 5px;
 
     .slider__done,
     .slider__first-done {
@@ -145,7 +144,7 @@
       @extend %unselectable;
       position: absolute;
       width: 20px;
-      left: -25px;
+      left: -32px;
       text-align: center;
     }
   }

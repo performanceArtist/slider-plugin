@@ -1,7 +1,14 @@
 import Model from './model';
+import View from '../view/view';
+import Controller from '../controller/controller';
 import SliderError, { ErrorType } from './SliderError';
 
+document.body.innerHTML = '<div id="test"></div>';
+
+const root = document.querySelector('#test');
 const model = new Model();
+const view = new View(model, root);
+const controller = new Controller(model, view);
 
 // helper for error checks
 function sliderErrorCheck(

@@ -8,10 +8,16 @@ html(lang='en')
     title Slider testing
   body
     .content
-      h1 Slider testing
       .examples
-        #example1
-        #example2
-        #example3
-      #config-example
-      +panel('panel')
+        .examples__title Slider testing
+        .examples__container
+          .examples__example
+            #example-1
+            +panel({slider:'example-1'})
+          .examples__example
+            #example-2
+            +panel({slider:'example-2'})
+          .examples__example
+            #example-3
+            +panel({slider:'example-3'})
+      

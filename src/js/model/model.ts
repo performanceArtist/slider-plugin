@@ -6,11 +6,11 @@ import { Options, ModelType } from '../types';
 class Model extends Observable {
   private _model: ModelType;
 
-  constructor(options = {}) {
+  constructor(options: Options | null = null) {
     super();
 
     this._model = getInitialState();
-    this.setState(options);
+    if (options) this.setState(options);
 
     this.validate = this.validate.bind(this);
     this.setState = this.setState.bind(this);

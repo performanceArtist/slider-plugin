@@ -39,7 +39,13 @@ const config = {
             loader: MiniCssExtractPlugin.loader
           },
           'css-loader',
-          'sass-loader'
+          {
+            loader: 'sass-loader',
+            options: {
+              data: '@import "./css/globals";',
+              includePaths: [path.join(__dirname, 'src')]
+            }
+          }
         ]
       }
     ]
