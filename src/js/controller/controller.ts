@@ -48,11 +48,11 @@ class Controller {
     const sliderLength = this.view.getSliderLength();
     const newValue =
       target.className === 'slider__label'
-        ? parseInt(target.innerHTML, 10)
+        ? parseFloat(target.innerHTML)
         : min + (valLen * position) / sliderLength;
 
     if (interval) {
-      if (newValue < firstValue - min + (secondValue - firstValue) / 2) {
+      if (Math.abs(newValue - firstValue) < Math.abs(newValue - secondValue)) {
         this.model.setState({ firstValue: newValue });
       } else {
         this.model.setState({ secondValue: newValue });

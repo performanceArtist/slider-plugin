@@ -93,13 +93,22 @@ class Model extends Observable {
     const interval = state.interval || options.interval;
 
     if (interval) {
-      const first = options.firstValue || state.firstValue;
-      const second = options.secondValue || state.secondValue;
+      const first =
+        options.firstValue === undefined
+          ? state.firstValue
+          : options.firstValue;
+      const second =
+        options.secondValue === undefined
+          ? state.secondValue
+          : options.secondValue;
 
       setValue('firstValue', first);
       setValue('secondValue', second);
     } else {
-      setValue('value', options.value || state.value);
+      setValue(
+        'value',
+        options.value === undefined ? state.value : options.value
+      );
     }
 
     // decide whether to rerender everything or not
