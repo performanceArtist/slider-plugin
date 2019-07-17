@@ -15,7 +15,7 @@ export function createNode(
 }
 
 // creates slider based purely on model
-function createSlider(state: Options, { errors }: { errors: Array<string> }) {
+export function createSlider(state: Options, { errors }: { errors: Array<string> }) {
   const { min, max, interval, showBubble, horizontal, showSteps, step } = state;
   const newClass = horizontal ? 'slider_hor' : 'slider_ver';
   const bubbleStyle = showBubble ? 'display:absolute;' : 'display:none;';
@@ -71,8 +71,6 @@ function createSlider(state: Options, { errors }: { errors: Array<string> }) {
     dom.slider.appendChild(el);
   });
 
-  const total = (max - min) / step;
-
   if (showSteps) {
     for (let i = 0; i <= max - min; i += step) {
       const position = horizontal
@@ -90,5 +88,3 @@ function createSlider(state: Options, { errors }: { errors: Array<string> }) {
 
   return dom;
 }
-
-export { createSlider };
