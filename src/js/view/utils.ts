@@ -71,12 +71,17 @@ function createSlider(state: Options, { errors }: { errors: Array<string> }) {
     dom.slider.appendChild(el);
   });
 
+  const total = (max - min) / step;
+
   if (showSteps) {
     for (let i = 0; i <= max - min; i += step) {
-      const percentage = (100 * i) / (max - min);
+      const position = horizontal
+        ? `${(100 * i) / (max - min) - 3.5}%`
+        : `${(100 * i) / (max - min) - 2.7}%`;
+
       const label = createNode('label', {
         class: 'slider__label',
-        style: horizontal ? `left:${percentage}%` : `top:${percentage}%`
+        style: horizontal ? `left:${position}` : `top:${position}`
       });
       label.innerHTML = (i + min).toString();
       dom.slider.appendChild(label);

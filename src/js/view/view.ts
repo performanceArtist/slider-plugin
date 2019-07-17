@@ -126,13 +126,13 @@ function changePosition({
   horizontal
 }: PositionArgs) {
   if (horizontal) {
-    handle.style.left = `${position - 2}px`;
+    handle.style.left = `${position - 12.5}px`;
     done.style.width = `${position + 5}px`;
-    bubble.style.left = `${position - 6}px`;
+    bubble.style.left = `${position - 18}px`;
   } else {
-    handle.style.top = `${position - 2}px`;
+    handle.style.top = `${position - 12.5}px`;
     done.style.height = `${position + 5}px`;
-    bubble.style.top = `${position - 6}px`;
+    bubble.style.top = `${position - 18}px`;
   }
 }
 
