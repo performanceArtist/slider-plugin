@@ -50,15 +50,16 @@ class Model extends Observable {
           ? new SliderError(ErrorType.MAX, key)
           : newValue;
       case 'step':
-        if (
-          newValue <= 0 ||
-          (state.max - state.min) % (newValue as number) !== 0 ||
-          newValue > state.max - state.min
-        ) {
+        if (newValue <= 0 || newValue > state.max - state.min)
           return new SliderError(ErrorType.STEP, key);
-        } else {
-          return newValue;
-        }
+
+        const newStep = newValue as number;
+        const remainder = (state.max - state.min) % newStep;
+        const quotient = Math.floor((state.max - state.min) / newStep);
+
+        if (remainder !== 0) this.setState({ max: (quotient + 1) * newStep });
+
+        return newValue;
       default:
         return newValue;
     }
