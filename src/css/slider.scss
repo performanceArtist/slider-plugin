@@ -43,15 +43,6 @@
     border-radius: 0.1em;
   }
 
-  &__first-done {
-    position: absolute;
-    z-index: 2;
-    display: block;
-    border: 0;
-    background: $light-grey;
-    border-radius: 0.1em;
-  }
-
   &__head {
     cursor: pointer;
     border-radius: 50%;
@@ -72,8 +63,7 @@
     height: 14px;
     margin-top: 45px;
 
-    .slider__done,
-    .slider__first-done {
+    .slider__done {
       height: 100%;
       width: 0;
     }
@@ -114,8 +104,7 @@
     width: 14px;
     height: 300px;
 
-    .slider__done,
-    .slider__first-done {
+    .slider__done {
       height: 0;
       width: 100%;
     }

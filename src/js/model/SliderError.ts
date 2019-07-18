@@ -13,7 +13,7 @@ const ErrorMessage = new Map<ErrorType, string>([
   [ErrorType.CONF, 'Invalid or non-configurable key'],
   [ErrorType.MAX, 'Should be more than min'],
   [ErrorType.MIN, 'Should be less than max'],
-  [ErrorType.STEP, 'min and max difference should be divisible by step']
+  [ErrorType.STEP, 'Should be more than zero and less than max-min difference']
 ]);
 
 class SliderError extends Error {

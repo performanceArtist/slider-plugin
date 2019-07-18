@@ -62,7 +62,7 @@ class Controller {
     }
   }
 
-  handleDrag(event: MouseEvent) {
+  handleDrag({ event, handleNum }: { event: MouseEvent; handleNum?: number }) {
     const { model } = this;
     const sliderLength = this.view.getSliderLength();
     const { horizontal, interval, max, min } = model.getState();
@@ -81,7 +81,7 @@ class Controller {
       const relValue = ((max - min) * position) / sliderLength;
 
       if (interval) {
-        if (handle.classList.contains('slider__first-handle')) {
+        if (handleNum === 1) {
           model.setState({ firstValue: relValue + min });
         } else {
           model.setState({ secondValue: relValue + min });
