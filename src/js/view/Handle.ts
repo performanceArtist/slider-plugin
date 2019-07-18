@@ -1,14 +1,14 @@
 import { createNode } from './utils';
 
 class Handle {
-  handle: HTMLElement;
+  element: HTMLElement;
   private _bubble: HTMLElement;
   private _horizontal: boolean;
 
   constructor({ position = 0, horizontal = true, showBubble = true } = {}) {
     const bubbleStyle = showBubble ? 'display:absolute;' : 'display:none;';
 
-    this.handle = createNode('span', { class: 'slider__head' });
+    this.element = createNode('span', { class: 'slider__head' });
     this._bubble = createNode('div', {
       class: 'slider__bubble',
       style: bubbleStyle
@@ -21,10 +21,10 @@ class Handle {
 
   setPosition(value: number, position: number) {
     if (this._horizontal) {
-      this.handle.style.left = `${position - 12.5}px`;
+      this.element.style.left = `${position - 12.5}px`;
       this._bubble.style.left = `${position - 18}px`;
     } else {
-      this.handle.style.top = `${position - 12.5}px`;
+      this.element.style.top = `${position - 12.5}px`;
       this._bubble.style.top = `${position - 18}px`;
     }
 
@@ -33,7 +33,7 @@ class Handle {
 
   getElements() {
     const fragment = document.createDocumentFragment();
-    fragment.appendChild(this.handle);
+    fragment.appendChild(this.element);
     fragment.appendChild(this._bubble);
     return fragment;
   }

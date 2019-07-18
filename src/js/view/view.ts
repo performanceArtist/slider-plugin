@@ -12,8 +12,8 @@ class View extends Observable {
   controller: Controller;
   root: HTMLElement;
   dom: SliderDOM;
-  handle: Handle | [Handle, Handle];
-  _sliderLength: number;
+  handle: Handle | { first: Handle; second: Handle };
+  private _sliderLength: number;
 
   constructor(model: Model, root: HTMLElement) {
     super();
@@ -22,6 +22,7 @@ class View extends Observable {
     if (!root) throw new Error(`Invalid root element`);
     this.root = root;
 
+    this.createSlider = this.createSlider.bind(this);
     this.render = this.render.bind(this);
     this.update = this.update.bind(this);
     this.getSliderLength = this.getSliderLength.bind(this);
@@ -30,8 +31,6 @@ class View extends Observable {
   }
 
   createSlider() {
-    const state = this.model.getState();
-    const errors = this.model.takeMeta().errors;
     const {
       min,
       max,
@@ -40,12 +39,14 @@ class View extends Observable {
       horizontal,
       showSteps,
       step
-    } = state;
-    const newClass = horizontal ? 'slider_hor' : 'slider_ver';
+    } = this.model.getState();
+    const errors = this.model.takeMeta().errors;
 
     const dom: SliderDOM = {
       container: createNode('div', { class: 'slider' }),
-      slider: createNode('div', { class: `slider__slider ${newClass}` }),
+      slider: createNode('div', {
+        class: `slider__slider ${horizontal ? 'slider_hor' : 'slider_ver'}`
+      }),
       selected: createNode('div', { class: 'slider__done' }),
       errorCont: createNode('div', { class: 'slider__error-container' })
     };
@@ -53,19 +54,17 @@ class View extends Observable {
     dom.container.appendChild(dom.slider);
     dom.container.appendChild(dom.errorCont);
 
-    let handle: Handle | [Handle, Handle];
-
     if (interval) {
-      handle = [
-        new Handle({ horizontal, showBubble }),
-        new Handle({ horizontal, showBubble })
-      ];
+      this.handle = {
+        first: new Handle({ horizontal, showBubble }),
+        second: new Handle({ horizontal, showBubble })
+      };
 
-      dom.slider.appendChild(handle[0].getElements());
-      dom.slider.appendChild(handle[1].getElements());
+      dom.slider.appendChild(this.handle.first.getElements());
+      dom.slider.appendChild(this.handle.second.getElements());
     } else {
-      handle = new Handle({ horizontal, showBubble });
-      dom.slider.appendChild(handle.getElements());
+      this.handle = new Handle({ horizontal, showBubble });
+      dom.slider.appendChild(this.handle.getElements());
     }
 
     errors
@@ -95,38 +94,43 @@ class View extends Observable {
       }
     }
 
-    return { dom, handle };
+    this.dom = dom;
   }
 
   render() {
     const { horizontal, interval } = this.model.getState();
-    const { dom, handle } = this.createSlider();
-    this.dom = dom;
-    this.handle = handle;
+    this.createSlider();
 
-    dom.slider.addEventListener('click', event => this.notify('click', event));
-    dom.slider.addEventListener('drag', event => this.notify('drag', event));
+    this.dom.slider.addEventListener('click', event =>
+      this.notify('click', event)
+    );
+    this.dom.slider.addEventListener('drag', event =>
+      this.notify('drag', event)
+    );
 
     if (interval) {
-      handle[0].handle.addEventListener('mousedown', event =>
+      const { first, second } = <{ first: Handle; second: Handle }>this.handle;
+
+      first.element.addEventListener('mousedown', event =>
         this.notify('mousedown', { event, handleNum: 1 })
       );
-      handle[1].handle.addEventListener('mousedown', event =>
+      second.element.addEventListener('mousedown', event =>
         this.notify('mousedown', { event, handleNum: 2 })
       );
     } else {
-      handle.handle.addEventListener('mousedown', event =>
+      const { element } = <Handle>this.handle;
+      element.addEventListener('mousedown', event =>
         this.notify('mousedown', { event })
       );
     }
 
     this.root.innerHTML = '';
-    this.root.appendChild(dom.container);
+    this.root.appendChild(this.dom.container);
 
     // can only get slider length after it's been rendered
     const length = horizontal
-      ? dom.slider.offsetWidth
-      : dom.slider.offsetHeight;
+      ? this.dom.slider.offsetWidth
+      : this.dom.slider.offsetHeight;
     this._sliderLength = length;
 
     this.update();
@@ -145,22 +149,29 @@ class View extends Observable {
     } = this.model.getState();
 
     if (interval) {
-      const first = (sliderLength * (firstValue - min)) / (max - min);
-      const second = (sliderLength * (secondValue - min)) / (max - min);
+      const { first, second } = <{ first: Handle; second: Handle }>this.handle;
+      const firstPosition = (sliderLength * (firstValue - min)) / (max - min);
+      const secondPosition = (sliderLength * (secondValue - min)) / (max - min);
 
-      this.handle[0].setPosition(firstValue, first);
-      this.handle[1].setPosition(secondValue, second);
+      first.setPosition(firstValue, firstPosition);
+      second.setPosition(secondValue, secondPosition);
 
       if (horizontal) {
-        this.dom.selected.style.width = `${second - first + 5}px`;
-        this.dom.selected.style.left = `${first + 5}px`;
+        this.dom.selected.style.width = `${secondPosition -
+          firstPosition +
+          5}px`;
+        this.dom.selected.style.left = `${firstPosition + 5}px`;
       } else {
-        this.dom.selected.style.height = `${second - first + 5}px`;
-        this.dom.selected.style.top = `${first + 5}px`;
+        this.dom.selected.style.height = `${secondPosition -
+          firstPosition +
+          5}px`;
+        this.dom.selected.style.top = `${firstPosition + 5}px`;
       }
     } else {
+      const handle = <Handle>this.handle;
       const position = (sliderLength * (value - min)) / (max - min);
-      this.handle.setPosition(value, position);
+
+      handle.setPosition(value, position);
       this.dom.selected.style.width = `${position + 5}px`;
     }
   }
