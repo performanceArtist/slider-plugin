@@ -83,7 +83,9 @@ class Model extends Observable {
           state.step *
             Math.round(((newValue as number) - state.min) / state.step);
 
-        return result < state.max ? result : state.max;
+        if (result < state.min) return state.min;
+        if (result > state.max) return state.max;
+        return result;
       case 'min':
         return newValue >= state.max
           ? new SliderError(ErrorType.MIN, key)
