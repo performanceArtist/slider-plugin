@@ -73,18 +73,17 @@ class Model extends Observable {
       case 'value':
       case 'firstValue':
       case 'secondValue':
-        if (newValue >= state.max) return state.max;
-        if (newValue <= state.min) return state.min;
-
         if (key === 'firstValue' && newValue >= state.secondValue)
           return state.firstValue;
         if (key === 'secondValue' && newValue <= state.firstValue)
           return state.secondValue;
-        return (
+
+        const result =
           state.min +
           state.step *
-            Math.round(((newValue as number) - state.min) / state.step)
-        );
+            Math.round(((newValue as number) - state.min) / state.step);
+
+        return result < state.max ? result : state.max;
       case 'min':
         return newValue >= state.max
           ? new SliderError(ErrorType.MIN, key)
