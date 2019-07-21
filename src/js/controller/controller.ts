@@ -23,10 +23,10 @@ class Controller {
   handleClick(event: MouseEvent) {
     const target = event.target as HTMLElement;
 
+    // line clicks only
     if (
       !target.classList.contains('slider__slider') &&
       target.className !== 'slider__done' &&
-      target.className !== 'slider__first-done' &&
       target.className !== 'slider__label'
     )
       return;
@@ -40,7 +40,7 @@ class Controller {
       interval
     } = this.model.getState();
 
-    const rect = target.getBoundingClientRect();
+    const rect = this.view.dom.slider.getBoundingClientRect();
     const position = horizontal
       ? event.clientX - rect.left
       : event.clientY - rect.top;
