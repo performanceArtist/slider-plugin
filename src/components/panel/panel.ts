@@ -25,9 +25,9 @@ class Panel {
   inputContainer: HTMLDivElement;
 
   constructor(selector: string, slider: SliderInterface) {
-    const container = document.querySelector(selector) as HTMLFormElement;
+    const container = document.querySelector(selector) as HTMLElement;
     const form = container.querySelector('form');
-    if (!form || !container) throw new Error('Invalid selector');
+    if (!form || !container) throw new Error('Invalid element');
 
     this.form = form;
     this.inputContainer = form.querySelector('.panel__value-inputs');

@@ -78,10 +78,19 @@ class Model extends Observable {
         if (key === 'secondValue' && newValue <= state.firstValue)
           return state.secondValue;
 
+        const rawValue = (newValue as number) - state.min;
+
+        // remainder check
+        const length = state.max - state.min;
+        if (length % state.step !== 0) {
+          const tail = Math.floor(length / state.step) * state.step;
+          const valueRemainder = rawValue - tail;
+          const stepRemainder = length - tail;
+          if (valueRemainder > stepRemainder / 2) return state.max;
+        }
+
         const result =
-          state.min +
-          state.step *
-            Math.round(((newValue as number) - state.min) / state.step);
+          state.min + state.step * Math.round(rawValue / state.step);
 
         if (result < state.min) return state.min;
         if (result > state.max) return state.max;
