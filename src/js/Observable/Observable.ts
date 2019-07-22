@@ -19,7 +19,7 @@ class Observable {
 
   unsubscribe(callback: Function, type: string) {
     this._observers[type] = this._observers[type].filter(
-      observer => observer === callback
+      observer => observer !== callback
     );
   }
 

@@ -1,6 +1,6 @@
-import Model from './model/model';
-import View from './view/view';
-import Controller from './controller/controller';
+import Model from './Model/Model';
+import View from './View/View';
+import Controller from './Controller/Controller';
 
 import { Options } from './types';
 

@@ -1,7 +1,6 @@
 import { createNode } from './utils';
-import Model from '../model/model';
-import Controller from '../controller/controller';
-import Observable from '../Observable';
+import Model from '../Model/Model';
+import Observable from '../Observable/Observable';
 
 import Handle from './Handle';
 
@@ -9,7 +8,6 @@ import { SliderDOM } from '../types';
 
 class View extends Observable {
   model: Model;
-  controller: Controller;
   root: HTMLElement;
   dom: SliderDOM;
   handle: Handle | { first: Handle; second: Handle };
@@ -51,6 +49,7 @@ class View extends Observable {
       errorCont: createNode('div', { class: 'slider__error-container' })
     };
 
+    dom.slider.appendChild(dom.selected);
     dom.container.appendChild(dom.slider);
     dom.container.appendChild(dom.errorCont);
 
@@ -76,8 +75,6 @@ class View extends Observable {
       .forEach((element: HTMLElement) => {
         dom.errorCont.appendChild(element);
       });
-
-    dom.slider.appendChild(dom.selected);
 
     if (showSteps) {
       for (let i = 0; i <= max - min; i += step) {

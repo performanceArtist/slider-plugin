@@ -1,6 +1,6 @@
 import { debounce } from './utils';
 import SliderError, { ErrorType } from './SliderError';
-import Observable from '../Observable';
+import Observable from '../Observable/Observable';
 import { Options, ModelType } from '../types';
 
 const getInitialState = (function memoizeDefaults() {
@@ -75,6 +75,7 @@ class Model extends Observable {
       case 'secondValue':
         if (key === 'firstValue' && newValue >= state.secondValue)
           return state.firstValue;
+        if (key === 'firstValue' && newValue > state.max) return state.min;
         if (key === 'secondValue' && newValue <= state.firstValue)
           return state.secondValue;
 

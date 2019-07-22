@@ -1,5 +1,5 @@
 import init from './js/slider';
-import Panel from './components/panel/panel';
+import Panel from './components/Panel/Panel';
 
 import { Options } from './js/types';
 

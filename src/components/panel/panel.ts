@@ -1,5 +1,5 @@
 import { SliderInterface } from '../../js/types';
-import { createNode } from '../../js/view/utils';
+import { createNode } from '../../js/View/utils';
 
 function createPanelInput(
   attributes: { [key: string]: string } = {},
