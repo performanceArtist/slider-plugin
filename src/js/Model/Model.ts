@@ -73,10 +73,10 @@ class Model extends Observable {
       case 'value':
       case 'firstValue':
       case 'secondValue':
-        if (key === 'firstValue' && newValue >= state.secondValue)
+        if (key === 'firstValue' && newValue >= state.secondValue - state.step)
           return state.firstValue;
         if (key === 'firstValue' && newValue > state.max) return state.min;
-        if (key === 'secondValue' && newValue <= state.firstValue)
+        if (key === 'secondValue' && newValue <= state.firstValue + state.step)
           return state.secondValue;
 
         const rawValue = (newValue as number) - state.min;
