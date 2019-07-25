@@ -29,15 +29,7 @@ class View extends Observable {
   }
 
   createSlider() {
-    const {
-      min,
-      max,
-      interval,
-      showBubble,
-      horizontal,
-      showSteps,
-      step
-    } = this.model.getState();
+    const { interval, showBubble, horizontal } = this.model.getState();
     const errors = this.model.takeMeta().errors;
 
     const dom: SliderDOM = {
@@ -76,26 +68,18 @@ class View extends Observable {
         dom.errorCont.appendChild(element);
       });
 
-    if (showSteps) {
-      for (let i = 0; i <= max - min; i += step) {
-        const position = horizontal
-          ? `${(100 * i) / (max - min) - 3.5}%`
-          : `${(100 * i) / (max - min) - 2.7}%`;
-
-        const label = createNode('label', {
-          class: 'slider__label',
-          style: horizontal ? `left:${position}` : `top:${position}`
-        });
-        label.innerHTML = (i + min).toString();
-        dom.slider.appendChild(label);
-      }
-    }
-
     this.dom = dom;
   }
 
   render() {
-    const { horizontal, interval } = this.model.getState();
+    const {
+      horizontal,
+      interval,
+      showSteps,
+      max,
+      min,
+      step
+    } = this.model.getState();
     this.createSlider();
 
     this.dom.slider.addEventListener('click', event =>
@@ -129,6 +113,26 @@ class View extends Observable {
       ? this.dom.slider.offsetWidth
       : this.dom.slider.offsetHeight;
     this._sliderLength = length;
+
+    if (showSteps) {
+      const stepCount = (max - min) / step;
+      const gap = length / stepCount;
+      const realStep =
+        gap < 18 ? Math.floor(((max - min) * 18) / length) : step;
+
+      for (let i = 0; i <= max - min; i += realStep) {
+        const position = horizontal
+          ? `${(100 * i) / (max - min) - 3.5}%`
+          : `${(100 * i) / (max - min) - 2.7}%`;
+
+        const label = createNode('label', {
+          class: 'slider__label',
+          style: horizontal ? `left:${position}` : `top:${position}`
+        });
+        label.innerHTML = (i + min).toString();
+        this.dom.slider.appendChild(label);
+      }
+    }
 
     this.update();
   }
