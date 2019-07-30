@@ -173,7 +173,12 @@ class View extends Observable {
       const position = (sliderLength * (value - min)) / (max - min);
 
       handle.setPosition(value, position);
-      this.dom.selected.style.width = `${position + 5}px`;
+
+      if (horizontal) {
+        this.dom.selected.style.width = `${position + 5}px`;
+      } else {
+        this.dom.selected.style.height = `${position + 5}px`;
+      }
     }
   }
 
