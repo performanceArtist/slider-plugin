@@ -51,13 +51,13 @@ class Panel {
       Array.prototype.forEach.call(
         target.elements,
         (input: HTMLInputElement) => {
-          if (input.type === 'submit') return;
+          const { name, type, value, checked } = input;
+          if (type === 'submit') return;
 
-          const { name } = input;
-          let newValue: string | boolean = input.value.trim();
+          let newValue: string | boolean = value.trim();
 
-          if (input.type === 'radio' || input.type === 'checkbox')
-            newValue = input.checked;
+          if (type === 'radio' || type === 'checkbox')
+            newValue = checked;
 
           options[name] = newValue;
         }
