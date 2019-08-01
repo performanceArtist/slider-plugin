@@ -16,7 +16,7 @@
     margin-bottom: 0.5em;
   }
 
-  &__slider {
+  &__wrapper {
     background: $light-grey;
     position: relative;
     border-radius: 0.1em;
@@ -58,22 +58,24 @@
     margin-top: 2.5rem;
   }
 
-  .slider_hor {
-    width: 300px;
-    height: 14px;
-    margin-top: 45px;
+  &_horizontal & {
+    &__wrapper {
+      width: 300px;
+      height: 14px;
+      margin-top: 45px;
+    }
 
-    .slider__done {
+    &__done {
       height: 100%;
       width: 0;
     }
 
-    .slider__head {
+    &__head {
       top: -6px;
       left: 0;
     }
 
-    .slider__bubble {
+    &__bubble {
       top: -45px;
       left: -5px;
       width: 36px;
@@ -89,7 +91,7 @@
       }
     }
 
-    .slider__label {
+    &__label {
       @extend %unselectable;
       position: absolute;
       width: 20px;
@@ -100,21 +102,23 @@
     }
   }
 
-  .slider_ver {
-    width: 14px;
-    height: 300px;
+  &_vertical & {
+    &__wrapper {
+      width: 14px;
+      height: 300px;
+    }
 
-    .slider__done {
+    &__done {
       height: 0;
       width: 100%;
     }
 
-    .slider__head {
+    &__head {
       top: 0;
       left: -6px;
     }
 
-    .slider__bubble {
+    &__bubble {
       top: -5px;
       left: 28px;
       width: 36px;
@@ -130,7 +134,7 @@
       }
     }
 
-    .slider__label {
+    &__label {
       @extend %unselectable;
       position: absolute;
       width: 20px;

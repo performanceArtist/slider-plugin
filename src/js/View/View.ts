@@ -38,17 +38,21 @@ class View extends Observable {
     const errors = this.model.takeMeta().errors;
 
     const dom: SliderDOM = {
-      container: createNode('div', { class: 'slider' }),
-      slider: createNode('div', {
-        class: `slider__slider ${isHorizontal ? 'slider_hor' : 'slider_ver'}`,
+      root: createNode('div', {
+        class: isHorizontal
+          ? 'slider slider_horizontal'
+          : 'slider slider_vertical',
+      }),
+      wrapper: createNode('div', {
+        class: 'slider__wrapper',
       }),
       selected: createNode('div', { class: 'slider__done' }),
       errorCont: createNode('div', { class: 'slider__error-container' }),
     };
 
-    dom.slider.appendChild(dom.selected);
-    dom.container.appendChild(dom.slider);
-    dom.container.appendChild(dom.errorCont);
+    dom.root.appendChild(dom.wrapper);
+
+    dom.wrapper.appendChild(dom.selected);
 
     if (hasInterval) {
       this.handle = {
@@ -56,12 +60,14 @@ class View extends Observable {
         second: new Handle({ isHorizontal, showBubble }),
       };
 
-      dom.slider.appendChild(this.handle.first.getElements());
-      dom.slider.appendChild(this.handle.second.getElements());
+      dom.wrapper.appendChild(this.handle.first.getElements());
+      dom.wrapper.appendChild(this.handle.second.getElements());
     } else {
       this.handle = new Handle({ isHorizontal, showBubble });
-      dom.slider.appendChild(this.handle.getElements());
+      dom.wrapper.appendChild(this.handle.getElements());
     }
+
+    dom.root.appendChild(dom.errorCont);
 
     errors
       .map((error: string) => {
@@ -87,8 +93,8 @@ class View extends Observable {
     } = this.model.getState();
     this.createSlider();
 
-    this.dom.slider.addEventListener('click', this.handleClick);
-    this.dom.slider.addEventListener('drag', this.preventDefaultDrag);
+    this.dom.wrapper.addEventListener('click', this.handleClick);
+    this.dom.wrapper.addEventListener('drag', this.preventDefaultDrag);
 
     if (hasInterval) {
       const { first, second } = <{ first: Handle; second: Handle }>this.handle;
@@ -107,11 +113,11 @@ class View extends Observable {
     }
 
     this.root.innerHTML = '';
-    this.root.appendChild(this.dom.container);
+    this.root.appendChild(this.dom.root);
 
     const length = isHorizontal
-      ? this.dom.slider.offsetWidth
-      : this.dom.slider.offsetHeight;
+      ? this.dom.wrapper.offsetWidth
+      : this.dom.wrapper.offsetHeight;
     this._sliderLength = length;
 
     if (showSteps) {
@@ -130,7 +136,7 @@ class View extends Observable {
           style: isHorizontal ? `left:${position}` : `top:${position}`,
         });
         label.innerHTML = (i + min).toString();
-        this.dom.slider.appendChild(label);
+        this.dom.wrapper.appendChild(label);
       }
     }
 
@@ -185,7 +191,7 @@ class View extends Observable {
   handleClick(event: MouseEvent) {
     const target = event.target as HTMLElement;
     const isValidClick =
-      target.classList.contains('slider__slider') ||
+      target.classList.contains('slider__wrapper') ||
       target.className === 'slider__done' ||
       target.className === 'slider__label';
 
@@ -196,7 +202,7 @@ class View extends Observable {
     if (!isValidClick) return;
 
     const { isHorizontal, max, min } = this.model.getState();
-    const rect = this.dom.slider.getBoundingClientRect();
+    const rect = this.dom.wrapper.getBoundingClientRect();
     const position = isHorizontal
       ? event.clientX - rect.left
       : event.clientY - rect.top;
