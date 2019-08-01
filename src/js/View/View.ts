@@ -192,18 +192,16 @@ class View extends Observable {
 
   handleClick(event: MouseEvent) {
     const target = event.target as HTMLElement;
+    const isValidClick =
+      target.classList.contains('slider__slider') ||
+      target.className === 'slider__done' ||
+      target.className === 'slider__label';
 
+    if (!isValidClick) return;
     if (this._dragEnded) {
       this._dragEnded = false;
       return;
     }
-
-    if (
-      !target.classList.contains('slider__slider') &&
-      target.className !== 'slider__done' &&
-      target.className !== 'slider__label'
-    )
-      return;
 
     const {
       firstValue,

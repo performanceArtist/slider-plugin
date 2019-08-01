@@ -54,13 +54,10 @@ class Panel {
 
     [...target.elements].forEach((input: HTMLInputElement) => {
       const { name, type, value, checked } = input;
+      const hasChecked = type === 'radio' || type === 'checkbox';
       if (type === 'submit') return;
 
-      let newValue: string | boolean = value.trim();
-
-      if (type === 'radio' || type === 'checkbox') newValue = checked;
-
-      options[name] = newValue;
+      options[name] = hasChecked ? checked : value.trim();
     });
 
     this.slider.setState(options);
@@ -104,13 +101,16 @@ class Panel {
     }
 
     [...this.form.elements].forEach((input: HTMLInputElement) => {
-      const defaultValue = state[input.name];
-      if (defaultValue !== undefined) {
-        if (input.type === 'radio' || input.type === 'checkbox') {
-          input.checked = defaultValue as boolean;
-        } else {
-          input.value = defaultValue.toString();
-        }
+      const { name, type } = input;
+      const defaultValue = state[name];
+      const hasChecked = type === 'radio' || type === 'checkbox';
+
+      if (defaultValue === undefined) return;
+
+      if (hasChecked) {
+        input.checked = defaultValue as boolean;
+      } else {
+        input.value = defaultValue.toString();
       }
     });
   }
