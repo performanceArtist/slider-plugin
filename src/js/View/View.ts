@@ -34,13 +34,13 @@ class View extends Observable {
   }
 
   createSlider() {
-    const { interval, showBubble, horizontal } = this.model.getState();
+    const { hasInterval, showBubble, isHorizontal } = this.model.getState();
     const errors = this.model.takeMeta().errors;
 
     const dom: SliderDOM = {
       container: createNode('div', { class: 'slider' }),
       slider: createNode('div', {
-        class: `slider__slider ${horizontal ? 'slider_hor' : 'slider_ver'}`,
+        class: `slider__slider ${isHorizontal ? 'slider_hor' : 'slider_ver'}`,
       }),
       selected: createNode('div', { class: 'slider__done' }),
       errorCont: createNode('div', { class: 'slider__error-container' }),
@@ -50,16 +50,16 @@ class View extends Observable {
     dom.container.appendChild(dom.slider);
     dom.container.appendChild(dom.errorCont);
 
-    if (interval) {
+    if (hasInterval) {
       this.handle = {
-        first: new Handle({ horizontal, showBubble }),
-        second: new Handle({ horizontal, showBubble }),
+        first: new Handle({ isHorizontal, showBubble }),
+        second: new Handle({ isHorizontal, showBubble }),
       };
 
       dom.slider.appendChild(this.handle.first.getElements());
       dom.slider.appendChild(this.handle.second.getElements());
     } else {
-      this.handle = new Handle({ horizontal, showBubble });
+      this.handle = new Handle({ isHorizontal, showBubble });
       dom.slider.appendChild(this.handle.getElements());
     }
 
@@ -78,8 +78,8 @@ class View extends Observable {
 
   render() {
     const {
-      horizontal,
-      interval,
+      isHorizontal,
+      hasInterval,
       showSteps,
       max,
       min,
@@ -94,7 +94,7 @@ class View extends Observable {
       this.notify('drag', event),
     );
 
-    if (interval) {
+    if (hasInterval) {
       const { first, second } = <{ first: Handle; second: Handle }>this.handle;
 
       first.element.addEventListener('mousedown', event =>
@@ -113,7 +113,7 @@ class View extends Observable {
     this.root.innerHTML = '';
     this.root.appendChild(this.dom.container);
 
-    const length = horizontal
+    const length = isHorizontal
       ? this.dom.slider.offsetWidth
       : this.dom.slider.offsetHeight;
     this._sliderLength = length;
@@ -125,13 +125,13 @@ class View extends Observable {
         gap < 18 ? Math.floor(((max - min) * 18) / length) : step;
 
       for (let i = 0; i <= max - min; i += realStep) {
-        const position = horizontal
+        const position = isHorizontal
           ? `${(100 * i) / (max - min) - 3.5}%`
           : `${(100 * i) / (max - min) - 2.7}%`;
 
         const label = createNode('label', {
           class: 'slider__label',
-          style: horizontal ? `left:${position}` : `top:${position}`,
+          style: isHorizontal ? `left:${position}` : `top:${position}`,
         });
         label.innerHTML = (i + min).toString();
         this.dom.slider.appendChild(label);
@@ -144,8 +144,8 @@ class View extends Observable {
   update() {
     const sliderLength = this.getSliderLength();
     const {
-      horizontal,
-      interval,
+      isHorizontal,
+      hasInterval,
       value,
       firstValue,
       secondValue,
@@ -153,7 +153,7 @@ class View extends Observable {
       max,
     } = this.model.getState();
 
-    if (interval) {
+    if (hasInterval) {
       const { first, second } = <{ first: Handle; second: Handle }>this.handle;
       const firstPosition = (sliderLength * (firstValue - min)) / (max - min);
       const secondPosition = (sliderLength * (secondValue - min)) / (max - min);
@@ -161,16 +161,12 @@ class View extends Observable {
       first.setPosition(firstValue, firstPosition);
       second.setPosition(secondValue, secondPosition);
 
-      if (horizontal) {
-        this.dom.selected.style.width = `${secondPosition -
-          firstPosition +
-          5}px`;
-        this.dom.selected.style.left = `${firstPosition + 5}px`;
+      if (isHorizontal) {
+        this.dom.selected.style.width = `${secondPosition - firstPosition}px`;
+        this.dom.selected.style.left = `${firstPosition}px`;
       } else {
-        this.dom.selected.style.height = `${secondPosition -
-          firstPosition +
-          5}px`;
-        this.dom.selected.style.top = `${firstPosition + 5}px`;
+        this.dom.selected.style.height = `${secondPosition - firstPosition}px`;
+        this.dom.selected.style.top = `${firstPosition}px`;
       }
     } else {
       const handle = <Handle>this.handle;
@@ -178,10 +174,10 @@ class View extends Observable {
 
       handle.setPosition(value, position);
 
-      if (horizontal) {
-        this.dom.selected.style.width = `${position + 5}px`;
+      if (isHorizontal) {
+        this.dom.selected.style.width = `${position}px`;
       } else {
-        this.dom.selected.style.height = `${position + 5}px`;
+        this.dom.selected.style.height = `${position}px`;
       }
     }
   }
@@ -197,23 +193,23 @@ class View extends Observable {
       target.className === 'slider__done' ||
       target.className === 'slider__label';
 
-    if (!isValidClick) return;
     if (this._dragEnded) {
       this._dragEnded = false;
       return;
     }
+    if (!isValidClick) return;
 
     const {
       firstValue,
       secondValue,
-      horizontal,
+      isHorizontal,
       max,
       min,
-      interval,
+      hasInterval,
     } = this.model.getState();
 
     const rect = this.dom.slider.getBoundingClientRect();
-    const position = horizontal
+    const position = isHorizontal
       ? event.clientX - rect.left
       : event.clientY - rect.top;
     const valLen = max - min;
@@ -223,7 +219,7 @@ class View extends Observable {
         ? parseFloat(target.innerHTML)
         : min + (valLen * position) / sliderLength;
 
-    if (interval) {
+    if (hasInterval) {
       if (Math.abs(newValue - firstValue) < Math.abs(newValue - secondValue)) {
         this.model.setState({ firstValue: newValue });
       } else {
@@ -237,7 +233,7 @@ class View extends Observable {
   handleDrag({ event, handleNum }: { event: MouseEvent; handleNum?: number }) {
     const { model } = this;
     const sliderLength = this.getSliderLength();
-    const { horizontal, interval, max, min } = model.getState();
+    const { isHorizontal, hasInterval, max, min } = model.getState();
     const handle = event.target as HTMLElement;
     const handleX = handle.offsetLeft;
     const handleY = handle.offsetTop;
@@ -247,12 +243,12 @@ class View extends Observable {
     event.preventDefault();
 
     function moveHandle(moveEvent: MouseEvent) {
-      const position = horizontal
+      const position = isHorizontal
         ? handleX + moveEvent.clientX - mouseX
         : handleY + moveEvent.clientY - mouseY;
       const relValue = ((max - min) * position) / sliderLength;
 
-      if (interval) {
+      if (hasInterval) {
         if (handleNum === 1) {
           model.setState({ firstValue: relValue + min });
         } else {

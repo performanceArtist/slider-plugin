@@ -28,7 +28,7 @@ describe('View', () => {
 
     it('Creates appropriate number of Handle objects', () => {
       expect(view.handle).toBeInstanceOf(Handle);
-      model.setState({ interval: true });
+      model.setState({ hasInterval: true });
 
       view.render();
 
@@ -63,7 +63,7 @@ describe('View', () => {
 describe('Handle', () => {
   const handle = new Handle({
     position: 0,
-    horizontal: true,
+    isHorizontal: true,
     showBubble: true,
   });
 

@@ -3,9 +3,9 @@ import { createNode } from './utils';
 class Handle {
   element: HTMLElement;
   bubble: HTMLElement;
-  private _horizontal: boolean;
+  private _isHorizontal: boolean;
 
-  constructor({ position = 0, horizontal = true, showBubble = true } = {}) {
+  constructor({ position = 0, isHorizontal = true, showBubble = true } = {}) {
     const bubbleStyle = showBubble ? 'display:absolute;' : 'display:none;';
 
     this.element = createNode('span', { class: 'slider__head' });
@@ -13,14 +13,14 @@ class Handle {
       class: 'slider__bubble',
       style: bubbleStyle,
     });
-    this._horizontal = horizontal;
+    this._isHorizontal = isHorizontal;
     this.setPosition = this.setPosition.bind(this);
 
     this.setPosition(0, position);
   }
 
   setPosition(value: number, position: number) {
-    if (this._horizontal) {
+    if (this._isHorizontal) {
       this.element.style.left = `${position - 12.5}px`;
       this.bubble.style.left = `${position - 18}px`;
     } else {

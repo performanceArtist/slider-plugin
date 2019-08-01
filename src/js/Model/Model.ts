@@ -11,10 +11,10 @@ const getInitialState = (function memoizeDefaults() {
     min: 0,
     max: 100,
     step: 1,
-    interval: false,
+    hasInterval: false,
     showBubble: true,
     showSteps: false,
-    horizontal: true,
+    isHorizontal: true,
   };
 
   return (): ModelType => ({
@@ -51,50 +51,16 @@ class Model extends Observable {
         return Number.isNaN(parseFloat(value))
           ? new SliderError(ErrorType.NUM, key)
           : parseFloat(value);
-      case 'interval':
+      case 'hasInterval':
       case 'showBubble':
       case 'showSteps':
-      case 'horizontal':
+      case 'isHorizontal':
         return typeof value !== 'boolean'
           ? new SliderError(ErrorType.BOOL, key)
           : value;
       default:
         return new SliderError(ErrorType.CONF, key);
     }
-  }
-
-  private _validateValue(
-    key: 'value' | 'firstValue' | 'secondValue',
-    value: number,
-  ) {
-    const state = this.getState();
-
-    const firstAtMax =
-      key === 'firstValue' && value >= state.secondValue - state.step;
-    if (firstAtMax) return state.firstValue;
-
-    const noInterval = key === 'firstValue' && value > state.max;
-    if (noInterval) return state.min;
-
-    const secondAtMin =
-      key === 'secondValue' && value <= state.firstValue + state.step;
-    if (secondAtMin) return state.secondValue;
-
-    const rawValue = value - state.min;
-    const length = state.max - state.min;
-
-    if (length % state.step !== 0) {
-      const tail = Math.floor(length / state.step) * state.step;
-      const valueRemainder = rawValue - tail;
-      const stepRemainder = length - tail;
-      if (valueRemainder > stepRemainder / 2) return state.max;
-    }
-
-    const result = state.min + state.step * Math.round(rawValue / state.step);
-
-    if (result < state.min) return state.min;
-    if (result > state.max) return state.max;
-    return result;
   }
 
   validate(key: string, value: number | string | boolean) {
@@ -126,18 +92,6 @@ class Model extends Observable {
     }
   }
 
-  private _setValue(key: string, newValue: number | string | boolean) {
-    const { state, meta } = this._model;
-    const result = this.validate(key, newValue);
-
-    if (result instanceof SliderError) {
-      meta.errors.push(result.getMessage());
-      result.show();
-    } else {
-      state[key] = result;
-    }
-  }
-
   setState(options: Options = {}) {
     if (!(options instanceof Object)) {
       console.log('Invalid object');
@@ -156,7 +110,7 @@ class Model extends Observable {
     const newValue = (key: string) =>
       options[key] === undefined ? state[key] : options[key];
 
-    if (state.interval) {
+    if (state.hasInterval) {
       this._setValue('firstValue', newValue('firstValue'));
       this._setValue('secondValue', newValue('secondValue'));
     } else {
@@ -180,6 +134,52 @@ class Model extends Observable {
     const meta = { ...this._model.meta };
     this._model.meta.errors = [];
     return meta;
+  }
+
+  private _validateValue(
+    key: 'value' | 'firstValue' | 'secondValue',
+    value: number,
+  ) {
+    const state = this.getState();
+
+    const firstAtMax =
+      key === 'firstValue' && value >= state.secondValue - state.step;
+    if (firstAtMax) return state.firstValue;
+
+    const nohasInterval = key === 'firstValue' && value > state.max;
+    if (nohasInterval) return state.min;
+
+    const secondAtMin =
+      key === 'secondValue' && value <= state.firstValue + state.step;
+    if (secondAtMin) return state.secondValue;
+
+    const rawValue = value - state.min;
+    const length = state.max - state.min;
+
+    if (length % state.step !== 0) {
+      const tail = Math.floor(length / state.step) * state.step;
+      const valueRemainder = rawValue - tail;
+      const stepRemainder = length - tail;
+      if (valueRemainder > stepRemainder / 2) return state.max;
+    }
+
+    const result = state.min + state.step * Math.round(rawValue / state.step);
+
+    if (result < state.min) return state.min;
+    if (result > state.max) return state.max;
+    return result;
+  }
+
+  private _setValue(key: string, newValue: number | string | boolean) {
+    const { state, meta } = this._model;
+    const result = this.validate(key, newValue);
+
+    if (result instanceof SliderError) {
+      meta.errors.push(result.getMessage());
+      result.show();
+    } else {
+      state[key] = result;
+    }
   }
 }
 

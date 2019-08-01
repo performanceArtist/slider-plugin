@@ -10,7 +10,7 @@ window.onload = function windowHasLoaded() {
   };
 
   createExample('example-1', {
-    interval: true,
+    hasInterval: true,
   });
 
   createExample('example-2', {
@@ -23,8 +23,8 @@ window.onload = function windowHasLoaded() {
   createExample('example-3', {
     value: 10,
     min: 40,
-    horizontal: false,
-    interval: true,
+    isHorizontal: false,
+    hasInterval: true,
   });
 };
 

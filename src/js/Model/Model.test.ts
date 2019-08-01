@@ -64,7 +64,7 @@ describe('Model', () => {
         'max',
         'step',
       ];
-      const isBool = ['interval', 'showBubble', 'showSteps', 'horizontal'];
+      const isBool = ['hasInterval', 'showBubble', 'showSteps', 'isHorizontal'];
 
       isNumber.forEach(el => sliderErrorCheck(el, 'NaN', ErrorType.NUM));
       isBool.forEach(el => sliderErrorCheck(el, 42, ErrorType.BOOL));
@@ -96,15 +96,15 @@ describe('Model', () => {
       expect(negative.validate('value', -30)).toBe(-30);
     });
 
-    const intervalModel = new Model({
-      interval: true,
+    const hasIntervalModel = new Model({
+      hasInterval: true,
       firstValue: 10,
       secondValue: 20,
     });
 
-    it('Makes sure that the first value in interval is less than the second', () => {
-      expect(intervalModel.validate('firstValue', 30)).toBe(10);
-      expect(intervalModel.validate('secondValue', 0)).toBe(20);
+    it('Makes sure that the first value in hasInterval is less than the second', () => {
+      expect(hasIntervalModel.validate('firstValue', 30)).toBe(10);
+      expect(hasIntervalModel.validate('secondValue', 0)).toBe(20);
     });
   });
 });

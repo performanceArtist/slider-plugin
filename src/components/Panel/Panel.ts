@@ -65,9 +65,9 @@ class Panel {
 
   update() {
     const state = this.slider.getState();
-    const { interval, value, firstValue, secondValue } = state;
+    const { hasInterval, value, firstValue, secondValue } = state;
 
-    if (interval) {
+    if (hasInterval) {
       const firstInput = Panel.createInput(
         {
           name: 'firstValue',

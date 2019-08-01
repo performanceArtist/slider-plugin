@@ -5,10 +5,10 @@ export interface Options {
   min?: number;
   max?: number;
   step?: number;
-  interval?: boolean;
+  hasInterval?: boolean;
   showBubble?: boolean;
   showSteps?: boolean;
-  horizontal?: boolean;
+  isHorizontal?: boolean;
   [key: string]: string | boolean | number;
 }
 
