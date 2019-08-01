@@ -3,12 +3,12 @@ import { createNode } from '../../js/View/utils';
 
 function createPanelInput(
   attributes: { [key: string]: string } = {},
-  label: string = ''
+  label: string = '',
 ) {
   const container = createNode('div', { class: 'panel__input-wrapper' });
   const input = createNode('input', {
     class: 'panel__input',
-    ...attributes
+    ...attributes,
   });
   const labelElement = createNode('label', { class: 'panel__label' });
   labelElement.innerText = label;
@@ -56,11 +56,10 @@ class Panel {
 
           let newValue: string | boolean = value.trim();
 
-          if (type === 'radio' || type === 'checkbox')
-            newValue = checked;
+          if (type === 'radio' || type === 'checkbox') newValue = checked;
 
           options[name] = newValue;
-        }
+        },
       );
 
       this.slider.setState(options);
@@ -76,17 +75,17 @@ class Panel {
         {
           name: 'firstValue',
           type: 'number',
-          value: firstValue.toString()
+          value: firstValue.toString(),
         },
-        'First value'
+        'First value',
       );
       const secondInput = createPanelInput(
         {
           name: 'secondValue',
           type: 'number',
-          value: secondValue.toString()
+          value: secondValue.toString(),
         },
-        'Second value'
+        'Second value',
       );
       this.inputContainer.innerHTML = '';
       this.inputContainer.appendChild(firstInput);
@@ -96,9 +95,9 @@ class Panel {
         {
           name: 'value',
           type: 'number',
-          value: value.toString()
+          value: value.toString(),
         },
-        'Value'
+        'Value',
       );
       this.inputContainer.innerHTML = '';
       this.inputContainer.appendChild(input);
@@ -115,7 +114,7 @@ class Panel {
             input.value = defaultValue.toString();
           }
         }
-      }
+      },
     );
   }
 }

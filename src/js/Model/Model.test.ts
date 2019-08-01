@@ -10,11 +10,10 @@ const model = new Model();
 const view = new View(model, root);
 const controller = new Controller(model, view);
 
-// helper for error checks
 function sliderErrorCheck(
   key: string,
   value: number | string | boolean,
-  type: ErrorType
+  type: ErrorType,
 ) {
   const result = model.validate(key, value) as SliderError;
   expect(result).toBeInstanceOf(SliderError);
@@ -63,7 +62,7 @@ describe('Model', () => {
         'secondValue',
         'min',
         'max',
-        'step'
+        'step',
       ];
       const isBool = ['interval', 'showBubble', 'showSteps', 'horizontal'];
 
@@ -100,7 +99,7 @@ describe('Model', () => {
     const intervalModel = new Model({
       interval: true,
       firstValue: 10,
-      secondValue: 20
+      secondValue: 20,
     });
 
     it('Makes sure that the first value in interval is less than the second', () => {

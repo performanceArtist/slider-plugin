@@ -14,12 +14,12 @@ const getInitialState = (function memoizeDefaults() {
     interval: false,
     showBubble: true,
     showSteps: false,
-    horizontal: true
+    horizontal: true,
   };
 
   return (): ModelType => ({
     state: { ...defaults },
-    meta: { errors: [] }
+    meta: { errors: [] },
   });
 })();
 
@@ -81,7 +81,6 @@ class Model extends Observable {
 
         const rawValue = (newValue as number) - state.min;
 
-        // remainder check
         const length = state.max - state.min;
         if (length % state.step !== 0) {
           const tail = Math.floor(length / state.step) * state.step;
@@ -131,14 +130,13 @@ class Model extends Observable {
     };
     const keys = Object.keys(options);
     const otherOptions = keys.filter(
-      key => key !== 'value' && key !== 'firstValue' && key !== 'secondValue'
+      key => key !== 'value' && key !== 'firstValue' && key !== 'secondValue',
     );
 
     otherOptions.forEach(key => {
       setValue(key, options[key]);
     });
 
-    // set value after options update to ensure it's valid
     const interval =
       options.interval === undefined ? state.interval : options.interval;
 
@@ -157,11 +155,10 @@ class Model extends Observable {
     } else {
       setValue(
         'value',
-        options.value === undefined ? state.value : options.value
+        options.value === undefined ? state.value : options.value,
       );
     }
 
-    // decide whether to rerender everything or not
     if (otherOptions.length === 0) {
       this.notify('update');
     } else {

@@ -4,7 +4,7 @@ export enum ErrorType {
   CONF,
   MAX,
   MIN,
-  STEP
+  STEP,
 }
 
 const ErrorMessage = new Map<ErrorType, string>([
@@ -13,7 +13,7 @@ const ErrorMessage = new Map<ErrorType, string>([
   [ErrorType.CONF, 'Invalid or non-configurable key'],
   [ErrorType.MAX, 'Should be more than min'],
   [ErrorType.MIN, 'Should be less than max'],
-  [ErrorType.STEP, 'Should be more than zero and less than max-min difference']
+  [ErrorType.STEP, 'Should be more than zero and less than max-min difference'],
 ]);
 
 class SliderError extends Error {
@@ -37,8 +37,6 @@ class SliderError extends Error {
   }
 
   show() {
-    //console.error(this);
-    // 'Friendly' message
     console.log(this.getMessage());
   }
 }

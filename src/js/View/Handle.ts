@@ -11,7 +11,7 @@ class Handle {
     this.element = createNode('span', { class: 'slider__head' });
     this.bubble = createNode('div', {
       class: 'slider__bubble',
-      style: bubbleStyle
+      style: bubbleStyle,
     });
     this._horizontal = horizontal;
     this.setPosition = this.setPosition.bind(this);

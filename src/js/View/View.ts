@@ -38,10 +38,10 @@ class View extends Observable {
     const dom: SliderDOM = {
       container: createNode('div', { class: 'slider' }),
       slider: createNode('div', {
-        class: `slider__slider ${horizontal ? 'slider_hor' : 'slider_ver'}`
+        class: `slider__slider ${horizontal ? 'slider_hor' : 'slider_ver'}`,
       }),
       selected: createNode('div', { class: 'slider__done' }),
-      errorCont: createNode('div', { class: 'slider__error-container' })
+      errorCont: createNode('div', { class: 'slider__error-container' }),
     };
 
     dom.slider.appendChild(dom.selected);
@@ -51,7 +51,7 @@ class View extends Observable {
     if (interval) {
       this.handle = {
         first: new Handle({ horizontal, showBubble }),
-        second: new Handle({ horizontal, showBubble })
+        second: new Handle({ horizontal, showBubble }),
       };
 
       dom.slider.appendChild(this.handle.first.getElements());
@@ -81,37 +81,36 @@ class View extends Observable {
       showSteps,
       max,
       min,
-      step
+      step,
     } = this.model.getState();
     this.createSlider();
 
     this.dom.slider.addEventListener('click', event =>
-      this.notify('click', event)
+      this.notify('click', event),
     );
     this.dom.slider.addEventListener('drag', event =>
-      this.notify('drag', event)
+      this.notify('drag', event),
     );
 
     if (interval) {
       const { first, second } = <{ first: Handle; second: Handle }>this.handle;
 
       first.element.addEventListener('mousedown', event =>
-        this.notify('mousedown', { event, handleNum: 1 })
+        this.notify('mousedown', { event, handleNum: 1 }),
       );
       second.element.addEventListener('mousedown', event =>
-        this.notify('mousedown', { event, handleNum: 2 })
+        this.notify('mousedown', { event, handleNum: 2 }),
       );
     } else {
       const { element } = <Handle>this.handle;
       element.addEventListener('mousedown', event =>
-        this.notify('mousedown', { event })
+        this.notify('mousedown', { event }),
       );
     }
 
     this.root.innerHTML = '';
     this.root.appendChild(this.dom.container);
 
-    // can only get slider length after it's been rendered
     const length = horizontal
       ? this.dom.slider.offsetWidth
       : this.dom.slider.offsetHeight;
@@ -130,7 +129,7 @@ class View extends Observable {
 
         const label = createNode('label', {
           class: 'slider__label',
-          style: horizontal ? `left:${position}` : `top:${position}`
+          style: horizontal ? `left:${position}` : `top:${position}`,
         });
         label.innerHTML = (i + min).toString();
         this.dom.slider.appendChild(label);
@@ -149,7 +148,7 @@ class View extends Observable {
       firstValue,
       secondValue,
       min,
-      max
+      max,
     } = this.model.getState();
 
     if (interval) {
@@ -192,7 +191,6 @@ class View extends Observable {
   handleClick(event: MouseEvent) {
     const target = event.target as HTMLElement;
 
-    // line clicks only
     if (
       !target.classList.contains('slider__slider') &&
       target.className !== 'slider__done' &&
@@ -206,7 +204,7 @@ class View extends Observable {
       horizontal,
       max,
       min,
-      interval
+      interval,
     } = this.model.getState();
 
     const rect = this.dom.slider.getBoundingClientRect();

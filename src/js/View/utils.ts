@@ -1,7 +1,6 @@
-// helper to create nodes
 export function createNode(
   type: string,
-  attributes: { [key: string]: string } = {}
+  attributes: { [key: string]: string } = {},
 ) {
   const node = document.createElement(type);
 

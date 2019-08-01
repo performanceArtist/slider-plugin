@@ -1,11 +1,11 @@
 module.exports = {
   transform: {
-    '^.+\\.tsx?$': 'ts-jest'
+    '^.+\\.tsx?$': 'ts-jest',
   },
   globals: {
     'ts-jest': {
-      diagnostics: false
-    }
+      diagnostics: false,
+    },
   },
   reporters: [
     'default',
@@ -13,8 +13,8 @@ module.exports = {
       './node_modules/jest-html-reporter',
       {
         pageTitle: 'Test Report',
-        theme: 'lightTheme'
-      }
-    ]
-  ]
+        theme: 'lightTheme',
+      },
+    ],
+  ],
 };

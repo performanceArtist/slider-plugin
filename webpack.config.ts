@@ -6,63 +6,63 @@ const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 
 const config = {
   entry: {
-    app: './src/index.ts'
+    app: './src/index.ts',
   },
 
   resolve: {
     modules: ['node_modules'],
-    extensions: ['.js', '.ts']
+    extensions: ['.js', '.ts'],
   },
 
   output: {
     path: path.resolve(__dirname, 'dist'),
-    filename: 'index.js'
+    filename: 'index.js',
   },
   devServer: {
-    port: 5000
+    port: 5000,
   },
   module: {
     rules: [
       {
         test: /\.pug$/,
-        use: ['pug-loader']
+        use: ['pug-loader'],
       },
       {
         test: /\.(js|ts)$/,
         exclude: /node_modules/,
-        loader: 'babel-loader'
+        loader: 'babel-loader',
       },
       {
         test: /\.(sa|sc|c)ss$/,
         use: [
           {
-            loader: MiniCssExtractPlugin.loader
+            loader: MiniCssExtractPlugin.loader,
           },
           'css-loader',
           {
             loader: 'sass-loader',
             options: {
               data: '@import "./css/globals";',
-              includePaths: [path.join(__dirname, 'src')]
-            }
-          }
-        ]
-      }
-    ]
+              includePaths: [path.join(__dirname, 'src')],
+            },
+          },
+        ],
+      },
+    ],
   },
   plugins: [
     new CleanWebpackPlugin(),
     new HtmlWebpackPlugin({
-      template: './src/index.pug'
+      template: './src/index.pug',
     }),
     new webpack.ProvidePlugin({
       $: 'jquery',
-      jQuery: 'jquery'
+      jQuery: 'jquery',
     }),
     new MiniCssExtractPlugin({
-      filename: 'main.css'
-    })
-  ]
+      filename: 'main.css',
+    }),
+  ],
 };
 
 module.exports = (env, options) => {

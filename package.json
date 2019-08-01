@@ -9,7 +9,8 @@
     "build": "webpack --mode=production",
     "dev": "webpack --mode=development",
     "start": "webpack-dev-server --mode=development",
-    "tsc": "tsc"
+    "tsc": "tsc",
+    "prettier": "prettier --write src/**/*.{ts,js,scss,json}"
   },
   "author": "",
   "license": "ISC",

@@ -29,14 +29,14 @@ describe('View', () => {
     it('Creates appropriate number of Handle objects', () => {
       expect(view.handle).toBeInstanceOf(Handle);
       model.setState({ interval: true });
-      // manual call - notifications aren't working for some reason
+
       view.render();
 
       expect(view.handle).toEqual(
         expect.objectContaining({
           first: expect.any(Handle),
-          second: expect.any(Handle)
-        })
+          second: expect.any(Handle),
+        }),
       );
     });
 
@@ -64,7 +64,7 @@ describe('Handle', () => {
   const handle = new Handle({
     position: 0,
     horizontal: true,
-    showBubble: true
+    showBubble: true,
   });
 
   describe('constructor', () => {

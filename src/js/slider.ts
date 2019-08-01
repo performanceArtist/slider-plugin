@@ -13,7 +13,7 @@ function init(root: HTMLElement, options: Options | null = null) {
     setState: model.setState,
     getState: model.getState,
     subscribe: model.subscribe,
-    unsubscribe: model.unsubscribe
+    unsubscribe: model.unsubscribe,
   };
 }
 
