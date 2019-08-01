@@ -192,6 +192,7 @@ class View extends Observable {
 
   handleClick(event: MouseEvent) {
     const target = event.target as HTMLElement;
+
     if (this._dragEnded) {
       this._dragEnded = false;
       return;
@@ -266,10 +267,13 @@ class View extends Observable {
 
     window.addEventListener('mousemove', moveHandle);
 
-    window.addEventListener('mouseup', () => {
+    const handleMouseUp = () => {
       this._dragEnded = true;
       window.removeEventListener('mousemove', moveHandle);
-    });
+      window.removeEventListener('mouseup', handleMouseUp);
+    };
+
+    window.addEventListener('mouseup', handleMouseUp);
   }
 
   preventDefaultDrag(event: MouseEvent) {
