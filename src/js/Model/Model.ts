@@ -119,9 +119,9 @@ class Model extends Observable {
           ? new SliderError(ErrorType.MAX, key)
           : newValue;
       case 'step':
-        if (newValue <= 0 || newValue > state.max - state.min)
-          return new SliderError(ErrorType.STEP, key);
-        return newValue;
+        return newValue <= 0 || newValue > state.max - state.min
+          ? new SliderError(ErrorType.STEP, key)
+          : newValue;
       default:
         return newValue;
     }
