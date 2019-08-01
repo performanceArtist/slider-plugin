@@ -6,7 +6,7 @@ import { Options } from './js/types';
 window.onload = function windowHasLoaded() {
   const createExample = (id: string, sliderOptions: Options = {}) => {
     const slider = init(document.getElementById(id), sliderOptions);
-    new Panel(`[data-slider=${id}]`, slider);
+    new Panel(document.querySelector(`[data-slider=${id}]`), slider);
   };
 
   createExample('example-1', {

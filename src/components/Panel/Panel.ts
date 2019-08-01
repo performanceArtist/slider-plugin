@@ -1,69 +1,69 @@
 import { SliderInterface } from '../../js/types';
 import { createNode } from '../../js/View/utils';
 
-function createPanelInput(
-  attributes: { [key: string]: string } = {},
-  label: string = '',
-) {
-  const container = createNode('div', { class: 'panel__input-wrapper' });
-  const input = createNode('input', {
-    class: 'panel__input',
-    ...attributes,
-  });
-  const labelElement = createNode('label', { class: 'panel__label' });
-  labelElement.innerText = label;
-
-  container.appendChild(input);
-  container.appendChild(labelElement);
-
-  return container;
-}
-
 class Panel {
+  root: HTMLElement;
   form: HTMLFormElement;
   slider: SliderInterface;
   inputContainer: HTMLDivElement;
 
-  constructor(selector: string, slider: SliderInterface) {
-    const container = document.querySelector(selector) as HTMLElement;
-    const form = container.querySelector('form');
-    if (!form || !container) throw new Error('Invalid element');
-
-    this.form = form;
-    this.inputContainer = form.querySelector('.panel__value-inputs');
+  constructor(root: HTMLElement, slider: SliderInterface) {
+    this.root = root;
     this.slider = slider;
 
     this.init = this.init.bind(this);
     this.update = this.update.bind(this);
+    this.handleChange = this.handleChange.bind(this);
 
     this.slider.subscribe(this.update, 'update');
     this.slider.subscribe(this.update, 'render');
+
     this.init();
   }
 
-  init() {
-    this.form.addEventListener('change', event => {
-      event.preventDefault();
-
-      const options: { [key: string]: any } = {};
-      const target = event.currentTarget as HTMLFormElement;
-
-      Array.prototype.forEach.call(
-        target.elements,
-        (input: HTMLInputElement) => {
-          const { name, type, value, checked } = input;
-          if (type === 'submit') return;
-
-          let newValue: string | boolean = value.trim();
-
-          if (type === 'radio' || type === 'checkbox') newValue = checked;
-
-          options[name] = newValue;
-        },
-      );
-
-      this.slider.setState(options);
+  static createInput(
+    attributes: { [key: string]: string } = {},
+    label: string = '',
+  ) {
+    const container = createNode('div', { class: 'panel__input-wrapper' });
+    const input = createNode('input', {
+      class: 'panel__input',
+      ...attributes,
     });
+    const labelElement = createNode('label', { class: 'panel__label' });
+    labelElement.innerText = label;
+
+    container.appendChild(input);
+    container.appendChild(labelElement);
+
+    return container;
+  }
+
+  init() {
+    this.form = this.root.querySelector('form');
+    this.inputContainer = this.form.querySelector('.panel__value-inputs');
+
+    this.form.addEventListener('change', this.handleChange);
+  }
+
+  handleChange(event: Event) {
+    event.preventDefault();
+
+    const options: { [key: string]: any } = {};
+    const target = event.currentTarget as HTMLFormElement;
+
+    [...target.elements].forEach((input: HTMLInputElement) => {
+      const { name, type, value, checked } = input;
+      if (type === 'submit') return;
+
+      let newValue: string | boolean = value.trim();
+
+      if (type === 'radio' || type === 'checkbox') newValue = checked;
+
+      options[name] = newValue;
+    });
+
+    this.slider.setState(options);
   }
 
   update() {
@@ -71,7 +71,7 @@ class Panel {
     const { interval, value, firstValue, secondValue } = state;
 
     if (interval) {
-      const firstInput = createPanelInput(
+      const firstInput = Panel.createInput(
         {
           name: 'firstValue',
           type: 'number',
@@ -79,7 +79,7 @@ class Panel {
         },
         'First value',
       );
-      const secondInput = createPanelInput(
+      const secondInput = Panel.createInput(
         {
           name: 'secondValue',
           type: 'number',
@@ -91,7 +91,7 @@ class Panel {
       this.inputContainer.appendChild(firstInput);
       this.inputContainer.appendChild(secondInput);
     } else {
-      const input = createPanelInput(
+      const input = Panel.createInput(
         {
           name: 'value',
           type: 'number',
@@ -103,19 +103,16 @@ class Panel {
       this.inputContainer.appendChild(input);
     }
 
-    Array.prototype.forEach.call(
-      this.form.elements,
-      (input: HTMLInputElement) => {
-        const defaultValue = state[input.name];
-        if (defaultValue !== undefined) {
-          if (input.type === 'radio' || input.type === 'checkbox') {
-            input.checked = defaultValue as boolean;
-          } else {
-            input.value = defaultValue.toString();
-          }
+    [...this.form.elements].forEach((input: HTMLInputElement) => {
+      const defaultValue = state[input.name];
+      if (defaultValue !== undefined) {
+        if (input.type === 'radio' || input.type === 'checkbox') {
+          input.checked = defaultValue as boolean;
+        } else {
+          input.value = defaultValue.toString();
         }
-      },
-    );
+      }
+    });
   }
 }
 

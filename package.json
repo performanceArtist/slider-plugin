@@ -10,7 +10,7 @@
     "dev": "webpack --mode=development",
     "start": "webpack-dev-server --mode=development",
     "tsc": "tsc",
-    "prettier": "prettier --write src/**/*.{ts,js,scss,json}"
+    "prettier": "prettier --write src/**/*.{ts,js,css,scss,json}"
   },
   "author": "",
   "license": "ISC",

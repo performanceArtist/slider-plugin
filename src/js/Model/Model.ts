@@ -23,29 +23,6 @@ const getInitialState = (function memoizeDefaults() {
   });
 })();
 
-const checkType = (key: string, value: any) => {
-  switch (key) {
-    case 'value':
-    case 'firstValue':
-    case 'secondValue':
-    case 'max':
-    case 'min':
-    case 'step':
-      return Number.isNaN(parseFloat(value))
-        ? new SliderError(ErrorType.NUM, key)
-        : parseFloat(value);
-    case 'interval':
-    case 'showBubble':
-    case 'showSteps':
-    case 'horizontal':
-      return typeof value !== 'boolean'
-        ? new SliderError(ErrorType.BOOL, key)
-        : value;
-    default:
-      return new SliderError(ErrorType.CONF, key);
-  }
-};
-
 class Model extends Observable {
   private _model: ModelType;
 
@@ -61,8 +38,31 @@ class Model extends Observable {
     this.takeMeta = this.takeMeta.bind(this);
   }
 
+  static checkType(key: string, value: any) {
+    switch (key) {
+      case 'value':
+      case 'firstValue':
+      case 'secondValue':
+      case 'max':
+      case 'min':
+      case 'step':
+        return Number.isNaN(parseFloat(value))
+          ? new SliderError(ErrorType.NUM, key)
+          : parseFloat(value);
+      case 'interval':
+      case 'showBubble':
+      case 'showSteps':
+      case 'horizontal':
+        return typeof value !== 'boolean'
+          ? new SliderError(ErrorType.BOOL, key)
+          : value;
+      default:
+        return new SliderError(ErrorType.CONF, key);
+    }
+  }
+
   validate(key: string, value: number | string | boolean) {
-    const newValue = checkType(key, value);
+    const newValue = Model.checkType(key, value);
     const state = this.getState();
 
     if (newValue instanceof SliderError) {
