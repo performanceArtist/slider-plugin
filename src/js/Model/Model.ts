@@ -33,6 +33,8 @@ class Model extends Observable {
     if (options) this.setState(options);
 
     this.validate = this.validate.bind(this);
+    this._validateValue = this._validateValue.bind(this);
+    this._setValue = this._setValue.bind(this);
     this.setState = this.setState.bind(this);
     this.getState = this.getState.bind(this);
     this.takeMeta = this.takeMeta.bind(this);
@@ -61,6 +63,40 @@ class Model extends Observable {
     }
   }
 
+  private _validateValue(
+    key: 'value' | 'firstValue' | 'secondValue',
+    value: number,
+  ) {
+    const state = this.getState();
+
+    const firstAtMax =
+      key === 'firstValue' && value >= state.secondValue - state.step;
+    if (firstAtMax) return state.firstValue;
+
+    const noInterval = key === 'firstValue' && value > state.max;
+    if (noInterval) return state.min;
+
+    const secondAtMin =
+      key === 'secondValue' && value <= state.firstValue + state.step;
+    if (secondAtMin) return state.secondValue;
+
+    const rawValue = value - state.min;
+    const length = state.max - state.min;
+
+    if (length % state.step !== 0) {
+      const tail = Math.floor(length / state.step) * state.step;
+      const valueRemainder = rawValue - tail;
+      const stepRemainder = length - tail;
+      if (valueRemainder > stepRemainder / 2) return state.max;
+    }
+
+    const result = state.min + state.step * Math.round(rawValue / state.step);
+
+    if (result < state.min) return state.min;
+    if (result > state.max) return state.max;
+    return result;
+  }
+
   validate(key: string, value: number | string | boolean) {
     const newValue = Model.checkType(key, value);
     const state = this.getState();
@@ -73,28 +109,7 @@ class Model extends Observable {
       case 'value':
       case 'firstValue':
       case 'secondValue':
-        if (key === 'firstValue' && newValue >= state.secondValue - state.step)
-          return state.firstValue;
-        if (key === 'firstValue' && newValue > state.max) return state.min;
-        if (key === 'secondValue' && newValue <= state.firstValue + state.step)
-          return state.secondValue;
-
-        const rawValue = (newValue as number) - state.min;
-
-        const length = state.max - state.min;
-        if (length % state.step !== 0) {
-          const tail = Math.floor(length / state.step) * state.step;
-          const valueRemainder = rawValue - tail;
-          const stepRemainder = length - tail;
-          if (valueRemainder > stepRemainder / 2) return state.max;
-        }
-
-        const result =
-          state.min + state.step * Math.round(rawValue / state.step);
-
-        if (result < state.min) return state.min;
-        if (result > state.max) return state.max;
-        return result;
+        return this._validateValue(key, value as number);
       case 'min':
         return newValue >= state.max
           ? new SliderError(ErrorType.MIN, key)
@@ -112,54 +127,44 @@ class Model extends Observable {
     }
   }
 
+  private _setValue(key: string, newValue: number | string | boolean) {
+    const { state, meta } = this._model;
+    const result = this.validate(key, newValue);
+
+    if (result instanceof SliderError) {
+      meta.errors.push(result.getMessage());
+      result.show();
+    } else {
+      state[key] = result;
+    }
+  }
+
   setState(options: Options = {}) {
     if (!(options instanceof Object)) {
       console.log('Invalid object');
       return;
     }
 
-    const { state, meta } = this._model;
-    const setValue = (key: string, newValue: number | string | boolean) => {
-      const result = this.validate(key, newValue);
-      if (result instanceof SliderError) {
-        meta.errors.push(result.getMessage());
-        result.show();
-      } else {
-        state[key] = result;
-      }
-    };
-    const keys = Object.keys(options);
-    const otherOptions = keys.filter(
-      key => key !== 'value' && key !== 'firstValue' && key !== 'secondValue',
-    );
+    const isValue = (key: string) =>
+      key === 'value' || key === 'firstValue' || key === 'secondValue';
+    const filteredOptions = Object.keys(options).filter(key => !isValue(key));
 
-    otherOptions.forEach(key => {
-      setValue(key, options[key]);
+    filteredOptions.forEach(key => {
+      this._setValue(key, options[key]);
     });
 
-    const interval =
-      options.interval === undefined ? state.interval : options.interval;
+    const { state } = this._model;
+    const newValue = (key: string) =>
+      options[key] === undefined ? state[key] : options[key];
 
-    if (interval) {
-      const first =
-        options.firstValue === undefined
-          ? state.firstValue
-          : options.firstValue;
-      const second =
-        options.secondValue === undefined
-          ? state.secondValue
-          : options.secondValue;
-
-      setValue('firstValue', first);
-      setValue('secondValue', second);
+    if (state.interval) {
+      this._setValue('firstValue', newValue('firstValue'));
+      this._setValue('secondValue', newValue('secondValue'));
     } else {
-      setValue(
-        'value',
-        options.value === undefined ? state.value : options.value,
-      );
+      this._setValue('value', newValue('value'));
     }
 
-    if (otherOptions.length === 0) {
+    if (filteredOptions.length === 0) {
       this.notify('update');
     } else {
       debounce(() => {
