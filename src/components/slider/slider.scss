@@ -1,4 +1,19 @@
-@import 'bubble';
+$pointer-size: 0.3rem;
+$bubble-color: black;
+
+%bubble {
+  position: relative;
+  background: $bubble-color;
+  border-radius: 0.4rem;
+
+  &:after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 0;
+    border: $pointer-size solid transparent;
+  }
+}
 
 %unselectable {
   -webkit-touch-callout: none;

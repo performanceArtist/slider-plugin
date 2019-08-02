@@ -1,31 +1,11 @@
-import init from './js/slider';
-import Panel from './components/Panel/Panel';
+import './js/slider';
 
-import { Options } from './js/types';
+import Example from './components/Example/Example';
 
 window.onload = function windowHasLoaded() {
-  const createExample = (id: string, sliderOptions: Options = {}) => {
-    const slider = init(document.getElementById(id), sliderOptions);
-    new Panel(document.querySelector(`[data-slider=${id}]`), slider);
-  };
-
-  createExample('example-1', {
-    hasInterval: true,
-  });
-
-  createExample('example-2', {
-    value: 20,
-    step: 20,
-    showBubble: false,
-    showSteps: true,
-  });
-
-  createExample('example-3', {
-    value: 10,
-    min: 40,
-    isHorizontal: false,
-    hasInterval: true,
-  });
+  document
+    .querySelectorAll('.example')
+    .forEach((example: HTMLElement) => new Example(example));
 };
 
 function importAll(resolve: any) {

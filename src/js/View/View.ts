@@ -229,8 +229,8 @@ class View extends Observable {
 
     const moveHandle = (moveEvent: MouseEvent) => {
       const position = isHorizontal
-        ? handleX + moveEvent.clientX - mouseX
-        : handleY + moveEvent.clientY - mouseY;
+        ? handleX + moveEvent.clientX - mouseX + 12.5
+        : handleY + moveEvent.clientY - mouseY + 12.5;
       const value = min + ((max - min) * position) / sliderLength;
 
       this.notify('newValue', { value, handleNum });

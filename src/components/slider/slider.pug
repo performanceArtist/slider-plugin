@@ -1,0 +1,13 @@
+mixin slider({value = 0, firstValue = 0, secondValue = 100, min = 0, max = 100, step = 1, hasInterval = false, showBubble = true, showSteps = false, isHorizontal = true} = {})
+  .slider(
+    data-value = value,
+    data-first-value = firstValue,
+    data-second-value = secondValue,
+    data-min = min,
+    data-max = max,
+    data-step = step,
+    data-has-interval = hasInterval.toString(),
+    data-show-bubble = showBubble.toString(),
+    data-show-steps = showSteps.toString(),
+    data-is-horizontal = isHorizontal.toString()
+  )
