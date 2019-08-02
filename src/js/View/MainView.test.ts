@@ -1,6 +1,6 @@
 import Model from '../Model/Model';
-import View from './View';
-import Handle from './Handle';
+import View from './MainView';
+import Handle from './HandleView';
 import Controller from '../Controller/Controller';
 
 document.body.innerHTML = '<div id="test"></div>';
@@ -41,7 +41,7 @@ describe('View', () => {
     });
 
     it('Puts newly created elements inside the root element', () => {
-      expect(view.dom.container.parentNode === view.root).toBe(true);
+      expect(view.dom.root.parentNode === view.root).toBe(true);
     });
   });
 
@@ -69,7 +69,7 @@ describe('Handle', () => {
 
   describe('constructor', () => {
     it('Creates handle element', () => {
-      expect(handle.element).toBeInstanceOf(HTMLElement);
+      expect(handle.handle).toBeInstanceOf(HTMLElement);
     });
 
     it('Adds value bubble according to options', () => {
@@ -86,7 +86,7 @@ describe('Handle', () => {
   describe('setPosition', () => {
     it('Sets handle position and value in bubble', () => {
       handle.setPosition(20, 100);
-      expect(parseInt(handle.element.style.left, 0)).toBeGreaterThan(0);
+      expect(parseInt(handle.handle.style.left, 0)).toBeGreaterThan(0);
       expect(handle.bubble.innerHTML).toBe('20');
     });
   });

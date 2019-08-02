@@ -111,9 +111,9 @@ class Model extends Observable {
       options[key] === undefined ? state[key] : options[key];
 
     if (state.hasInterval) {
+      this._setValue('value', newValue('value'));
       this._setValue('firstValue', newValue('firstValue'));
       this._setValue('secondValue', newValue('secondValue'));
-      this._setValue('value', newValue('value'));
     } else {
       this._setValue('value', newValue('value'));
     }

@@ -21,7 +21,6 @@ class Example {
     this.panel = this.root.querySelector('.example__panel .panel');
     const options = { ...$(this.slider).data(), ...this.jsOptions };
 
-    console.log(this.slider, options);
     const methods = slider(this.slider, options);
     new Panel(this.panel, methods);
   }
