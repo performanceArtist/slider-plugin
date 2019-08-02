@@ -113,6 +113,7 @@ class Model extends Observable {
     if (state.hasInterval) {
       this._setValue('firstValue', newValue('firstValue'));
       this._setValue('secondValue', newValue('secondValue'));
+      this._setValue('value', newValue('value'));
     } else {
       this._setValue('value', newValue('value'));
     }
@@ -142,19 +143,25 @@ class Model extends Observable {
   ) {
     const state = this.getState();
 
-    const firstAtMax =
-      key === 'firstValue' && value >= state.secondValue - state.step;
-    if (firstAtMax) return state.firstValue;
+    if (state.hasInterval) {
+      const isFirst =
+        key === 'value'
+          ? Math.abs(value - state.firstValue) <
+            Math.abs(value - state.secondValue)
+          : key === 'firstValue';
 
-    const nohasInterval = key === 'firstValue' && value > state.max;
-    if (nohasInterval) return state.min;
+      const firstAtMax = isFirst && value >= state.secondValue - state.step;
+      if (firstAtMax) return state.firstValue;
 
-    const secondAtMin =
-      key === 'secondValue' && value <= state.firstValue + state.step;
-    if (secondAtMin) return state.secondValue;
+      const noInterval = isFirst && value > state.max;
+      if (noInterval) return state.min;
 
-    const rawValue = value - state.min;
+      const secondAtMin = !isFirst && value <= state.firstValue + state.step;
+      if (secondAtMin) return state.secondValue;
+    }
+
     const length = state.max - state.min;
+    const rawValue = value - state.min;
 
     if (length % state.step !== 0) {
       const tail = Math.floor(length / state.step) * state.step;
@@ -178,7 +185,15 @@ class Model extends Observable {
       meta.errors.push(result.getMessage());
       result.show();
     } else {
-      state[key] = result;
+      if (key === 'value' && state.hasInterval) {
+        const isFirst =
+          Math.abs(<number>result - state.firstValue) <
+          Math.abs(<number>result - state.secondValue);
+        const newKey = isFirst ? 'firstValue' : 'secondValue';
+        state[newKey] = <number>result;
+      } else {
+        state[key] = result;
+      }
     }
   }
 }

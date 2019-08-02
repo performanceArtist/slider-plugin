@@ -17,28 +17,8 @@ class Controller {
     view.subscribe(this.changeValue, 'newValue');
   }
 
-  changeValue({
-    value,
-    handleNum = null,
-  }: {
-    value: number;
-    handleNum: number | null;
-  }) {
-    const { firstValue, secondValue, hasInterval } = this.model.getState();
-
-    if (hasInterval) {
-      const isFirst = handleNum
-        ? handleNum === 1
-        : Math.abs(value - firstValue) < Math.abs(value - secondValue);
-
-      if (isFirst) {
-        this.model.setState({ firstValue: value });
-      } else {
-        this.model.setState({ secondValue: value });
-      }
-    } else {
-      this.model.setState({ value });
-    }
+  changeValue(value: number) {
+    this.model.setState({ value });
   }
 }
 

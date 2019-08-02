@@ -12,7 +12,6 @@ class View extends Observable {
   dom: SliderDOM;
   handle: Handle | { first: Handle; second: Handle };
   private _sliderLength: number;
-  private _dragEnded: boolean;
 
   constructor(model: Model, root: HTMLElement) {
     super();
@@ -27,7 +26,6 @@ class View extends Observable {
     this.getSliderLength = this.getSliderLength.bind(this);
     this.handleClick = this.handleClick.bind(this);
     this.handleDrag = this.handleDrag.bind(this);
-    this._dragEnded = false;
     this.preventDefaultDrag = this.preventDefaultDrag.bind(this);
 
     this.render();
@@ -195,10 +193,6 @@ class View extends Observable {
       target.className === 'slider__done' ||
       target.className === 'slider__label';
 
-    if (this._dragEnded) {
-      this._dragEnded = false;
-      return;
-    }
     if (!isValidClick) return;
 
     const { isHorizontal, max, min } = this.model.getState();
@@ -212,7 +206,7 @@ class View extends Observable {
         ? parseFloat(target.innerHTML)
         : min + ((max - min) * position) / sliderLength;
 
-    this.notify('newValue', { value });
+    this.notify('newValue', value);
   }
 
   handleDrag({ event, handleNum }: { event: MouseEvent; handleNum?: number }) {
@@ -233,13 +227,12 @@ class View extends Observable {
         : handleY + moveEvent.clientY - mouseY + 12.5;
       const value = min + ((max - min) * position) / sliderLength;
 
-      this.notify('newValue', { value, handleNum });
+      this.notify('newValue', value);
     };
 
     window.addEventListener('mousemove', moveHandle);
 
     const handleMouseUp = () => {
-      this._dragEnded = true;
       window.removeEventListener('mousemove', moveHandle);
       window.removeEventListener('mouseup', handleMouseUp);
     };
