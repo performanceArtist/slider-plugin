@@ -20,23 +20,58 @@ class View extends Observable {
     if (!root) throw new Error(`Invalid root element`);
     this.root = root;
 
-    this.createSlider = this.createSlider.bind(this);
     this.render = this.render.bind(this);
-    this.update = this.update.bind(this);
     this.getSliderLength = this.getSliderLength.bind(this);
+    this.createSlider = this.createSlider.bind(this);
+    this.addHandles = this.addHandles.bind(this);
+    this.addSteps = this.addSteps.bind(this);
+    this.addErrors = this.addErrors.bind(this);
     this.notifyValueUpdate = this.notifyValueUpdate.bind(this);
+    this.update = this.update.bind(this);
+    this.updateRange = this.updateRange.bind(this);
     this.handleClick = this.handleClick.bind(this);
     this.preventDefaultDrag = this.preventDefaultDrag.bind(this);
-    this.addSteps = this.addSteps.bind(this);
 
     this.render();
   }
 
-  createSlider() {
-    const { hasInterval, showBubble, isHorizontal } = this.model.getState();
-    const errors = this.model.takeMeta().errors;
+  render() {
+    const { isHorizontal, hasInterval } = this.model.getState();
+    this.createSlider();
+    this.addHandles();
+    this.addSteps();
+    this.addErrors();
 
-    const dom: SliderDOM = {
+    this.dom.wrapper.addEventListener('click', this.handleClick);
+    this.dom.wrapper.addEventListener('drag', this.preventDefaultDrag);
+
+    if (hasInterval) {
+      const { first, second } = <{ first: Handle; second: Handle }>this.handle;
+
+      first.subscribe(this.notifyValueUpdate, 'newPosition');
+      second.subscribe(this.notifyValueUpdate, 'newPosition');
+    } else {
+      (<Handle>this.handle).subscribe(this.notifyValueUpdate, 'newPosition');
+    }
+
+    this.root.innerHTML = '';
+    this.root.appendChild(this.dom.root);
+
+    this._sliderLength = isHorizontal
+      ? this.dom.wrapper.offsetWidth
+      : this.dom.wrapper.offsetHeight;
+
+    this.update();
+  }
+
+  getSliderLength() {
+    return this._sliderLength;
+  }
+
+  createSlider() {
+    const { isHorizontal } = this.model.getState();
+
+    this.dom = {
       root: createNode('div', {
         class: isHorizontal
           ? 'slider slider_horizontal'
@@ -49,9 +84,13 @@ class View extends Observable {
       errorCont: createNode('div', { class: 'slider__error-container' }),
     };
 
-    dom.root.appendChild(dom.wrapper);
+    this.dom.root.appendChild(this.dom.wrapper);
+    this.dom.root.appendChild(this.dom.errorCont);
+    this.dom.wrapper.appendChild(this.dom.selected);
+  }
 
-    dom.wrapper.appendChild(dom.selected);
+  addHandles() {
+    const { hasInterval, showBubble, isHorizontal } = this.model.getState();
 
     if (hasInterval) {
       this.handle = {
@@ -59,33 +98,12 @@ class View extends Observable {
         second: new Handle({ isHorizontal, showBubble }),
       };
 
-      dom.wrapper.appendChild(this.handle.first.getElements());
-      dom.wrapper.appendChild(this.handle.second.getElements());
+      this.dom.wrapper.appendChild(this.handle.first.getElements());
+      this.dom.wrapper.appendChild(this.handle.second.getElements());
     } else {
       this.handle = new Handle({ isHorizontal, showBubble });
-      dom.wrapper.appendChild(this.handle.getElements());
+      this.dom.wrapper.appendChild(this.handle.getElements());
     }
-
-    dom.root.appendChild(dom.errorCont);
-
-    errors
-      .map((error: string) => {
-        const row = createNode('div', { class: 'slider__error' });
-        row.innerHTML = error;
-        return row;
-      })
-      .forEach((element: HTMLElement) => {
-        dom.errorCont.appendChild(element);
-      });
-
-    this.dom = dom;
-  }
-
-  notifyValueUpdate(position: number) {
-    const { min, max } = this.model.getState();
-    const value = min + ((max - min) * position) / this.getSliderLength();
-
-    this.notify('newValue', value);
   }
 
   addSteps() {
@@ -113,40 +131,30 @@ class View extends Observable {
     }
   }
 
-  render() {
-    const { isHorizontal, hasInterval } = this.model.getState();
-    this.createSlider();
+  addErrors() {
+    const errors = this.model.takeMeta().errors;
 
-    this.dom.wrapper.addEventListener('click', this.handleClick);
-    this.dom.wrapper.addEventListener('drag', this.preventDefaultDrag);
+    errors
+      .map((error: string) => {
+        const row = createNode('div', { class: 'slider__error' });
+        row.innerHTML = error;
+        return row;
+      })
+      .forEach((element: HTMLElement) => {
+        this.dom.errorCont.appendChild(element);
+      });
+  }
 
-    if (hasInterval) {
-      const { first, second } = <{ first: Handle; second: Handle }>this.handle;
+  notifyValueUpdate(position: number) {
+    const { min, max } = this.model.getState();
+    const value = min + ((max - min) * position) / this.getSliderLength();
 
-      first.subscribe(this.notifyValueUpdate, 'newPosition');
-      second.subscribe(this.notifyValueUpdate, 'newPosition');
-    } else {
-      const handle = <Handle>this.handle;
-
-      handle.subscribe(this.notifyValueUpdate, 'newPosition');
-    }
-
-    this.root.innerHTML = '';
-    this.root.appendChild(this.dom.root);
-
-    const length = isHorizontal
-      ? this.dom.wrapper.offsetWidth
-      : this.dom.wrapper.offsetHeight;
-    this._sliderLength = length;
-
-    this.addSteps();
-    this.update();
+    this.notify('newValue', value);
   }
 
   update() {
     const sliderLength = this.getSliderLength();
     const {
-      isHorizontal,
       hasInterval,
       value,
       firstValue,
@@ -163,50 +171,45 @@ class View extends Observable {
       first.setPosition(firstValue, firstPosition);
       second.setPosition(secondValue, secondPosition);
 
-      if (isHorizontal) {
-        this.dom.selected.style.width = `${secondPosition - firstPosition}px`;
-        this.dom.selected.style.left = `${firstPosition}px`;
-      } else {
-        this.dom.selected.style.height = `${secondPosition - firstPosition}px`;
-        this.dom.selected.style.top = `${firstPosition}px`;
-      }
+      this.updateRange(secondPosition - firstPosition, firstPosition);
     } else {
       const handle = <Handle>this.handle;
       const position = (sliderLength * (value - min)) / (max - min);
 
       handle.setPosition(value, position);
 
-      if (isHorizontal) {
-        this.dom.selected.style.width = `${position}px`;
-      } else {
-        this.dom.selected.style.height = `${position}px`;
-      }
+      this.updateRange(position);
     }
   }
 
-  getSliderLength() {
-    return this._sliderLength;
+  updateRange(size: number, position: number | null = null) {
+    const { isHorizontal } = this.model.getState();
+
+    if (isHorizontal) {
+      this.dom.selected.style.width = `${size}px`;
+      if (position) this.dom.selected.style.left = `${position}px`;
+    } else {
+      this.dom.selected.style.height = `${size}px`;
+      if (position) this.dom.selected.style.top = `${position}px`;
+    }
   }
 
   handleClick(event: MouseEvent) {
     const target = event.target as HTMLElement;
     const isValidClick =
-      target.classList.contains('slider__wrapper') ||
+      target.className === 'slider__wrapper' ||
       target.className === 'slider__done' ||
       target.className === 'slider__label';
 
     if (!isValidClick) return;
 
     const { isHorizontal, max, min } = this.model.getState();
-    const rect = this.dom.wrapper.getBoundingClientRect();
-    const position = isHorizontal
-      ? event.clientX - rect.left
-      : event.clientY - rect.top;
-    const sliderLength = this.getSliderLength();
+    const { left, top } = this.dom.wrapper.getBoundingClientRect();
+    const position = isHorizontal ? event.clientX - left : event.clientY - top;
     const value =
       target.className === 'slider__label'
         ? parseFloat(target.innerHTML)
-        : min + ((max - min) * position) / sliderLength;
+        : min + ((max - min) * position) / this.getSliderLength();
 
     this.notify('newValue', value);
   }

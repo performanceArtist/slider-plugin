@@ -12,8 +12,9 @@ class Panel {
     this.slider = slider;
 
     this.init = this.init.bind(this);
-    this.update = this.update.bind(this);
     this.handleChange = this.handleChange.bind(this);
+    this.addValueInputs = this.addValueInputs.bind(this);
+    this.update = this.update.bind(this);
 
     this.slider.subscribe(this.update, 'update');
     this.slider.subscribe(this.update, 'render');
@@ -63,9 +64,13 @@ class Panel {
     this.slider.setState(options);
   }
 
-  update() {
-    const state = this.slider.getState();
-    const { hasInterval, value, firstValue, secondValue } = state;
+  addValueInputs() {
+    const {
+      hasInterval,
+      value,
+      firstValue,
+      secondValue,
+    } = this.slider.getState();
 
     if (hasInterval) {
       const firstInput = Panel.createInput(
@@ -99,6 +104,11 @@ class Panel {
       this.inputContainer.innerHTML = '';
       this.inputContainer.appendChild(input);
     }
+  }
+
+  update() {
+    const state = this.slider.getState();
+    this.addValueInputs();
 
     [...this.form.elements].forEach((input: HTMLInputElement) => {
       const { name, type } = input;

@@ -65,7 +65,7 @@ class Model extends Observable {
 
   validate(key: string, value: number | string | boolean) {
     const newValue = Model.checkType(key, value);
-    const state = this.getState();
+    const { min, max } = this.getState();
 
     if (newValue instanceof SliderError) {
       return newValue;
@@ -75,17 +75,13 @@ class Model extends Observable {
       case 'value':
       case 'firstValue':
       case 'secondValue':
-        return this._validateValue(key, value as number);
+        return this._validateValue(key, newValue as number);
       case 'min':
-        return newValue >= state.max
-          ? new SliderError(ErrorType.MIN, key)
-          : newValue;
+        return newValue >= max ? new SliderError(ErrorType.MIN, key) : newValue;
       case 'max':
-        return newValue <= state.min
-          ? new SliderError(ErrorType.MAX, key)
-          : newValue;
+        return newValue <= min ? new SliderError(ErrorType.MAX, key) : newValue;
       case 'step':
-        const invalidStep = newValue <= 0 || newValue > state.max - state.min;
+        const invalidStep = newValue <= 0 || newValue > max - min;
         return invalidStep ? new SliderError(ErrorType.STEP, key) : newValue;
       default:
         return newValue;
@@ -107,6 +103,7 @@ class Model extends Observable {
     });
 
     const { state } = this._model;
+
     const newValue = (key: string) =>
       options[key] === undefined ? state[key] : options[key];
 
@@ -141,59 +138,67 @@ class Model extends Observable {
     key: 'value' | 'firstValue' | 'secondValue',
     value: number,
   ) {
-    const state = this.getState();
+    const {
+      hasInterval,
+      firstValue,
+      secondValue,
+      step,
+      min,
+      max,
+    } = this.getState();
 
-    if (state.hasInterval) {
+    if (hasInterval) {
       const isFirst =
         key === 'value'
-          ? Math.abs(value - state.firstValue) <
-            Math.abs(value - state.secondValue)
+          ? Math.abs(value - firstValue) < Math.abs(value - secondValue)
           : key === 'firstValue';
 
-      const firstAtMax = isFirst && value >= state.secondValue - state.step;
-      if (firstAtMax) return state.firstValue;
+      const firstAtMax = isFirst && value >= secondValue - step;
+      if (firstAtMax) return firstValue;
 
-      const noInterval = isFirst && value > state.max;
-      if (noInterval) return state.min;
+      const noInterval = isFirst && value > max;
+      if (noInterval) return min;
 
-      const secondAtMin = !isFirst && value <= state.firstValue + state.step;
-      if (secondAtMin) return state.secondValue;
+      const secondAtMin = !isFirst && value <= firstValue + step;
+      if (secondAtMin) return secondValue;
     }
 
-    const length = state.max - state.min;
-    const rawValue = value - state.min;
+    const rawValue = value - min;
+    const length = max - min;
 
-    if (length % state.step !== 0) {
-      const tail = Math.floor(length / state.step) * state.step;
+    if (length % step !== 0) {
+      const tail = Math.floor(length / step) * step;
       const valueRemainder = rawValue - tail;
       const stepRemainder = length - tail;
-      if (valueRemainder > stepRemainder / 2) return state.max;
+      if (valueRemainder > stepRemainder / 2) return max;
     }
 
-    const result = state.min + state.step * Math.round(rawValue / state.step);
+    const result = min + step * Math.round(rawValue / step);
 
-    if (result < state.min) return state.min;
-    if (result > state.max) return state.max;
+    if (result < min) return min;
+    if (result > max) return max;
     return result;
   }
 
   private _setValue(key: string, newValue: number | string | boolean) {
-    const { state, meta } = this._model;
+    const { meta, state } = this._model;
+    const { hasInterval, firstValue, secondValue } = state;
     const result = this.validate(key, newValue);
 
     if (result instanceof SliderError) {
       meta.errors.push(result.getMessage());
       result.show();
+      return;
+    }
+
+    if (key === 'value' && hasInterval) {
+      const isFirst =
+        Math.abs(<number>result - firstValue) <
+        Math.abs(<number>result - secondValue);
+      const newKey = isFirst ? 'firstValue' : 'secondValue';
+      state[newKey] = <number>result;
     } else {
-      if (key === 'value' && state.hasInterval) {
-        const isFirst =
-          Math.abs(<number>result - state.firstValue) <
-          Math.abs(<number>result - state.secondValue);
-        const newKey = isFirst ? 'firstValue' : 'secondValue';
-        state[newKey] = <number>result;
-      } else {
-        state[key] = result;
-      }
+      state[key] = result;
     }
   }
 }

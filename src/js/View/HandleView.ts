@@ -69,7 +69,7 @@ class Handle extends Observable {
       this.bubble.style.top = `${position - this.bubble.offsetHeight / 2}px`;
     }
 
-    this.bubble.innerHTML = value.toString();
+    this.bubble.innerText = value.toString();
   }
 
   getElements() {
