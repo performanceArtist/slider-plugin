@@ -33,7 +33,7 @@ class Model extends Observable {
     if (options) this.setState(options);
 
     this.validate = this.validate.bind(this);
-    this._validateValue = this._validateValue.bind(this);
+    this._validateSliderValue = this._validateSliderValue.bind(this);
     this._setValue = this._setValue.bind(this);
     this.setState = this.setState.bind(this);
     this.getState = this.getState.bind(this);
@@ -75,7 +75,7 @@ class Model extends Observable {
       case 'value':
       case 'firstValue':
       case 'secondValue':
-        return this._validateValue(key, newValue as number);
+        return this._validateSliderValue(key, newValue as number);
       case 'min':
         return newValue >= max ? new SliderError(ErrorType.MIN, key) : newValue;
       case 'max':
@@ -134,7 +134,7 @@ class Model extends Observable {
     return meta;
   }
 
-  private _validateValue(
+  private _validateSliderValue(
     key: 'value' | 'firstValue' | 'secondValue',
     value: number,
   ) {

@@ -90,14 +90,14 @@ class Slider extends Observable {
     this.root.appendChild(errorCont);
   }
 
-  updateRange(size: number, position: number | null = null) {
+  updateRange(length: number, position: number | null = null) {
     const { isHorizontal } = this._options;
 
     if (isHorizontal) {
-      this.range.style.width = `${size}px`;
+      this.range.style.width = `${length}px`;
       if (position !== null) this.range.style.left = `${position}px`;
     } else {
-      this.range.style.height = `${size}px`;
+      this.range.style.height = `${length}px`;
       if (position !== null) this.range.style.top = `${position}px`;
     }
   }
