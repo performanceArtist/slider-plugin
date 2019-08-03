@@ -6,22 +6,20 @@ class Example {
   root: HTMLElement;
   slider: HTMLElement;
   panel: HTMLElement;
-  jsOptions: Options;
 
   constructor(root: HTMLElement, options: Options = {}) {
     this.root = root;
-    this.jsOptions = options;
     this.init = this.init.bind(this);
 
-    this.init();
+    this.init(options);
   }
 
-  init() {
+  init(options: Options) {
     this.slider = this.root.querySelector('.example__slider .slider');
     this.panel = this.root.querySelector('.example__panel .panel');
-    const options = { ...$(this.slider).data(), ...this.jsOptions };
+    const allOptions = { ...$(this.slider).data(), ...options };
 
-    const methods = slider(this.slider, options);
+    const methods = slider(this.slider, allOptions);
     new Panel(this.panel, methods);
   }
 }
