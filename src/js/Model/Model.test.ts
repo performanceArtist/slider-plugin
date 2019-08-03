@@ -1,5 +1,5 @@
 import Model from './Model';
-import View from '../View/MainView';
+import View from '../Views/Main';
 import Controller from '../Controller/Controller';
 import SliderError, { ErrorType } from './SliderError';
 

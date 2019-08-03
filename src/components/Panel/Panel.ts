@@ -1,5 +1,5 @@
 import { SliderInterface } from '../../js/types';
-import { createNode } from '../../js/View/utils';
+import { createNode } from '../../js/Views/utils';
 
 class Panel {
   root: HTMLElement;

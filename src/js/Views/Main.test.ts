@@ -1,6 +1,6 @@
 import Model from '../Model/Model';
-import View from './MainView';
-import Handle from './HandleView';
+import View from './Main';
+import Handle from './Handle';
 import Controller from '../Controller/Controller';
 
 document.body.innerHTML = '<div id="test"></div>';

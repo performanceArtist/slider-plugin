@@ -51,7 +51,7 @@ $bubble-color: black;
     text-align: center;
   }
 
-  &__done {
+  &__range {
     position: absolute;
     z-index: 1;
     display: block;
@@ -82,7 +82,7 @@ $bubble-color: black;
       margin-top: 2.8125rem;
     }
 
-    &__done {
+    &__range {
       height: 100%;
       width: 0;
     }
@@ -123,7 +123,7 @@ $bubble-color: black;
       height: 18.75rem;
     }
 
-    &__done {
+    &__range {
       height: 0;
       width: 100%;
     }
