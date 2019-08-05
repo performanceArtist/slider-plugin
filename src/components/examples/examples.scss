@@ -1,0 +1,25 @@
+.examples {
+  &__container {
+    display: flex;
+    justify-content: space-evenly;
+  }
+
+  &__title {
+    font-size: 2rem;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 3rem;
+  }
+
+  @media screen and (max-width: 1200px) {
+    &__container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    &__example {
+      margin-bottom: 2rem;
+    }
+  }
+}

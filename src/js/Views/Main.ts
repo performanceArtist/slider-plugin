@@ -4,7 +4,7 @@ import Observable from '../Observable/Observable';
 import Handle from './Handle';
 import Slider from './Slider';
 
-class View extends Observable {
+class Main extends Observable {
   model: Model;
   root: HTMLElement;
   slider: Slider;
@@ -105,4 +105,4 @@ class View extends Observable {
   }
 }
 
-export default View;
+export default Main;

@@ -1,6 +1,4 @@
-include components/Panel/panel
-include components/slider/slider
-include components/Example/Example
+include components/examples/examples
 
 doctype html
 
@@ -10,10 +8,11 @@ html(lang='en')
     title Slider testing
   body
     .content
-      .examples
-        .examples__title Slider testing
-        .examples__container
-          +example({hasInterval: true})
-          +example({value: 20, step: 20, showBubble: false, showSteps: true})
-          +example({min: 40, isHorizontal: false, hasInterval: true})
-      
+      +examples({
+        title: 'Slider testing', 
+        examples: [
+          {hasInterval: true}, 
+          {value: 20, step: 20, showBubble: false, showSteps: true}, 
+          {min: 40, isHorizontal: false, hasInterval: true}
+        ]
+      })

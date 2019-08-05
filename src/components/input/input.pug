@@ -1,0 +1,4 @@
+mixin input({type = 'text', name='', label=''} = {})
+  .input
+    input(type=type, name=name, required).input__input
+    label(for=name).input__label #{label}

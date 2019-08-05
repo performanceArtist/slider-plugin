@@ -1,9 +1,5 @@
 include ../checkmark/checkmark
-
-mixin input(type, name='', label='')
-  .panel__input-wrapper
-    input(type=type, name=name, required).panel__input
-    label(for=name).panel__label #{label}
+include ../input/input
 
 mixin panel
   .panel
@@ -12,9 +8,12 @@ mixin panel
       form(action='', class='panel__form' id=id)
         .panel__column.panel__column_left
           .panel__value-inputs
-          +input('number', 'min', 'Min')
-          +input('number', 'max', 'Max')
-          +input('number', 'step', 'Step')
+          .panel__input
+            +input({type: 'number', name: 'min', label: 'Min'})
+          .panel__input
+            +input({type:'number', name:'max', label:'Max'})
+          .panel__input
+            +input({type:'number', name:'step', label:'Step'})
         .panel__column.panel__column_right
           .panel__checkmark
             +checkmark({name:'showBubble', type:'checkbox', label:'Show bubble'})

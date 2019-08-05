@@ -26,18 +26,19 @@ class Panel {
     attributes: { [key: string]: string } = {},
     label: string = '',
   ) {
-    const container = createNode('div', { class: 'panel__input-wrapper' });
+    const wrapper = createNode('div', { class: 'panel__input' });
+    const container = createNode('div', { class: 'input__wrapper' });
     const input = createNode('input', {
-      class: 'panel__input',
+      class: 'input__input',
       ...attributes,
     });
-    const labelElement = createNode('label', { class: 'panel__label' });
+    const labelElement = createNode('label', { class: 'input__label' });
     labelElement.innerText = label;
 
     container.appendChild(input);
     container.appendChild(labelElement);
-
-    return container;
+    wrapper.appendChild(container);
+    return wrapper;
   }
 
   init() {

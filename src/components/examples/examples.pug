@@ -1,0 +1,9 @@
+include ../example/example
+
+mixin examples({title, examples = []}) 
+  .examples
+    .examples__title #{title}
+    .examples__container
+      each example in examples
+        +example(example)
+        

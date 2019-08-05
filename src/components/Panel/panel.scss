@@ -1,6 +1,10 @@
 .panel {
   display: inline-block;
 
+  &__input {
+    margin-bottom: 1rem;
+  }
+
   &__wrapper {
     padding-top: 2%;
   }
@@ -11,25 +15,13 @@
 
   &__column {
     &_left {
-      margin-right: 2em;
-      padding-top: 0.2em;
+      margin-right: 2rem;
+      padding-top: 0.2rem;
     }
-  }
-
-  &__input-wrapper {
-    margin-bottom: 1em;
-  }
-
-  &__input {
-    width: 5em;
-  }
-
-  &__label {
-    margin-left: 0.8em;
   }
 
   &__checkmark {
     display: block;
-    margin-bottom: 0.5em;
+    margin-bottom: 0.5rem;
   }
 }
