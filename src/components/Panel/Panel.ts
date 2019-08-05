@@ -17,6 +17,7 @@ class Panel {
     this.update = this.update.bind(this);
 
     this.slider.subscribe(this.update, 'update');
+    this.slider.subscribe(this.update, 'updateInterval');
     this.slider.subscribe(this.update, 'render');
 
     this.init();
