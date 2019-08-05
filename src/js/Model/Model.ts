@@ -17,11 +17,13 @@ class Model extends Observable {
     if (options) this.setState(options);
 
     this.validate = this.validate.bind(this);
-    this._validateSliderValue = this._validateSliderValue.bind(this);
-    this._setValue = this._setValue.bind(this);
+    this.convertRatio = this.convertRatio.bind(this);
     this.setState = this.setState.bind(this);
+    this.notifyUpdate = this.notifyUpdate.bind(this);
     this.getState = this.getState.bind(this);
     this.takeMeta = this.takeMeta.bind(this);
+    this._validateSliderValue = this._validateSliderValue.bind(this);
+    this._setValue = this._setValue.bind(this);
   }
 
   static checkType(key: string, value: any) {
@@ -29,6 +31,7 @@ class Model extends Observable {
       case 'value':
       case 'firstValue':
       case 'secondValue':
+      case 'ratio':
       case 'max':
       case 'min':
       case 'step':
@@ -72,14 +75,24 @@ class Model extends Observable {
     }
   }
 
-  setState(options: Options = {}) {
-    if (!(options instanceof Object)) {
+  convertRatio({ ratio, ...rest }: Options = {}) {
+    if (ratio !== undefined) {
+      const { max, min } = this.getState();
+      return { ...rest, value: min + (ratio as number) * (max - min) };
+    }
+
+    return rest;
+  }
+
+  setState(rawOptions: Options = {}) {
+    if (!(rawOptions instanceof Object)) {
       console.log('Invalid object');
       return;
     }
 
+    const options = this.convertRatio(rawOptions);
     const isValue = (key: string) =>
-      key === 'value' || key === 'firstValue' || key === 'secondValue';
+      ['value', 'firstValue', 'secondValue'].indexOf(key) !== -1;
     const filteredOptions = Object.keys(options).filter(key => !isValue(key));
 
     filteredOptions.forEach(key => {
@@ -98,11 +111,34 @@ class Model extends Observable {
     }
 
     if (filteredOptions.length === 0) {
-      this.notify('update');
+      this.notifyUpdate();
     } else {
       debounce(() => {
         this.notify('render');
+        this.notifyUpdate();
       }, 200)();
+    }
+  }
+
+  notifyUpdate() {
+    const { value, firstValue, secondValue, min, max } = this.getState();
+
+    if (this._state.hasInterval) {
+      this.notify('updateInterval', {
+        first: {
+          value: firstValue,
+          ratio: (firstValue - min) / (max - min),
+        },
+        second: {
+          value: secondValue,
+          ratio: (secondValue - min) / (max - min),
+        },
+      });
+    } else {
+      this.notify('update', {
+        value,
+        ratio: (value - min) / (max - min),
+      });
     }
   }
 
@@ -159,6 +195,7 @@ class Model extends Observable {
 
     if (result < min) return min;
     if (result > max) return max;
+
     return result;
   }
 

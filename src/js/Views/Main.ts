@@ -4,6 +4,8 @@ import Observable from '../Observable/Observable';
 import Handle from './Handle';
 import Slider from './Slider';
 
+type Ratio = { value: number; ratio: number };
+
 class Main extends Observable {
   model: Model;
   root: HTMLElement;
@@ -24,6 +26,7 @@ class Main extends Observable {
     this.notifyPositionUpdate = this.notifyPositionUpdate.bind(this);
     this.notifyValueUpdate = this.notifyValueUpdate.bind(this);
     this.update = this.update.bind(this);
+    this.updateInterval = this.updateInterval.bind(this);
 
     this.render();
   }
@@ -31,7 +34,6 @@ class Main extends Observable {
   render() {
     this.addSlider();
     this.addHandles();
-    this.update();
   }
 
   addSlider() {
@@ -64,44 +66,35 @@ class Main extends Observable {
   }
 
   notifyPositionUpdate(position: number) {
-    const { min, max } = this.model.getState();
-    const value = min + ((max - min) * position) / this.slider.getLength();
-
-    this.notifyValueUpdate(value);
+    this.notify('newRatio', position / this.slider.getLength());
   }
 
   notifyValueUpdate(value: number) {
     this.notify('newValue', value);
   }
 
-  update() {
+  update({ value, ratio }: Ratio) {
     const sliderLength = this.slider.getLength();
-    const {
-      hasInterval,
-      value,
-      firstValue,
-      secondValue,
-      min,
-      max,
-    } = this.model.getState();
+    const handle = <Handle>this.handle;
+    const position = sliderLength * ratio;
 
-    if (hasInterval) {
-      const { first, second } = <{ first: Handle; second: Handle }>this.handle;
-      const firstPosition = (sliderLength * (firstValue - min)) / (max - min);
-      const secondPosition = (sliderLength * (secondValue - min)) / (max - min);
+    handle.setPosition(value, position);
+    this.slider.updateRange(position);
+  }
 
-      first.setPosition(firstValue, firstPosition);
-      second.setPosition(secondValue, secondPosition);
+  updateInterval({ first, second }: { first: Ratio; second: Ratio }) {
+    const sliderLength = this.slider.getLength();
+    const { first: firstHandle, second: secondHandle } = <
+      { first: Handle; second: Handle }
+    >this.handle;
 
-      this.slider.updateRange(secondPosition - firstPosition, firstPosition);
-    } else {
-      const handle = <Handle>this.handle;
-      const position = (sliderLength * (value - min)) / (max - min);
+    const firstPosition = sliderLength * first.ratio;
+    const secondPosition = sliderLength * second.ratio;
 
-      handle.setPosition(value, position);
+    firstHandle.setPosition(first.value, firstPosition);
+    secondHandle.setPosition(second.value, secondPosition);
 
-      this.slider.updateRange(position);
-    }
+    this.slider.updateRange(secondPosition - firstPosition, firstPosition);
   }
 }
 

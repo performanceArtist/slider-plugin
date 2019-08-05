@@ -9,16 +9,18 @@ class Controller {
     this.model = model;
     this.view = view;
 
-    this.changeValue = this.changeValue.bind(this);
-
-    model.subscribe(view.update, 'update');
     model.subscribe(view.render, 'render');
+    model.subscribe(view.update, 'update');
+    model.subscribe(view.updateInterval, 'updateInterval');
 
-    view.subscribe(this.changeValue, 'newValue');
-  }
-
-  changeValue(value: number) {
-    this.model.setState({ value });
+    view.subscribe(
+      (value: number) => this.model.setState({ value }),
+      'newValue',
+    );
+    view.subscribe(
+      (ratio: number) => this.model.setState({ ratio }),
+      'newRatio',
+    );
   }
 }
 
