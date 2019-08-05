@@ -2,34 +2,18 @@ import { debounce } from './utils';
 import SliderError, { ErrorType } from './SliderError';
 import Observable from '../Observable/Observable';
 import { Options, ModelType } from '../types';
-
-const getInitialState = (function memoizeDefaults() {
-  const defaults = {
-    value: 0,
-    firstValue: 0,
-    secondValue: 100,
-    min: 0,
-    max: 100,
-    step: 1,
-    hasInterval: false,
-    showBubble: true,
-    showSteps: false,
-    isHorizontal: true,
-  };
-
-  return (): ModelType => ({
-    state: { ...defaults },
-    meta: { errors: [] },
-  });
-})();
+import config from './config';
 
 class Model extends Observable {
-  private _model: ModelType;
+  private _state: Options;
+  private _meta: { errors: Array<string> };
 
   constructor(options: Options | null = null) {
     super();
 
-    this._model = getInitialState();
+    this._state = { ...config };
+    this._meta = { errors: [] };
+
     if (options) this.setState(options);
 
     this.validate = this.validate.bind(this);
@@ -102,12 +86,10 @@ class Model extends Observable {
       this._setValue(key, options[key]);
     });
 
-    const { state } = this._model;
-
     const newValue = (key: string) =>
-      options[key] === undefined ? state[key] : options[key];
+      options[key] === undefined ? this._state[key] : options[key];
 
-    if (state.hasInterval) {
+    if (this._state.hasInterval) {
       this._setValue('value', newValue('value'));
       this._setValue('firstValue', newValue('firstValue'));
       this._setValue('secondValue', newValue('secondValue'));
@@ -125,12 +107,12 @@ class Model extends Observable {
   }
 
   getState() {
-    return { ...this._model.state };
+    return { ...this._state };
   }
 
   takeMeta() {
-    const meta = { ...this._model.meta };
-    this._model.meta.errors = [];
+    const meta = { ...this._meta };
+    this._meta.errors = [];
     return meta;
   }
 
@@ -181,12 +163,11 @@ class Model extends Observable {
   }
 
   private _setValue(key: string, newValue: number | string | boolean) {
-    const { meta, state } = this._model;
-    const { hasInterval, firstValue, secondValue } = state;
+    const { hasInterval, firstValue, secondValue } = this._state;
     const result = this.validate(key, newValue);
 
     if (result instanceof SliderError) {
-      meta.errors.push(result.getMessage());
+      this._meta.errors.push(result.getMessage());
       result.show();
       return;
     }
@@ -196,9 +177,9 @@ class Model extends Observable {
         Math.abs(<number>result - firstValue) <
         Math.abs(<number>result - secondValue);
       const newKey = isFirst ? 'firstValue' : 'secondValue';
-      state[newKey] = <number>result;
+      this._state[newKey] = <number>result;
     } else {
-      state[key] = result;
+      this._state[key] = result;
     }
   }
 }

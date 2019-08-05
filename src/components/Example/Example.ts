@@ -17,9 +17,10 @@ class Example {
   init(options: Options) {
     this.slider = this.root.querySelector('.example__slider .slider');
     this.panel = this.root.querySelector('.example__panel .panel');
-    const allOptions = { ...$(this.slider).data(), ...options };
 
+    const allOptions = { ...$(this.slider).data(), ...options };
     const methods = slider(this.slider, allOptions);
+
     new Panel(this.panel, methods);
   }
 }

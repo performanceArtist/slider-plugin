@@ -20,10 +20,10 @@ describe('View', () => {
   });
 
   describe('render', () => {
-    it('Creates dom and handle objects, sets sliderLength property', () => {
-      expect(view.dom).toBeDefined();
+    it('Creates slider and handle objects, sets sliderLength property', () => {
+      expect(view.slider).toBeDefined();
       expect(view.handle).toBeDefined();
-      expect(Number.isNaN(view.getSliderLength())).toBe(false);
+      expect(Number.isNaN(view.slider.getLength())).toBe(false);
     });
 
     it('Creates appropriate number of Handle objects', () => {
@@ -41,7 +41,7 @@ describe('View', () => {
     });
 
     it('Puts newly created elements inside the root element', () => {
-      expect(view.dom.root.parentNode === view.root).toBe(true);
+      expect(view.slider.root.parentNode === view.root).toBe(true);
     });
   });
 
@@ -55,7 +55,7 @@ describe('View', () => {
 
   describe('getSliderLength', () => {
     it('Returns slider length', () => {
-      expect(Number.isNaN(view.getSliderLength())).toBe(false);
+      expect(Number.isNaN(view.slider.getLength())).toBe(false);
     });
   });
 });

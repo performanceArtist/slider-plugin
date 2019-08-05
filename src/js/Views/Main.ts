@@ -37,6 +37,8 @@ class View extends Observable {
   addSlider() {
     this.root.innerHTML = '';
     this.slider = new Slider(this.model.getState(), this.root);
+    const { errors } = this.model.takeMeta();
+    this.slider.addErrors(errors);
     this.slider.subscribe(this.notifyValueUpdate, 'click');
   }
 
