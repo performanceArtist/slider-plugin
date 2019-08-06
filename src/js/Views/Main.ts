@@ -4,7 +4,7 @@ import Observable from '../Observable/Observable';
 import Handle from './Handle';
 import Slider from './Slider';
 
-type Ratio = { value: number; ratio: number };
+type Position = { value: number; ratio: number };
 
 class Main extends Observable {
   model: Model;
@@ -73,7 +73,7 @@ class Main extends Observable {
     this.notify('newValue', value);
   }
 
-  update({ value, ratio }: Ratio) {
+  update({ value, ratio }: Position) {
     const sliderLength = this.slider.getLength();
     const handle = <Handle>this.handle;
     const position = sliderLength * ratio;
@@ -82,7 +82,7 @@ class Main extends Observable {
     this.slider.updateRange(position);
   }
 
-  updateInterval({ first, second }: { first: Ratio; second: Ratio }) {
+  updateInterval({ first, second }: { first: Position; second: Position }) {
     const sliderLength = this.slider.getLength();
     const { first: firstHandle, second: secondHandle } = <
       { first: Handle; second: Handle }

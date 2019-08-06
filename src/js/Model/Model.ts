@@ -17,7 +17,7 @@ class Model extends Observable {
     if (options) this.setState(options);
 
     this.validate = this.validate.bind(this);
-    this.convertRatio = this.convertRatio.bind(this);
+    this.setRatio = this.setRatio.bind(this);
     this.setState = this.setState.bind(this);
     this.notifyUpdate = this.notifyUpdate.bind(this);
     this.getState = this.getState.bind(this);
@@ -31,7 +31,6 @@ class Model extends Observable {
       case 'value':
       case 'firstValue':
       case 'secondValue':
-      case 'ratio':
       case 'max':
       case 'min':
       case 'step':
@@ -75,22 +74,18 @@ class Model extends Observable {
     }
   }
 
-  convertRatio({ ratio, ...rest }: Options = {}) {
-    if (ratio !== undefined) {
-      const { max, min } = this.getState();
-      return { ...rest, value: min + (ratio as number) * (max - min) };
-    }
-
-    return rest;
+  setRatio(ratio: number) {
+    if (Number.isNaN(ratio)) return;
+    const { max, min } = this.getState();
+    this.setState({ value: min + ratio * (max - min) });
   }
 
-  setState(rawOptions: Options = {}) {
-    if (!(rawOptions instanceof Object)) {
+  setState(options: Options = {}) {
+    if (!(options instanceof Object)) {
       console.log('Invalid object');
       return;
     }
 
-    const options = this.convertRatio(rawOptions);
     const isValue = (key: string) =>
       ['value', 'firstValue', 'secondValue'].indexOf(key) !== -1;
     const filteredOptions = Object.keys(options).filter(key => !isValue(key));

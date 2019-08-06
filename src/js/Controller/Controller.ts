@@ -17,10 +17,7 @@ class Controller {
       (value: number) => this.model.setState({ value }),
       'newValue',
     );
-    view.subscribe(
-      (ratio: number) => this.model.setState({ ratio }),
-      'newRatio',
-    );
+    view.subscribe(this.model.setRatio, 'newRatio');
   }
 }
 
