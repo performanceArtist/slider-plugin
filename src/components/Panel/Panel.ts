@@ -16,9 +16,9 @@ class Panel {
     this.addValueInputs = this.addValueInputs.bind(this);
     this.update = this.update.bind(this);
 
-    this.slider.subscribe(this.update, 'update');
-    this.slider.subscribe(this.update, 'updateInterval');
-    this.slider.subscribe(this.update, 'render');
+    this.slider.subscribe(this.update, 'valueUpdate');
+    this.slider.subscribe(this.update, 'intervalValueUpdate');
+    this.slider.subscribe(this.update, 'optionsUpdate');
 
     this.init();
   }

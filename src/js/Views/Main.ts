@@ -23,8 +23,8 @@ class Main extends Observable {
     this.render = this.render.bind(this);
     this.addSlider = this.addSlider.bind(this);
     this.addHandles = this.addHandles.bind(this);
-    this.notifyPositionUpdate = this.notifyPositionUpdate.bind(this);
-    this.notifyValueUpdate = this.notifyValueUpdate.bind(this);
+    this.notifyClick = this.notifyClick.bind(this);
+    this.notifyDrag = this.notifyDrag.bind(this);
     this.update = this.update.bind(this);
     this.updateInterval = this.updateInterval.bind(this);
 
@@ -41,7 +41,7 @@ class Main extends Observable {
     this.slider = new Slider(this.model.getState(), this.root);
     const { errors } = this.model.takeMeta();
     this.slider.addErrors(errors);
-    this.slider.subscribe(this.notifyValueUpdate, 'click');
+    this.slider.subscribe(this.notifyClick, 'click');
   }
 
   addHandles() {
@@ -53,24 +53,24 @@ class Main extends Observable {
         second: new Handle({ isHorizontal, showBubble }),
       };
 
-      this.handle.first.subscribe(this.notifyPositionUpdate, 'newPosition');
-      this.handle.second.subscribe(this.notifyPositionUpdate, 'newPosition');
+      this.handle.first.subscribe(this.notifyDrag, 'drag');
+      this.handle.second.subscribe(this.notifyDrag, 'drag');
 
       this.slider.wrapper.appendChild(this.handle.first.getElements());
       this.slider.wrapper.appendChild(this.handle.second.getElements());
     } else {
       this.handle = new Handle({ isHorizontal, showBubble });
-      this.handle.subscribe(this.notifyPositionUpdate, 'newPosition');
+      this.handle.subscribe(this.notifyDrag, 'newPosition');
       this.slider.wrapper.appendChild(this.handle.getElements());
     }
   }
 
-  notifyPositionUpdate(position: number) {
-    this.notify('newRatio', position / this.slider.getLength());
+  notifyClick(value: number) {
+    this.notify('scaleClick', value);
   }
 
-  notifyValueUpdate(value: number) {
-    this.notify('newValue', value);
+  notifyDrag(position: number) {
+    this.notify('handleDrag', position / this.slider.getLength());
   }
 
   update({ value, ratio }: Position) {

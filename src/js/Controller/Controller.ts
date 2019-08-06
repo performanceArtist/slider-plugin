@@ -9,15 +9,15 @@ class Controller {
     this.model = model;
     this.view = view;
 
-    model.subscribe(view.render, 'render');
-    model.subscribe(view.update, 'update');
-    model.subscribe(view.updateInterval, 'updateInterval');
+    model.subscribe(view.render, 'optionsUpdate');
+    model.subscribe(view.update, 'valueUpdate');
+    model.subscribe(view.updateInterval, 'intervalValueUpdate');
 
     view.subscribe(
       (value: number) => this.model.setState({ value }),
-      'newValue',
+      'scaleClick',
     );
-    view.subscribe(this.model.setRatio, 'newRatio');
+    view.subscribe(this.model.setRatio, 'handleDrag');
   }
 }
 

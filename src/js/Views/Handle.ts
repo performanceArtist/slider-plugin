@@ -47,7 +47,7 @@ class Handle extends Observable {
         ? handleX + moveEvent.clientX - mouseX + handle.offsetWidth / 2
         : handleY + moveEvent.clientY - mouseY + handle.offsetHeight / 2;
 
-      this.notify('newPosition', position);
+      this.notify('drag', position);
     };
 
     window.addEventListener('mousemove', moveHandle);

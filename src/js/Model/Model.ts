@@ -109,7 +109,7 @@ class Model extends Observable {
       this.notifyUpdate();
     } else {
       debounce(() => {
-        this.notify('render');
+        this.notify('optionsUpdate');
         this.notifyUpdate();
       }, 200)();
     }
@@ -119,7 +119,7 @@ class Model extends Observable {
     const { value, firstValue, secondValue, min, max } = this.getState();
 
     if (this._state.hasInterval) {
-      this.notify('updateInterval', {
+      this.notify('intervalValueUpdate', {
         first: {
           value: firstValue,
           ratio: (firstValue - min) / (max - min),
@@ -130,7 +130,7 @@ class Model extends Observable {
         },
       });
     } else {
-      this.notify('update', {
+      this.notify('valueUpdate', {
         value,
         ratio: (value - min) / (max - min),
       });
