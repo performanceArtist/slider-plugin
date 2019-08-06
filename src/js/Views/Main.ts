@@ -60,7 +60,7 @@ class Main extends Observable {
       this.slider.wrapper.appendChild(this.handle.second.getElements());
     } else {
       this.handle = new Handle({ isHorizontal, showBubble });
-      this.handle.subscribe(this.notifyDrag, 'newPosition');
+      this.handle.subscribe(this.notifyDrag, 'drag');
       this.slider.wrapper.appendChild(this.handle.getElements());
     }
   }
