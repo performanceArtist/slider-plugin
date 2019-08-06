@@ -7,13 +7,12 @@ import { Options } from './types';
 function init(root: HTMLElement, options: Options | null = null) {
   const model = new Model(options);
   const view = new View(model, root);
-  new Controller(model, view);
+  const controller = new Controller(model, view);
 
   return {
-    setState: model.setState,
-    getState: model.getState,
-    subscribe: model.subscribe,
-    unsubscribe: model.unsubscribe,
+    setState: controller.setState,
+    getState: controller.getState,
+    subscribeToUpdates: controller.subscribeToUpdates,
   };
 }
 
