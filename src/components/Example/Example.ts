@@ -1,5 +1,5 @@
 import { Options } from '../../js/types';
-import slider from '../../js/slider';
+import '../../js/slider';
 import Panel from '../Panel/Panel';
 
 class Example {
@@ -18,9 +18,7 @@ class Example {
     this.slider = this.root.querySelector('.example__slider .slider');
     this.panel = this.root.querySelector('.example__panel .panel');
 
-    const allOptions = { ...$(this.slider).data(), ...options };
-    const methods = slider(this.slider, allOptions);
-
+    const methods = $(this.slider).slider(options)[0];
     new Panel(this.panel, methods);
   }
 }
