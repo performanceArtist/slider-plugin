@@ -1,7 +1,7 @@
 import Model from './Model';
 import View from '../Views/Main';
 import Controller from '../Controller/Controller';
-import SliderError, { ErrorType } from './SliderError';
+import SliderError, { ErrorType } from './ConfigError';
 
 document.body.innerHTML = '<div id="test"></div>';
 
@@ -10,7 +10,7 @@ const model = new Model();
 const view = new View(model, root);
 const controller = new Controller(model, view);
 
-function sliderErrorCheck(
+function configErrorCheck(
   key: string,
   value: number | string | boolean,
   type: ErrorType,
@@ -52,7 +52,7 @@ describe('Model', () => {
 
   describe('validate', () => {
     it('Sets only the defined keys, otherwise returns an error', () => {
-      sliderErrorCheck('does-not-exist', 20, ErrorType.CONF);
+      configErrorCheck('does-not-exist', 20, ErrorType.CONF);
     });
 
     it('Returns custom error for invalid argument type', () => {
@@ -66,18 +66,18 @@ describe('Model', () => {
       ];
       const isBool = ['hasInterval', 'showBubble', 'showSteps', 'isHorizontal'];
 
-      isNumber.forEach(el => sliderErrorCheck(el, 'NaN', ErrorType.NUM));
-      isBool.forEach(el => sliderErrorCheck(el, 42, ErrorType.BOOL));
+      isNumber.forEach(el => configErrorCheck(el, 'NaN', ErrorType.NUM));
+      isBool.forEach(el => configErrorCheck(el, 42, ErrorType.BOOL));
     });
 
     it('Checks that min value is less than max and vice versa', () => {
-      sliderErrorCheck('min', 120, ErrorType.MIN);
-      sliderErrorCheck('max', -20, ErrorType.MAX);
+      configErrorCheck('min', 120, ErrorType.MIN);
+      configErrorCheck('max', -20, ErrorType.MAX);
     });
 
     it(`Checks that step is more than zero, less than max/min difference `, () => {
-      sliderErrorCheck('step', -4, ErrorType.STEP);
-      sliderErrorCheck('step', 200, ErrorType.STEP);
+      configErrorCheck('step', -4, ErrorType.STEP);
+      configErrorCheck('step', 200, ErrorType.STEP);
     });
 
     it('When setting the value, returns a number, parses and rounds it if necessary', () => {

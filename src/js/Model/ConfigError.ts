@@ -16,7 +16,7 @@ const ErrorMessage = new Map<ErrorType, string>([
   [ErrorType.STEP, 'Should be more than zero and less than max-min difference'],
 ]);
 
-class SliderError extends Error {
+class ConfigError extends Error {
   private _type: ErrorType;
   private _message: string;
 
@@ -41,4 +41,4 @@ class SliderError extends Error {
   }
 }
 
-export default SliderError;
+export default ConfigError;

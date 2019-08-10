@@ -1,5 +1,5 @@
 import { debounce } from './utils';
-import SliderError, { ErrorType } from './SliderError';
+import SliderError, { ErrorType } from './ConfigError';
 import Observable from '../Observable/Observable';
 import { Options, ModelType } from '../types';
 import config from './config';
