@@ -1,22 +1,21 @@
-import { SliderInterface } from '../../js/types';
 import { createNode } from '../../js/Views/utils';
 
 class Panel {
   root: HTMLElement;
   form: HTMLFormElement;
-  slider: SliderInterface;
+  $slider: JQuery<Element>;
   inputContainer: HTMLDivElement;
 
-  constructor(root: HTMLElement, slider: SliderInterface) {
+  constructor(root: HTMLElement, $slider: JQuery<Element>) {
     this.root = root;
-    this.slider = slider;
+    this.$slider = $slider;
 
     this.init = this.init.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.addValueInputs = this.addValueInputs.bind(this);
     this.update = this.update.bind(this);
 
-    this.slider.subscribeToUpdates(this.update);
+    this.$slider.slider('subscribeToUpdates', this.update);
 
     this.init();
   }
@@ -61,16 +60,13 @@ class Panel {
       options[name] = hasChecked ? checked : value.trim();
     });
 
-    this.slider.setState(options);
+    this.$slider.slider('setState', options);
   }
 
   addValueInputs() {
-    const {
-      hasInterval,
-      value,
-      firstValue,
-      secondValue,
-    } = this.slider.getState();
+    const { hasInterval, value, firstValue, secondValue } = this.$slider.slider(
+      'getState',
+    )[0];
 
     if (hasInterval) {
       const firstInput = Panel.createInput(
@@ -107,7 +103,7 @@ class Panel {
   }
 
   update() {
-    const state = this.slider.getState();
+    const state = this.$slider.slider('getState')[0];
     this.addValueInputs();
 
     [...this.form.elements].forEach((input: HTMLInputElement) => {

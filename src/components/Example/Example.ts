@@ -15,11 +15,10 @@ class Example {
   }
 
   init(options: Options) {
-    this.slider = this.root.querySelector('.example__slider .slider');
-    this.panel = this.root.querySelector('.example__panel .panel');
-
-    const methods = $(this.slider).slider(options)[0];
-    new Panel(this.panel, methods);
+    this.slider = this.root.querySelector('.js-example__slider .slider');
+    this.panel = this.root.querySelector('.js-example__panel .panel');
+    const $slider = $(this.slider).slider(options);
+    new Panel(this.panel, $slider);
   }
 }
 

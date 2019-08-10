@@ -2,31 +2,50 @@ import Model from './Model/Model';
 import View from './Views/Main';
 import Controller from './Controller/Controller';
 
-import { Options, SliderInterface } from './types';
+import { Options } from './types';
 
 declare global {
   interface JQuery {
-    slider: (options: Options) => JQuery<SliderInterface>;
+    slider: (options?: Options | string, ...args: any) => JQuery<Element>;
   }
 }
 
 (function($) {
-  function init(root: HTMLElement, options: Options | null = null) {
-    const model = new Model(options);
-    const view = new View(model, root);
-    const controller = new Controller(model, view);
+  $.fn.slider = function(options = {}, ...args) {
+    const init = () =>
+      $(this).map(function() {
+        const data = $(this).data();
+        const allOptions =
+          typeof options === 'object' ? { ...data, ...options } : data;
+        const model = new Model(allOptions);
+        const view = new View(model, this);
+        const controller = new Controller(model, view);
 
-    return {
-      setState: controller.setState,
-      getState: controller.getState,
-      subscribeToUpdates: controller.subscribeToUpdates,
+        $(this).data('controller', controller);
+
+        return this;
+      });
+
+    const applyMethod = (name: string, $this: JQuery<Element>) => {
+      if (!$this.data('controller')) {
+        init();
+      }
+
+      const controller = $this.data('controller');
+
+      if (controller[name]) {
+        return controller[name].apply(controller, args);
+      } else {
+        return $.error(`${name} method does not exist.`);
+      }
     };
-  }
 
-  $.fn.slider = function(options = {}) {
-    return $(this).map(function() {
-      const data = $(this).data();
-      return init(this, { ...data, ...options });
-    });
+    if (typeof options === 'string') {
+      return $(this).map(function() {
+        return applyMethod(options, $(this));
+      });
+    }
+
+    return init();
   };
 })(jQuery);
