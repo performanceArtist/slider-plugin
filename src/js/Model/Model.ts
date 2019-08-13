@@ -19,7 +19,7 @@ class Model extends Observable {
     this.validate = this.validate.bind(this);
     this.setRatio = this.setRatio.bind(this);
     this.setState = this.setState.bind(this);
-    this.notifyUpdate = this.notifyUpdate.bind(this);
+    this._notifyUpdate = this._notifyUpdate.bind(this);
     this.getState = this.getState.bind(this);
     this.takeMeta = this.takeMeta.bind(this);
     this._validateSliderValue = this._validateSliderValue.bind(this);
@@ -106,16 +106,26 @@ class Model extends Observable {
     }
 
     if (filteredOptions.length === 0) {
-      this.notifyUpdate();
+      this._notifyUpdate();
     } else {
       debounce(() => {
         this.notify('optionsUpdate');
-        this.notifyUpdate();
+        this._notifyUpdate();
       }, 200)();
     }
   }
 
-  notifyUpdate() {
+  getState() {
+    return { ...this._state };
+  }
+
+  takeMeta() {
+    const meta = { ...this._meta };
+    this._meta.errors = [];
+    return meta;
+  }
+
+  private _notifyUpdate() {
     const { value, firstValue, secondValue, min, max } = this.getState();
 
     if (this._state.hasInterval) {
@@ -135,16 +145,6 @@ class Model extends Observable {
         ratio: (value - min) / (max - min),
       });
     }
-  }
-
-  getState() {
-    return { ...this._state };
-  }
-
-  takeMeta() {
-    const meta = { ...this._meta };
-    this._meta.errors = [];
-    return meta;
   }
 
   private _validateSliderValue(

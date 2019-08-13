@@ -72,7 +72,7 @@ $bubble-color: black;
   }
 
   &__error-container {
-    margin-top: 40px;
+    margin-top: 2.5rem;
   }
 
   &_horizontal & {
@@ -113,7 +113,7 @@ $bubble-color: black;
       margin-left: 0rem;
       text-align: center;
       margin-top: 1.25rem;
-      font-size: 12.8px;
+      font-size: 0.8rem;
     }
   }
 
@@ -153,7 +153,7 @@ $bubble-color: black;
       width: 1.25rem;
       left: -2rem;
       text-align: center;
-      font-size: 12.8px;
+      font-size: 0.8rem;
     }
   }
 }

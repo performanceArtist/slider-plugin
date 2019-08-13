@@ -1,7 +1,7 @@
 import Model from './Model';
 import View from '../Views/Main';
 import Controller from '../Controller/Controller';
-import SliderError, { ErrorType } from './ConfigError';
+import ConfigError, { ErrorType } from './ConfigError';
 
 document.body.innerHTML = '<div id="test"></div>';
 
@@ -9,16 +9,6 @@ const root = document.querySelector('#test');
 const model = new Model();
 const view = new View(model, root);
 const controller = new Controller(model, view);
-
-function configErrorCheck(
-  key: string,
-  value: number | string | boolean,
-  type: ErrorType,
-) {
-  const result = model.validate(key, value) as SliderError;
-  expect(result).toBeInstanceOf(SliderError);
-  expect(result.getType()).toBe(type);
-}
 
 describe('Model', () => {
   describe('constructor', () => {
@@ -29,33 +19,27 @@ describe('Model', () => {
     });
   });
 
-  describe('getState', () => {
-    it('Returns state object copy on "getState" method call', () => {
-      const state = model.getState();
-      expect(state.max).toBe(100);
-      state.max = 0;
-      expect(model.getState().max).toBe(100);
-    });
-  });
+  describe('checkType', () => {
+    const errorCheck = (
+      key: string,
+      value: number | string | boolean,
+      type: ErrorType,
+    ) => {
+      const result = Model.checkType(key, value) as ConfigError;
+      expect(result).toBeInstanceOf(ConfigError);
+      expect(result.getType()).toBe(type);
+    };
 
-  describe('setState', () => {
-    it('Sets model property only if the new value passed the validation', () => {
-      expect(model.validate('value', 'string')).toBeInstanceOf(SliderError);
-      model.setState({ value: 'string' });
-      expect(model.getState().value).toBe(0);
-
-      expect(model.validate('value', 5)).toBe(5);
-      model.setState({ value: 5 });
-      expect(model.getState().value).toBe(5);
-    });
-  });
-
-  describe('validate', () => {
-    it('Sets only the defined keys, otherwise returns an error', () => {
-      configErrorCheck('does-not-exist', 20, ErrorType.CONF);
+    it('Returns value argument if check was sussesful', () => {
+      expect(Model.checkType('value', 10)).toBe(10);
+      expect(Model.checkType('isHorizontal', true)).toBe(true);
     });
 
-    it('Returns custom error for invalid argument type', () => {
+    it('Returns ConfigError for invalid keys', () => {
+      errorCheck('does-not-exist', 20, ErrorType.CONF);
+    });
+
+    it('Returns ConfigError if type check has failed', () => {
       const isNumber = [
         'value',
         'firstValue',
@@ -66,9 +50,26 @@ describe('Model', () => {
       ];
       const isBool = ['hasInterval', 'showBubble', 'showSteps', 'isHorizontal'];
 
-      isNumber.forEach(el => configErrorCheck(el, 'NaN', ErrorType.NUM));
-      isBool.forEach(el => configErrorCheck(el, 42, ErrorType.BOOL));
+      isNumber.forEach(el => errorCheck(el, 'NaN', ErrorType.NUM));
+      isBool.forEach(el => errorCheck(el, 42, ErrorType.BOOL));
     });
+
+    it('Tries to convert strings to numbers for numeric values', () => {
+      expect(Model.checkType('value', 10)).toBe(10);
+      expect(Model.checkType('value', 'nan')).toBeInstanceOf(ConfigError);
+    });
+  });
+
+  describe('validate', () => {
+    const configErrorCheck = (
+      key: string,
+      value: number | string | boolean,
+      type: ErrorType,
+    ) => {
+      const result = model.validate(key, value) as ConfigError;
+      expect(result).toBeInstanceOf(ConfigError);
+      expect(result.getType()).toBe(type);
+    };
 
     it('Checks that min value is less than max and vice versa', () => {
       configErrorCheck('min', 120, ErrorType.MIN);
@@ -105,6 +106,47 @@ describe('Model', () => {
     it('Makes sure that the first value in hasInterval is less than the second', () => {
       expect(hasIntervalModel.validate('firstValue', 30)).toBe(10);
       expect(hasIntervalModel.validate('secondValue', 0)).toBe(20);
+    });
+  });
+
+  describe('getState', () => {
+    it('Returns state object copy on "getState" method call', () => {
+      const state = model.getState();
+      expect(state.max).toBe(100);
+      state.max = 0;
+      expect(model.getState().max).toBe(100);
+    });
+  });
+
+  describe('setState', () => {
+    it('Sets model property only if the new value passed the validation', () => {
+      expect(model.validate('value', 'string')).toBeInstanceOf(ConfigError);
+      model.setState({ value: 'string' });
+      expect(model.getState().value).toBe(0);
+
+      expect(model.validate('value', 5)).toBe(5);
+      model.setState({ value: 5 });
+      expect(model.getState().value).toBe(5);
+    });
+  });
+
+  describe('setRatio', () => {
+    it('Sets model value, given a relative value', () => {
+      model.setRatio(0.5);
+      expect(model.getState().value).toBe(50);
+    });
+  });
+
+  describe('takeMeta', () => {
+    it('Returns meta object copy with errors, resets the original to an initial state', () => {
+      const newModel = new Model();
+      const newView = new View(newModel, root);
+      const newController = new Controller(newModel, newView);
+
+      newModel.setState({ value: 'test' });
+      const meta = newModel.takeMeta();
+      expect(meta.errors.length).toBe(1);
+      expect(newModel._meta.errors.length).toBe(0);
     });
   });
 });

@@ -1,7 +1,7 @@
 import Model from '../Model/Model';
 import View from './Main';
-import Handle from './Handle';
 import Controller from '../Controller/Controller';
+import Handle from './Handle';
 
 document.body.innerHTML = '<div id="test"></div>';
 
@@ -10,7 +10,7 @@ const model = new Model();
 const view = new View(model, root);
 const controller = new Controller(model, view);
 
-describe('View', () => {
+describe('Main view', () => {
   describe('constructor', () => {
     it('Given an HTML element and a model, sets the root element(slider container). Throws an error if the element is invalid.', () => {
       const root = document.querySelector('#none');
@@ -45,49 +45,12 @@ describe('View', () => {
     });
   });
 
+  /*
   describe('update', () => {
     it('Updates slider values without full rerender', () => {
       model.setState({ firstValue: 20 });
-      view.update();
+      view.updateInterval(view.handle);
       expect(view.handle.first.bubble.innerHTML).toBe('20');
     });
-  });
-
-  describe('getSliderLength', () => {
-    it('Returns slider length', () => {
-      expect(Number.isNaN(view.slider.getLength())).toBe(false);
-    });
-  });
-});
-
-describe('Handle', () => {
-  const handle = new Handle({
-    position: 0,
-    isHorizontal: true,
-    showBubble: true,
-  });
-
-  describe('constructor', () => {
-    it('Creates handle element', () => {
-      expect(handle.handle).toBeInstanceOf(HTMLElement);
-    });
-
-    it('Adds value bubble according to options', () => {
-      expect(handle.bubble).toBeInstanceOf(HTMLElement);
-    });
-  });
-
-  describe('getElements', () => {
-    it('Returns html fragment with handle elements', () => {
-      expect(handle.getElements()).toBeInstanceOf(DocumentFragment);
-    });
-  });
-
-  describe('setPosition', () => {
-    it('Sets handle position and value in bubble', () => {
-      handle.setPosition(20, 100);
-      expect(parseInt(handle.handle.style.left, 0)).toBeGreaterThan(0);
-      expect(handle.bubble.innerHTML).toBe('20');
-    });
-  });
+  });*/
 });

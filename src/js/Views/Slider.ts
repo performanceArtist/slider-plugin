@@ -15,11 +15,11 @@ class Slider extends Observable {
     this._options = options;
 
     this.init = this.init.bind(this);
-    this.getLength = this.getLength.bind(this);
-    this.addSteps = this.addSteps.bind(this);
     this.addErrors = this.addErrors.bind(this);
+    this.getLength = this.getLength.bind(this);
     this.handleClick = this.handleClick.bind(this);
     this.preventDefaultDrag = this.preventDefaultDrag.bind(this);
+    this._addSteps = this._addSteps.bind(this);
 
     this.init(root);
   }
@@ -46,32 +46,7 @@ class Slider extends Observable {
     this.wrapper.addEventListener('drag', this.preventDefaultDrag);
 
     root.appendChild(this.root);
-    this.addSteps();
-  }
-
-  addSteps() {
-    const { showSteps, isHorizontal, max, min, step } = this._options;
-
-    if (!showSteps) return;
-
-    const sliderLength = this.getLength();
-    const stepCount = (max - min) / step;
-    const gap = sliderLength / stepCount;
-    const realStep =
-      gap < 18 ? Math.floor(((max - min) * 18) / sliderLength) : step;
-
-    for (let i = 0; i <= max - min; i += realStep) {
-      const position = isHorizontal
-        ? `${(100 * i) / (max - min) - 3.5}%`
-        : `${(100 * i) / (max - min) - 2.7}%`;
-
-      const label = createNode('label', {
-        class: 'slider__label',
-        style: isHorizontal ? `left:${position}` : `top:${position}`,
-      });
-      label.innerHTML = (i + min).toString();
-      this.wrapper.appendChild(label);
-    }
+    this._addSteps();
   }
 
   addErrors(errors: Array<string> = []) {
@@ -129,6 +104,31 @@ class Slider extends Observable {
   getLength() {
     const { isHorizontal } = this._options;
     return isHorizontal ? this.wrapper.offsetWidth : this.wrapper.offsetHeight;
+  }
+
+  private _addSteps() {
+    const { showSteps, isHorizontal, max, min, step } = this._options;
+
+    if (!showSteps) return;
+
+    const sliderLength = this.getLength();
+    const stepCount = (max - min) / step;
+    const gap = sliderLength / stepCount;
+    const realStep =
+      gap < 18 ? Math.floor(((max - min) * 18) / sliderLength) : step;
+
+    for (let i = 0; i <= max - min; i += realStep) {
+      const position = isHorizontal
+        ? `${(100 * i) / (max - min) - 3.5}%`
+        : `${(100 * i) / (max - min) - 2.7}%`;
+
+      const label = createNode('label', {
+        class: 'slider__label',
+        style: isHorizontal ? `left:${position}` : `top:${position}`,
+      });
+      label.innerHTML = (i + min).toString();
+      this.wrapper.appendChild(label);
+    }
   }
 }
 
