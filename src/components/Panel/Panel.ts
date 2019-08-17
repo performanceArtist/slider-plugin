@@ -1,4 +1,5 @@
 import { createNode } from '../../js/Views/utils';
+import { Options } from '../../js/types';
 
 class Panel {
   root: HTMLElement;
@@ -15,9 +16,15 @@ class Panel {
     this.addValueInputs = this.addValueInputs.bind(this);
     this.update = this.update.bind(this);
 
-    this.$slider.slider('subscribeToUpdates', this.update);
-
     this.init();
+  }
+
+  init() {
+    this.$slider.slider('subscribeToUpdates', this.update);
+    this.form = this.root.querySelector('form');
+    this.inputContainer = this.form.querySelector('.panel__value-inputs');
+
+    this.form.addEventListener('change', this.handleChange);
   }
 
   static createInput(
@@ -39,13 +46,6 @@ class Panel {
     return wrapper;
   }
 
-  init() {
-    this.form = this.root.querySelector('form');
-    this.inputContainer = this.form.querySelector('.panel__value-inputs');
-
-    this.form.addEventListener('change', this.handleChange);
-  }
-
   handleChange(event: Event) {
     event.preventDefault();
 
@@ -64,9 +64,14 @@ class Panel {
   }
 
   addValueInputs() {
-    const { hasInterval, value, firstValue, secondValue } = this.$slider.slider(
-      'getState',
-    )[0];
+    const states = this.$slider.slider('getState') as JQuery<Options>;
+
+    const {
+      hasInterval,
+      value,
+      firstValue,
+      secondValue,
+    } = states[0] as Options;
 
     if (hasInterval) {
       const firstInput = Panel.createInput(
@@ -103,7 +108,9 @@ class Panel {
   }
 
   update() {
-    const state = this.$slider.slider('getState')[0];
+    const states = this.$slider.slider('getState') as JQuery<Options>;
+    const state = states[0];
+
     this.addValueInputs();
 
     [...this.form.elements].forEach((input: HTMLInputElement) => {

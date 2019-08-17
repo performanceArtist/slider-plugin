@@ -7,7 +7,7 @@ document.body.innerHTML = '<div id="test"></div>';
 
 const root = document.querySelector('#test');
 const model = new Model();
-const view = new View(model, root);
+const view = new View(model, root as HTMLElement);
 const controller = new Controller(model, view);
 
 describe('Controller', () => {

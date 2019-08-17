@@ -24,6 +24,7 @@ class Observable {
   }
 
   notify(type: string, data?: any) {
+    if (!this._observers[type]) return;
     this._observers[type].forEach(observer => observer(data));
   }
 }

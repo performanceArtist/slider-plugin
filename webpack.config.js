@@ -17,10 +17,12 @@ const config = {
   output: {
     path: path.resolve(__dirname, 'dist'),
     filename: 'index.js',
+    publicPath: '',
   },
   devServer: {
     port: 5000,
   },
+  devtool: 'source-map',
   module: {
     rules: [
       {
@@ -72,7 +74,6 @@ module.exports = (env, options) => {
 
   if (options.mode === 'development') {
     config.output.publicPath = '/';
-    config.devtool = 'source-map';
   }
 
   return config;

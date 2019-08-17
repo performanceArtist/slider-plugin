@@ -5,12 +5,22 @@ import Controller from './Controller/Controller';
 import { Options } from './types';
 
 declare global {
+  interface Window {
+    $: JQuery;
+  }
+}
+
+declare global {
   interface JQuery {
-    slider: (options?: Options | string, ...args: any) => JQuery<Element>;
+    slider: (
+      options?: Options | string,
+      rest?: Options | Function,
+    ) => JQuery<Element> | JQuery<Options> | void;
   }
 }
 
 (function($) {
+  window.$ = require('jquery');
   $.fn.slider = function(options = {}, ...args) {
     const init = () =>
       $(this).map(function() {
@@ -48,4 +58,4 @@ declare global {
 
     return init();
   };
-})(jQuery);
+})($);

@@ -7,14 +7,14 @@ document.body.innerHTML = '<div id="test"></div>';
 
 const root = document.querySelector('#test');
 const model = new Model();
-const view = new View(model, root);
+const view = new View(model, root as HTMLElement);
 const controller = new Controller(model, view);
 
 describe('Main view', () => {
   describe('constructor', () => {
     it('Given an HTML element and a model, sets the root element(slider container). Throws an error if the element is invalid.', () => {
       const root = document.querySelector('#none');
-      expect(() => new View(new Model(), root)).toThrow();
+      expect(() => new View(new Model(), root as HTMLElement)).toThrow();
       expect(view.root).toBeInstanceOf(HTMLDivElement);
     });
   });

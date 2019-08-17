@@ -75,7 +75,7 @@ class Main extends Observable {
 
   update({ value, ratio }: Position) {
     const sliderLength = this.slider.getLength();
-    const handle = <Handle>this.handle;
+    const handle = this.handle as Handle;
     const position = sliderLength * ratio;
 
     handle.setPosition(value, position);
@@ -84,9 +84,10 @@ class Main extends Observable {
 
   updateInterval({ first, second }: { first: Position; second: Position }) {
     const sliderLength = this.slider.getLength();
-    const { first: firstHandle, second: secondHandle } = <
-      { first: Handle; second: Handle }
-    >this.handle;
+    const { first: firstHandle, second: secondHandle } = this.handle as {
+      first: Handle;
+      second: Handle;
+    };
 
     const firstPosition = sliderLength * first.ratio;
     const secondPosition = sliderLength * second.ratio;

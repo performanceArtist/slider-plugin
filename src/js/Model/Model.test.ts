@@ -7,7 +7,7 @@ document.body.innerHTML = '<div id="test"></div>';
 
 const root = document.querySelector('#test');
 const model = new Model();
-const view = new View(model, root);
+const view = new View(model, root as HTMLElement);
 const controller = new Controller(model, view);
 
 describe('Model', () => {
@@ -140,7 +140,7 @@ describe('Model', () => {
   describe('takeMeta', () => {
     it('Returns meta object copy with errors, resets the original to an initial state', () => {
       const newModel = new Model();
-      const newView = new View(newModel, root);
+      const newView = new View(newModel, root as HTMLElement);
       const newController = new Controller(newModel, newView);
 
       newModel.setState({ value: 'test' });

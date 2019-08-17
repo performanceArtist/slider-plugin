@@ -4,8 +4,8 @@ import Panel from '../Panel/Panel';
 
 class Example {
   root: HTMLElement;
-  slider: HTMLElement;
-  panel: HTMLElement;
+  $slider: JQuery<Element>;
+  panel: Panel;
 
   constructor(root: HTMLElement, options: Options = {}) {
     this.root = root;
@@ -15,10 +15,11 @@ class Example {
   }
 
   init(options: Options) {
-    this.slider = this.root.querySelector('.js-example__slider .slider');
-    this.panel = this.root.querySelector('.js-example__panel .panel');
-    const $slider = $(this.slider).slider(options);
-    new Panel(this.panel, $slider);
+    const slider = this.root.querySelector('.js-example__slider .slider');
+    const panel = this.root.querySelector('.js-example__panel .panel');
+
+    this.$slider = $(slider).slider(options) as JQuery<Element>;
+    this.panel = new Panel(panel as HTMLElement, this.$slider);
   }
 }
 
