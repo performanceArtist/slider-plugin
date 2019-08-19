@@ -24,7 +24,8 @@ class Observable {
   }
 
   notify(type: string, data?: any) {
-    if (!this._observers[type]) return;
+    if (!this._observers[type])
+      return console.log(`No subscribers for "${type}"`);
     this._observers[type].forEach(observer => observer(data));
   }
 }

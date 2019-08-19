@@ -6,7 +6,7 @@ describe('Observable', () => {
   observable.subscribe(callback, 'test');
 
   describe('subscribe/notify', () => {
-    it('Adds new callback to observers object, calls in on notify', () => {
+    it('Adds new callback to observers object, calls it on notify', () => {
       observable.notify('test', 'data');
       expect(callback).toBeCalledWith('data');
     });

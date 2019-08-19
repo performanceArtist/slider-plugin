@@ -25,20 +25,11 @@ describe('Slider view', () => {
     });
   });
 
-  /*
-  describe('updateRange', () => {
-    const slider = new Slider({}, root);
-
-    it('Sets range length and position, if provided', () => {
-      slider.updateRange(100, 20);
-
-      expect(slider.range.style.left).toBe('20px');
-      expect(slider.range.style.width).toBe('100px');
-    });
-  });*/
-
   describe('getLength', () => {
-    const slider = new Slider({}, root as HTMLElement);
+    const slider = new Slider(
+      { isHorizontal: true, hasInterval: true },
+      root as HTMLElement,
+    );
 
     it('Returns slider length', () => {
       expect(Number.isNaN(slider.getLength())).toBe(false);

@@ -8,9 +8,7 @@ declare global {
   interface Window {
     $: JQuery;
   }
-}
 
-declare global {
   interface JQuery {
     slider: (
       options?: Options | string,
@@ -20,7 +18,6 @@ declare global {
 }
 
 (function($) {
-  window.$ = require('jquery');
   $.fn.slider = function(options = {}, ...args) {
     const init = () =>
       $(this).map(function() {

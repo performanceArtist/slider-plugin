@@ -27,6 +27,7 @@ describe('Handle view', () => {
     it('Sets handle position and bubble value', () => {
       handle.setPosition(20, 100);
       expect(parseInt(handle.handle.style.left, 0)).toBeGreaterThan(0);
+      expect(handle.bubble.innerText).toBe('20');
     });
   });
 });

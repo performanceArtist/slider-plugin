@@ -8,6 +8,7 @@ module.exports = {
       diagnostics: false,
     },
   },
+  testPathIgnorePatterns: ['/node_modules/', '/dist/'],
   reporters: [
     'default',
     [

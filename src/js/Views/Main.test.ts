@@ -49,8 +49,10 @@ describe('Main view', () => {
   describe('update', () => {
     it('Updates slider values without full rerender', () => {
       model.setState({ firstValue: 20 });
-      view.updateInterval(view.handle);
-      expect(view.handle.first.bubble.innerHTML).toBe('20');
+      model.setState({ secondValue: 40 });
+      const handle = view.handle as { first: Handle; second: Handle };
+      expect(handle.first.bubble.innerText).toBe('20');
+      expect(handle.second.bubble.innerText).toBe('40');
     });
   });*/
 });
