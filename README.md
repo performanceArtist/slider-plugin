@@ -1,138 +1,135 @@
 # Slider plugin
 
-## Usage
-
-### Project Setup
+## Project Setup
 
 Run the following commands:
 
-To clone the repository
+To clone the repository:
 
 ```
 git clone https://github.com/performanceArtist/slider.git
 ```
 
-To install dependencies
+To install dependencies:
 
 ```
 npm install
 ```
 
-To start the development server on port 5000(can be set in webpack.config)
+To start the development server on port 5000(can be set in webpack.config):
 
 ```shell
 npm start
 ```
 
-Development build
+Development build:
 
 ```shell
 npm run dev
 ```
 
-Production build
+Production build:
 
 ```
 npm run build
 ```
 
-Eslint(airbnb)
+## Usage
 
-```
-npx eslint src
-```
+### Initialization
 
-Run tests, generate html report(Jest):
+```ts
+// default
+$('.slider').slider();
 
-```
-npm test
-```
-
-### Initializing
-
-```js
-//default
-init('#slider');
-
-//custom options
-init('#slider', {
-    max: 20,
-    step: 5
-});
-
-//throws an error
-init('does-not-exist');
+// custom options
+$('.slider').slider({hasInterval: true, max: 20, step: 5});
 ```
 
-Default options(can be overriden during initialization or changed with `setState` method after object has been created):
+### Default options
 
-```js
-const def = {
+```ts
+interface Options {
+  value?: number;
+  firstValue?: number;
+  secondValue?: number;
+  min?: number;
+  max?: number;
+  step?: number;
+  hasInterval?: boolean;
+  isHorizontal?: boolean;
+  showBubble?: boolean;
+  showSteps?: boolean;
+  [key: string]: boolean | number;
+}
+
+const defaults: Options = {
     value: 0,
     firstValue: 0,
     secondValue: 0,
     min: 0,
     max: 100,
     step: 1,
-    interval: false,
+    hasInterval: false,
+    isHorizontal: true
     showBubble: true,
-    showSteps: false,
-    horizontal: true
+    showSteps: false
 }
 ```
 
-### Getting/setting model values
+### Getting/setting values
 
-You can only set values from the options above:
+```ts
+$('.slider').slider('setState', { max: 10 });
 
-```js
-const slider = init('#slider');
-
-slider.setState({ value: 10 });
-
-// getState returns state object copy
-const { value } = slider.getState();
+// dispays an error in console for undefined options
+$('.slider').slider('setState', { unknown: 5 });
 
 // displays an error due to the model's validation/type checking
-slider.setState({ value: 'NaN' });
+$('.slider').slider('setState', { value: 'Nan' });
 
-// causes rerender, since not only the value is updated
-slider.setState({value:5, horizontal:false});
+// getState returns JQuery array object
+const states = $('.slider').slider('getState') as JQuery<Options>;
+const firstState = states[0];
+```
+
+### Subscribing to updates
+
+Plugin has a method to keep track of slider updates. It invokes its callback argument every time the state changes, passing a new state. This function can be utilized to manage dependent components, like configuration panel on example page or value inputs. 
+
+```ts
+const callback = (state: Options) => {
+  console.log('New state', state);
+};
+
+$('.slider').slider('subscribeToUpdates', callback);
 ```
 
 ## Architecture
 
-### UML
-
-![UML diagram](diagram.png)
-
 ### Model
 
-The main concern of the model is to store values which represent slider's state. It also has some validation logic. For instance, if you try setting `max` to a random string or to a value less than `min`, the action will fail. You'll get an error message in console instead. 
+The main concern of the model is to store values which represent slider's state. It also has some validation logic. For instance, if you try setting `max` to a random string or to a number less than `min`, the action will fail. You'll get an error message in console instead. 
 
 Here are the value constraints:
 
 * `value`, `firstValue`, `secondValue`, `min`, `max` and `step` should be numbers.
-* `interval`, `showBubble`, `showStep` and `horizontal` should be booleans.
+* `hasInterval`, `showBubble`, `showStep` and `isHorizontal` should be booleans.
 * `value`, `firstValue` or `secondValue` should be a number lying between `min` and `max`. If it goes out of bounds, it'll be rounded to `min` or `max` respectively. Otherwise it's rounded to the nearest value divisible by `step`.
-* If `interval` is set, `value` should a positive number less than `max`. It also has to be divisible by step.
-* `firstValue` should be less than `secondValue`
-* `secondValue` should be more than `firstValue`
+* `firstValue` should be less than `secondValue`.
+* `secondValue` should be more than `firstValue`.
 * `min` should be less than `max`.
 * `max` should be more than `min`.
 * `step` should be positive, `min` and `max` difference should be divisible by it.
 
 ### View
 
-View's sole responsibility is DOM manipulation. It has two methods - `render` and `update`. `render` method creates creates new , while `update` only changes handle(s) position(s). The constructor has one parameter - model. Upon object creation, view:
-
-* Tries to set its root element with the model's selector(throws error on failure).
-* Adds itself to the model's observers.
+View layer's sole responsibility is DOM manipulation. It consists of three parts: Main, Handle and Slider. Main view manages both Handle and Slider views by subscribing to their change events and notifying the controller. The controller in turn calls model's setState method, which notifies Main view's `render` and `update`. Update methods such as `udpate` and `updateInterval` are used to perform 'light' updates, such as value change on handle drag, while `render` creates a new slider from scratch.  
 
 ### Controller
 
-Controller is used to implement event handling logic. Its constructor has two parameters - model and view. It calls view's `render` method, providing reference to itself as an argument. `render` adds browser events to the controller's handlers, which include:
+Controls the flow of model's and view's events. Upon creation it subscribes to view and model notifications, binding them to their methods. It also has its own public methods: `setState` and `getState` are basically wrappers over model functionality, while `subscribeToUpdates` allows user to keep track of any state changes, abstracting away their cause, arguments and actual event names. 
 
-* `handleClick` is bound to the slider's status bar. It calculates value relative to the bar's width, calls model's `setState` method, which in turn decides whether to call `render` or `update` method. In this case since only `value` is updated, there is no need to rerender.
-* `handleInput` takes input element value on blur event, sets it and notifies view.
-* `handleDrag` is called on mousedown event on the slider's handle. While mouse key is pressed, it updates the slider's and model's values accordingly.
+### UML(needs update)
+
+![UML diagram](diagram.png)

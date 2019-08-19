@@ -66,12 +66,7 @@ class Panel {
   addValueInputs() {
     const states = this.$slider.slider('getState') as JQuery<Options>;
 
-    const {
-      hasInterval,
-      value,
-      firstValue,
-      secondValue,
-    } = states[0] as Options;
+    const { hasInterval, value, firstValue, secondValue } = states[0];
 
     if (hasInterval) {
       const firstInput = Panel.createInput(
@@ -107,10 +102,7 @@ class Panel {
     }
   }
 
-  update() {
-    const states = this.$slider.slider('getState') as JQuery<Options>;
-    const state = states[0];
-
+  update(state: Options) {
     this.addValueInputs();
 
     [...this.form.elements].forEach((input: HTMLInputElement) => {

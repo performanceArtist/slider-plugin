@@ -9,7 +9,7 @@ export interface Options {
   showBubble?: boolean;
   showSteps?: boolean;
   isHorizontal?: boolean;
-  [key: string]: string | boolean | number;
+  [key: string]: boolean | number;
 }
 
 export interface ModelType {

@@ -32,9 +32,15 @@ class Controller {
   }
 
   subscribeToUpdates(callback: Function) {
-    this.model.subscribe(() => callback(), 'valueUpdate');
-    this.model.subscribe(() => callback(), 'intervalValueUpdate');
-    this.model.subscribe(() => callback(), 'optionsUpdate');
+    const updateEvents = [
+      'valueUpdate',
+      'intervalValueUpdate',
+      'optionsUpdate',
+    ];
+
+    updateEvents.forEach(event =>
+      this.model.subscribe(() => callback(this.model.getState()), event),
+    );
   }
 
   getState() {
