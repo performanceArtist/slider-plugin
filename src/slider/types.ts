@@ -9,6 +9,7 @@ export interface SliderOptions {
   showBubble: boolean;
   showSteps: boolean;
   isHorizontal: boolean;
+  [key: string]: number | boolean;
 }
 
 export interface ModelType {

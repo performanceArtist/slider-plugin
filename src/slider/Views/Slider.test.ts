@@ -21,7 +21,7 @@ describe('Slider view', () => {
       slider.addErrors(['test', 'test']);
       const errorCont = slider.root.querySelector('.slider__error-container');
       expect(errorCont).toBeInstanceOf(HTMLElement);
-      expect(errorCont.children.length).toBe(2);
+      expect(errorCont!.children.length).toBe(2);
     });
   });
 

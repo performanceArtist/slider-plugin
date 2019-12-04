@@ -1,7 +1,7 @@
 import { debounce } from './utils';
 import SliderError, { ErrorType } from './ConfigError';
 import Observable from '../Observable/Observable';
-import { SliderOptions, ModelType } from '../types';
+import { SliderOptions } from '../types';
 import defaultOptions from './config';
 
 class Model extends Observable {
@@ -86,7 +86,8 @@ class Model extends Observable {
     const filteredOptions = Object.keys(options).filter(key => !isValue(key));
 
     filteredOptions.forEach(key => {
-      this._setValue(key, options[key]);
+      const value = options[key];
+      value && this._setValue(key, value);
     });
 
     if (this._state.hasInterval) {

@@ -121,8 +121,8 @@ describe('Model', () => {
   describe('setState', () => {
     it('Sets model property only if the new value passed the validation', () => {
       expect(model.validate('value', 'string')).toBeInstanceOf(ConfigError);
-      model.setState({ value: 'string' });
-      expect(model.getState().value).toBe(0);
+      model.setState({ max: -1000 });
+      expect(model.getState().max).toBe(100);
 
       expect(model.validate('value', 5)).toBe(5);
       model.setState({ value: 5 });
@@ -143,10 +143,9 @@ describe('Model', () => {
       const newView = new View(newModel, root as HTMLElement);
       const newController = new Controller(newModel, newView);
 
-      newModel.setState({ value: 'test' });
+      newModel.setState({ max: -1000 });
       const meta = newModel.takeMeta();
       expect(meta.errors.length).toBe(1);
-      expect(newModel._meta.errors.length).toBe(0);
     });
   });
 });
