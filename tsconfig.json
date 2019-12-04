@@ -1,12 +1,8 @@
 {
     "compilerOptions": {
     "typeRoots": ["./node_modules/@types"],
-    "types": [
-      "webpack-env",
-      "jest", 
-      "jquery",
-      "node"
-    ],
+    "strict": true,
+    "strictPropertyInitialization": false,
     "outDir": "./dist/",
     "noImplicitAny": true,
     "module": "commonjs",

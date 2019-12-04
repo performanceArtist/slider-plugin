@@ -2,7 +2,7 @@ import Model from './Model/Model';
 import View from './Views/Main';
 import Controller from './Controller/Controller';
 
-import { Options } from './types';
+import { SliderOptions } from './types';
 
 declare global {
   interface Window {
@@ -11,17 +11,17 @@ declare global {
 
   interface JQuery {
     slider: (
-      options?: Options | string,
-      rest?: Options | Function,
-    ) => JQuery<Element> | JQuery<Options> | void;
+      options?: Partial<SliderOptions> | 'setState' | 'getState' | 'subscribeToUpdates',
+      rest?: Partial<SliderOptions> | Function,
+    ) => any;
   }
 }
 
 (function($) {
-  $.fn.slider = function(options = {}, ...args) {
+  $.fn.slider = function(options, ...args) {
     const init = () =>
       $(this).map(function() {
-        const data = $(this).data();
+        const data = $(this).data() as Partial<SliderOptions>;
         const allOptions =
           typeof options === 'object' ? { ...data, ...options } : data;
         const model = new Model(allOptions);

@@ -1,7 +1,7 @@
 import Model from '../Model/Model';
 import View from '../Views/Main';
 
-import { Options } from '../types';
+import { SliderOptions } from '../types';
 
 class Controller {
   model: Model;
@@ -47,7 +47,7 @@ class Controller {
     return this.model.getState();
   }
 
-  setState(options: Options) {
+  setState(options: SliderOptions) {
     this.model.setState(options);
   }
 }

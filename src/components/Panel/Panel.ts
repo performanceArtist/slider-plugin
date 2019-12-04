@@ -1,5 +1,5 @@
-import { createNode } from '../../js/Views/utils';
-import { Options } from '../../js/types';
+import { createNode } from '../../slider/Views/utils';
+import { SliderOptions } from '../../slider/types';
 
 class Panel {
   root: HTMLElement;
@@ -11,7 +11,6 @@ class Panel {
     this.root = root;
     this.$slider = $slider;
 
-    this.init = this.init.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.addValueInputs = this.addValueInputs.bind(this);
     this.update = this.update.bind(this);
@@ -21,8 +20,13 @@ class Panel {
 
   init() {
     this.$slider.slider('subscribeToUpdates', this.update);
-    this.form = this.root.querySelector('form');
-    this.inputContainer = this.form.querySelector('.panel__value-inputs');
+    const form = this.root.querySelector('form');
+    if (!form) return console.log('No form found');
+    const inputContainer = form.querySelector('.panel__value-inputs');
+    if (!inputContainer) return console.log('No inputs found');
+
+    this.form = form;
+    this.inputContainer = inputContainer as HTMLDivElement;
 
     this.form.addEventListener('change', this.handleChange);
   }
@@ -52,8 +56,8 @@ class Panel {
     const options: { [key: string]: any } = {};
     const target = event.currentTarget as HTMLFormElement;
 
-    [...target.elements].forEach((input: HTMLInputElement) => {
-      const { name, type, value, checked } = input;
+    [...target.elements].forEach((input) => {
+      const { name, type, value, checked } = input as HTMLInputElement;
       const hasChecked = type === 'radio' || type === 'checkbox';
       if (type === 'submit') return;
 
@@ -64,7 +68,7 @@ class Panel {
   }
 
   addValueInputs() {
-    const states = this.$slider.slider('getState') as JQuery<Options>;
+    const states = this.$slider.slider('getState') as JQuery<SliderOptions>;
 
     const { hasInterval, value, firstValue, secondValue } = states[0];
 
@@ -102,10 +106,11 @@ class Panel {
     }
   }
 
-  update(state: Options) {
+  update(state: SliderOptions) {
     this.addValueInputs();
 
-    [...this.form.elements].forEach((input: HTMLInputElement) => {
+    [...this.form.elements].forEach((element) => {
+      const input = element as HTMLInputElement;
       const { name, type } = input;
       const defaultValue = state[name];
       const hasChecked = type === 'radio' || type === 'checkbox';

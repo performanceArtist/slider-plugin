@@ -108,6 +108,7 @@ $bubble-color: black;
 
     &__label {
       @extend %unselectable;
+      cursor: pointer;
       position: absolute;
       width: 1.25rem;
       margin-left: 0rem;

@@ -5,7 +5,7 @@ const root = document.querySelector('#test');
 
 describe('Slider view', () => {
   describe('init', () => {
-    const slider = new Slider({}, root as HTMLElement);
+    const slider = new Slider(root as HTMLElement);
 
     it('Creates root, wrapper and range elements', () => {
       expect(slider.root).toBeInstanceOf(HTMLElement);
@@ -15,7 +15,7 @@ describe('Slider view', () => {
   });
 
   describe('addErrors', () => {
-    const slider = new Slider({}, root as HTMLElement);
+    const slider = new Slider(root as HTMLElement);
 
     it('Creates error element for each string', () => {
       slider.addErrors(['test', 'test']);
@@ -27,8 +27,8 @@ describe('Slider view', () => {
 
   describe('getLength', () => {
     const slider = new Slider(
-      { isHorizontal: true, hasInterval: true },
       root as HTMLElement,
+      { isHorizontal: true, hasInterval: true }
     );
 
     it('Returns slider length', () => {

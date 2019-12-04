@@ -2,12 +2,12 @@ import Model from '../Model/Model';
 import View from '../Views/Main';
 import Controller from './Controller';
 
-import { Options } from '../types';
+import { SliderOptions } from '../types';
 
 document.body.innerHTML =
   '<div id="slider"></div><div id="interval-slider"></div>';
 
-const init = (selector: string, options: Options = null) => {
+const init = (selector: string, options?: Partial<SliderOptions>) => {
   const root = document.querySelector(selector);
   const model = new Model(options);
   const view = new View(model, root as HTMLElement);

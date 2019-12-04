@@ -1,5 +1,6 @@
 import Observable from '../Observable/Observable';
-import { Options } from '../types';
+import { SliderOptions } from '../types';
+import defaultOptions from '../Model/config';
 import { createNode } from './utils';
 
 class Slider extends Observable {
@@ -7,12 +8,12 @@ class Slider extends Observable {
   wrapper: HTMLElement;
   range: HTMLElement;
 
-  private _options: Options;
+  private _options: SliderOptions;
 
-  constructor(options: Options, root: HTMLElement) {
+  constructor(root: HTMLElement, options?: Partial<SliderOptions>) {
     super();
 
-    this._options = options;
+    this._options = options ? { ...defaultOptions, ...options } : defaultOptions;
 
     this.init = this.init.bind(this);
     this.addErrors = this.addErrors.bind(this);

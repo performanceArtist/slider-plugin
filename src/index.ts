@@ -1,11 +1,11 @@
-import './js/slider';
+import './slider';
 
 import Example from './components/Example/Example';
 
 window.onload = function windowHasLoaded() {
   document
     .querySelectorAll('.example')
-    .forEach((example: HTMLElement) => new Example(example));
+    .forEach((example) => new Example(example));
 };
 
 function importAll(resolve: any) {

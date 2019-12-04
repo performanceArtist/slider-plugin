@@ -38,7 +38,7 @@ class Main extends Observable {
 
   addSlider() {
     this.root.innerHTML = '';
-    this.slider = new Slider(this.model.getState(), this.root);
+    this.slider = new Slider(this.root, this.model.getState());
     const { errors } = this.model.takeMeta();
     this.slider.addErrors(errors);
     this.slider.subscribe(this.notifyClick, 'click');

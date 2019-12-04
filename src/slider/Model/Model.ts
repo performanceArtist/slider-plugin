@@ -1,17 +1,17 @@
 import { debounce } from './utils';
 import SliderError, { ErrorType } from './ConfigError';
 import Observable from '../Observable/Observable';
-import { Options, ModelType } from '../types';
-import config from './config';
+import { SliderOptions, ModelType } from '../types';
+import defaultOptions from './config';
 
 class Model extends Observable {
-  private _state: Options;
+  private _state: SliderOptions;
   private _meta: { errors: Array<string> };
 
-  constructor(options: Options | null = null) {
+  constructor(options?: Partial<SliderOptions>) {
     super();
 
-    this._state = { ...config };
+    this._state = options ? { ...defaultOptions, ...options } : defaultOptions;
     this._meta = { errors: [] };
 
     if (options) this.setState(options);
@@ -80,12 +80,7 @@ class Model extends Observable {
     this.setState({ value: min + ratio * (max - min) });
   }
 
-  setState(options: Options = {}) {
-    if (!(options instanceof Object)) {
-      console.log('Invalid object');
-      return;
-    }
-
+  setState(options: Partial<SliderOptions> = {}) {
     const isValue = (key: string) =>
       ['value', 'firstValue', 'secondValue'].indexOf(key) !== -1;
     const filteredOptions = Object.keys(options).filter(key => !isValue(key));
@@ -94,15 +89,12 @@ class Model extends Observable {
       this._setValue(key, options[key]);
     });
 
-    const newValue = (key: string) =>
-      options[key] === undefined ? this._state[key] : options[key];
-
     if (this._state.hasInterval) {
-      this._setValue('value', newValue('value'));
-      this._setValue('firstValue', newValue('firstValue'));
-      this._setValue('secondValue', newValue('secondValue'));
+      this._setValue('value', options.value || this._state.value);
+      this._setValue('firstValue', options.firstValue || this._state.firstValue);
+      this._setValue('secondValue', options.secondValue || this._state.secondValue);
     } else {
-      this._setValue('value', newValue('value'));
+      this._setValue('value', options.value || this._state.value);
     }
 
     if (filteredOptions.length === 0) {

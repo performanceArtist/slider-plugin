@@ -1,4 +1,4 @@
-import '../../js/slider';
+import '../../slider';
 import Example from './Example';
 import Panel from '../Panel/Panel';
 
